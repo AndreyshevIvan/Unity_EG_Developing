@@ -2,12 +2,21 @@
 using UnityEngine.UI;
 using System.Collections;
 
+public enum GameMode
+{
+    PVP,
+    AVP,
+    AVA,
+}
+
 public class GameController : MonoBehaviour
 {
+
     public Text[] buttons;
 
     public GameObject gameplayObjects;
     public GameObject menuObjects;
+    public GameObject choiceObjects;
 
     public GameObject gameOverPanel;
     public Text gameOverText;
@@ -17,6 +26,8 @@ public class GameController : MonoBehaviour
 
     private Button lastButton;
     private Text lastButtonText;
+
+    private GameMode mode;
 
     private string side;
     private int moveCount;
@@ -33,6 +44,7 @@ public class GameController : MonoBehaviour
 
         SetMenuScene();
     }
+
     public void SetMenuScene()
     {
         ResetAllElements();
@@ -42,19 +54,17 @@ public class GameController : MonoBehaviour
     {
         ResetAllElements();
         gameplayObjects.SetActive(true);
+        RestartGame();
     }
-    public void ResetAllElements()
+    public void SetChoiceScene()
     {
-        gameplayObjects.SetActive(false);
-        menuObjects.SetActive(false);
+        ResetAllElements();
+        choiceObjects.SetActive(true);
     }
-    public void FixedUpdate()
+    public void SetLastButton(Button button, Text text)
     {
-        if (Input.GetKeyDown("space"))
-        {
-            Application.Quit();
-            Debug.Log("VISHEL");
-        }
+        lastButton = button;
+        lastButtonText = text;
     }
     void SetGameControllerReferenceOnButtons()
     {
@@ -63,15 +73,36 @@ public class GameController : MonoBehaviour
             buttons[i].GetComponentInParent<GridSpace>().SetGameControllerReference(this);
         }
     }
+    void SetBoardInteractable(bool toggle)
+    {
+        for (int i = 0; i < buttons.Length; i++)
+        {
+            buttons[i].GetComponentInParent<Button>().interactable = toggle;
+        }
+    }
+    void SetGameOverText(string value)
+    {
+        gameOverPanel.SetActive(true);
+        gameOverText.text = value;
+    }
+    public void SetPVPMode()
+    {
+        mode = GameMode.PVP;
+    }
+    public void SetAVPMode()
+    {
+        mode = GameMode.AVP;
+    }
+    public void SetAVAMode()
+    {
+        mode = GameMode.AVA;
+    }
+
     public string GetPlayerSide()
     {
         return side;
     }
-    public void SetLastButton(Button button, Text text)
-    {
-        lastButton = button;
-        lastButtonText = text;
-    }
+
     public void UndoLastTurn()
     {
         undoButton.SetActive(false);
@@ -102,6 +133,13 @@ public class GameController : MonoBehaviour
     {
         side = (side == "X") ? "O" : "X";
     }
+
+    public void ResetAllElements()
+    {
+        gameplayObjects.SetActive(false);
+        menuObjects.SetActive(false);
+        choiceObjects.SetActive(false);
+    }
     void GameOver(string message = "")
     {
         if (message == "")
@@ -116,29 +154,18 @@ public class GameController : MonoBehaviour
         restartButton.SetActive(true);
         undoButton.SetActive(false);
     }
-    void SetGameOverText(string value)
-    {
-        gameOverPanel.SetActive(true);
-        gameOverText.text = value;
-    }
     public void RestartGame()
     {
         side = "X";
         moveCount = 0;
         gameOverPanel.SetActive(false);
         restartButton.SetActive(false);
+        undoButton.SetActive(false);
         SetBoardInteractable(true);
 
         for (int i = 0; i < buttons.Length; i++)
         {
             buttons[i].text = "";
-        }
-    }
-    void SetBoardInteractable(bool toggle)
-    {
-        for (int i = 0; i < buttons.Length; i++)
-        {
-            buttons[i].GetComponentInParent<Button>().interactable = toggle;
         }
     }
     public bool IsSomobodyWin()
