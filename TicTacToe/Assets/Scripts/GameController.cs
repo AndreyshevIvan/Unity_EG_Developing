@@ -97,6 +97,14 @@ public class GameController : MonoBehaviour
     {
         mode = GameMode.AVA;
     }
+    public void SetPlayerFirst()
+    {
+
+    }
+    public void SetComputerFirst()
+    {
+
+    }
 
     public string GetPlayerSide()
     {
