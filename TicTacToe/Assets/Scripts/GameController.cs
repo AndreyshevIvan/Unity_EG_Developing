@@ -8,7 +8,6 @@ public class GameController : MonoBehaviour
 
     public GameObject gameplayObjects;
     public GameObject menuObjects;
-    public GameObject modeMenuObjects;
 
     public GameObject gameOverPanel;
     public Text gameOverText;
@@ -34,32 +33,29 @@ public class GameController : MonoBehaviour
 
         SetMenuScene();
     }
-
     public void SetMenuScene()
     {
-        //ResetAllElements();
+        ResetAllElements();
         menuObjects.SetActive(true);
     }
-
-    public void SetChangeModeScene()
-    {
-        ResetAllElements();
-        modeMenuObjects.SetActive(true);
-    }
-
     public void SetGameScene()
     {
         ResetAllElements();
         gameplayObjects.SetActive(true);
     }
-
-    private void ResetAllElements()
+    public void ResetAllElements()
     {
         gameplayObjects.SetActive(false);
         menuObjects.SetActive(false);
-        modeMenuObjects.SetActive(false);
     }
-
+    public void FixedUpdate()
+    {
+        if (Input.GetKeyDown("space"))
+        {
+            Application.Quit();
+            Debug.Log("VISHEL");
+        }
+    }
     void SetGameControllerReferenceOnButtons()
     {
         for (int i = 0; i < buttons.Length; i++)
@@ -110,7 +106,7 @@ public class GameController : MonoBehaviour
     {
         if (message == "")
         {
-            SetGameOverText(side + " Wins!");
+            SetGameOverText(side + " Wins");
         }
         else
         {
@@ -160,5 +156,9 @@ public class GameController : MonoBehaviour
         }
 
         return false;
+    }
+    public void ExitGame()
+    {
+        Application.Quit();
     }
 }
