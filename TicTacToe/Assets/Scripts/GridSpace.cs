@@ -21,4 +21,9 @@ public class GridSpace : MonoBehaviour
         gameController.Turn();
         gameController.UpdateUndoButton(button);
     }
+
+    public void PlayerTurn()
+    {
+        gameController.PlayerTurn();
+    }
 }
