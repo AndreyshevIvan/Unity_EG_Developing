@@ -2,8 +2,16 @@
 using UnityEngine.UI;
 using System.Collections;
 
+public enum TurnQueue
+{
+    NONE,
+    PLAYER,
+    COMPUTER,
+}
+
 public enum GameMode
 {
+    PAUSE,
     PVP,
     AVP,
     AVA,
@@ -24,6 +32,7 @@ public class GameController : MonoBehaviour
 
     public GameObject restartButton;
     public GameObject undoButton;
+    public GameObject turnQueueTable;
 
     private Button lastButton;
     private Text lastButtonText;
@@ -31,7 +40,8 @@ public class GameController : MonoBehaviour
     public Color winnerFields;
     public Color normalFields;
 
-    private GameMode mode;
+    private TurnQueue turnQueue;
+    private GameMode mode = GameMode.PAUSE;
 
     private string side;
     private int moveCount;
@@ -41,64 +51,114 @@ public class GameController : MonoBehaviour
     private int winnerThird = -1;
 
     private float computerDelay;
+    private float maxDelay = 1.2f;
 
     void Awake()
     {
         side = "X";
-        SetGameControllerReferenceOnButtons();
+        moveCount = 0;
+        computerDelay = 0;
+
+        InitGameControllerReferenceOnButtons();
         gameOverPanel.SetActive(false);
         restartButton.SetActive(false);
         undoButton.SetActive(false);
-        SetBoardInteractable(true);
-        moveCount = 0;
 
         SetMenuScene();
     }
-
-    private void Update()
-    {
-
-    }
-
-    public void SetMenuScene()
-    {
-        ResetAllElements();
-        menuObjects.SetActive(true);
-    }
-    public void SetGameScene()
-    {
-        ResetAllElements();
-        gameplayObjects.SetActive(true);
-        RestartGame();
-    }
-    public void SetChoiceScene()
-    {
-        ResetAllElements();
-        choiceObjects.SetActive(true);
-    }
-    public void SetLastButton(Button button, Text text)
-    {
-        lastButton = button;
-        lastButtonText = text;
-    }
-    void SetGameControllerReferenceOnButtons()
+    void InitGameControllerReferenceOnButtons()
     {
         for (int i = 0; i < buttons.Length; i++)
         {
             buttons[i].GetComponentInParent<GridSpace>().SetGameControllerReference(this);
         }
     }
-    void SetBoardInteractable(bool toggle)
+
+    private void Update()
+    {
+        switch(mode)
+        {
+            case GameMode.PVP:
+                {
+
+                }
+                break;
+            case GameMode.AVP:
+                {
+
+                }
+                break;
+            case GameMode.AVA:
+                {
+                }
+                break;
+            case GameMode.PAUSE:
+                {
+
+                }
+                break;
+        }
+    }
+    public void UpdateUndoButton(Button button, Text text)
+    {
+        lastButton = button;
+        lastButtonText = text;
+    }
+    private void UpdateCurrentTurn()
+    {
+        turnQueueTable.GetComponentInChildren<Text>().text = side + " turn";
+    }
+
+    public void RestartGame()
+    {
+        side = "X";
+        moveCount = 0;
+        playersController.Reset();
+        gameOverPanel.SetActive(false);
+        restartButton.SetActive(false);
+        undoButton.SetActive(false);
+        SetBoardInteractable(true);
+
+        winnerFirst = -1;
+        winnerSecond = -1;
+        winnerThird = -1;
+
+        for (int i = 0; i < buttons.Length; i++)
+        {
+            buttons[i].text = "";
+            buttons[i].color = winnerFields;
+        }
+    }
+
+    public void ResetInterfaces()
+    {
+        gameplayObjects.SetActive(false);
+        menuObjects.SetActive(false);
+        choiceObjects.SetActive(false);
+    }
+    public void SetMenuScene()
+    {
+        ResetInterfaces();
+        menuObjects.SetActive(true);
+    }
+    public void SetGameScene()
+    {
+        ResetInterfaces();
+        gameplayObjects.SetActive(true);
+        RestartGame();
+    }
+    public void SetChoiceScene()
+    {
+        ResetInterfaces();
+        choiceObjects.SetActive(true);
+    }
+
+    private void SetBoardInteractable(bool toggle)
     {
         for (int i = 0; i < buttons.Length; i++)
         {
             buttons[i].GetComponentInParent<Button>().interactable = toggle;
         }
-    }
-    void SetGameOverText(string value)
-    {
-        gameOverPanel.SetActive(true);
-        gameOverText.text = value;
     }
     public void SetPVPMode()
     {
@@ -130,10 +190,6 @@ public class GameController : MonoBehaviour
     {
         return side;
     }
-    public GameMode GetMode()
-    {
-        return mode;
-    }
 
     public void UndoLastTurn()
     {
@@ -143,81 +199,48 @@ public class GameController : MonoBehaviour
         --moveCount;
         ChangeSides();
     }
-    public void EndTurn()
+    public void Turn()
     {
         ++moveCount;
 
-        if (IsSomobodyWin())
+        if (IsSomobodyWin() || moveCount >= 9)
         {
             GameOver();
         }
-        else if (moveCount >= 9)
-        {
-            GameOver("It's a draw!");
-        }
-        else
-        {
-            ChangeSides();
-            undoButton.SetActive(true);
-        }
+
+        ChangeSides();
     }
     void ChangeSides()
     {
         side = (side == "X") ? "O" : "X";
     }
 
-    public void ResetAllElements()
+    void GameOver()
     {
-        gameplayObjects.SetActive(false);
-        menuObjects.SetActive(false);
-        choiceObjects.SetActive(false);
-    }
-    void GameOver(string message = "")
-    {
+        mode = GameMode.PAUSE;
         PaintWinnerFields();
-        if (message == "")
+
+        if (IsSomobodyWin())
         {
             playersController.HighlightWinner(side);
-            SetGameOverText(side + " Wins");
+            string winnerName = playersController.GetWinnerName(side);
+            CreateGameOverText(winnerName + " Wins");
         }
         else
         {
-            SetGameOverText(message);
+            CreateGameOverText("It`s a draw");
         }
+
         SetBoardInteractable(false);
         restartButton.SetActive(true);
         undoButton.SetActive(false);
     }
-    private void PaintWinnerFields()
+    void CreateGameOverText(string text)
     {
-        for (int i = 0; i < buttons.Length; i++)
-        {
-            if (i != winnerFirst && i != winnerSecond && i != winnerThird)
-            {
-                buttons[i].color = normalFields;
-            }
-        }
+        gameOverPanel.SetActive(true);
+        gameOverText.text = text;
     }
-    public void RestartGame()
-    {
-        side = "X";
-        moveCount = 0;
-        playersController.Reset();
-        gameOverPanel.SetActive(false);
-        restartButton.SetActive(false);
-        undoButton.SetActive(false);
-        SetBoardInteractable(true);
 
-        winnerFirst = -1;
-        winnerSecond = -1;
-        winnerThird = -1;
-
-        for (int i = 0; i < buttons.Length; i++)
-        {
-            buttons[i].text = "";
-            buttons[i].color = winnerFields;
-        }
-    }
     private bool IsSomobodyWin()
     {
         // 0 1 2
@@ -254,6 +277,17 @@ public class GameController : MonoBehaviour
         winnerSecond = secondField;
         winnerThird = thirdField;
     }
+    private void PaintWinnerFields()
+    {
+        for (int i = 0; i < buttons.Length; i++)
+        {
+            if (i != winnerFirst && i != winnerSecond && i != winnerThird)
+            {
+                buttons[i].color = normalFields;
+            }
+        }
+    }
+
     public void ExitGame()
     {
         Application.Quit();

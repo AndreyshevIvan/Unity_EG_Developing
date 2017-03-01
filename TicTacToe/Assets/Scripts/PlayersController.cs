@@ -8,7 +8,7 @@ public class Player
 {
     public GameObject body;
     public Text title;
-    public string side;
+    private string side;
 
     private string name = "";
     public Color normalColor;
@@ -24,6 +24,10 @@ public class Player
     public Vector3 GetCrownPosition()
     {
         return title.transform.position;
+    }
+    public string GetName()
+    {
+        return name;
     }
 
     public void SetSide(string playerSide)
@@ -88,7 +92,6 @@ public class PlayersController : MonoBehaviour
         first.SetTitle();
         second.SetTitle();
     }
-
     public void Reset()
     {
         crown.SetActive(false);
@@ -111,9 +114,9 @@ public class PlayersController : MonoBehaviour
     {
         HideElements();
         first = playerFirst;
-        first.SetName("player");
+        first.SetName("player one");
         second = playerSecond;
-        second.SetName("player");
+        second.SetName("player two");
         ActivatePlayers();
     }
     public void SetAVPMode()
@@ -129,9 +132,9 @@ public class PlayersController : MonoBehaviour
     {
         HideElements();
         first = computerFirst;
-        first.SetName("computer");
+        first.SetName("computer one");
         second = computerSecond;
-        second.SetName("computer");
+        second.SetName("computer two");
         ActivatePlayers();
     }
     private void ActivatePlayers()
@@ -140,6 +143,17 @@ public class PlayersController : MonoBehaviour
         second.SetActive(true);
     }
 
+    public string GetWinnerName(string winnerSide)
+    {
+        if (first.GetSide() == winnerSide)
+        {
+            return first.GetName();
+        }
+        else
+        {
+            return second.GetName();
+        }
+    }
     public string GetFirstPlayerSide()
     {
         return first.GetSide();

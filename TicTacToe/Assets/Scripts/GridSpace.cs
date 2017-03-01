@@ -18,7 +18,7 @@ public class GridSpace : MonoBehaviour
     {
         buttonText.text = gameController.GetPlayerSide();
         button.interactable = false;
-        gameController.EndTurn();
-        gameController.SetLastButton(button, buttonText);
+        gameController.Turn();
+        gameController.UpdateUndoButton(button, buttonText);
     }
 }
