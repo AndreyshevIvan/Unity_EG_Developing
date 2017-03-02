@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class ButtonEvent : MonoBehaviour
 {
+    public AudioEffects audioEffects;
+
     public Text buttonText;
     public int addingSize = 4;
 
@@ -16,6 +18,11 @@ public class ButtonEvent : MonoBehaviour
 
     public void ButtonOnTarget()
     {
+        if (audioEffects != null)
+        {
+            audioEffects.ButtonTick();
+        }
+
         buttonText.color = selectingColor;
         buttonText.fontSize += addingSize;
 

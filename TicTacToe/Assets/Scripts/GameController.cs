@@ -10,19 +10,11 @@ public enum GameMode
     AVA,
 }
 
-public class Bot
+abstract class Bot
 {
-    public Bot()
-    {
-        m_time = 0;
-        m_isActive = false;
-
-        SetDelay();
-    }
-
-    private float m_time;
-    private float m_delay;
-    private bool m_isActive;
+    private float m_time = 0;
+    private float m_delay = 1;
+    private bool m_isActive = false;
 
     public bool IsReady()
     {
@@ -45,26 +37,28 @@ public class Bot
     {
         if (m_isActive && m_time <= m_delay)
         {
-            Debug.Log("Add time");
             m_time += Time.deltaTime;
         }
     }
-    public void Turn(Text[] buttons)
+    public virtual void Turn(Text[] buttons)
     {
-        GridSpace button = GetTurn(buttons);
-
-        if (button != null)
+        if (IsEmptyFieldExist(buttons))
         {
-            button.SetSpace();
+            GridSpace button = GetTurn(buttons);
 
-            Restart();
-            SetDelay();
+            if (button != null)
+            {
+                button.SetSpace();
 
-            Debug.Log("Test 3");
+                Restart();
+                SetDelay();
+            }
         }
     }
 
-    private GridSpace GetTurn(Text[] buttons)
+    public abstract GridSpace GetTurn(Text[] buttons);
+
+    private bool IsEmptyFieldExist(Text[] buttons)
     {
         if (IsButtonValid(buttons[0]) ||
             IsButtonValid(buttons[1]) ||
@@ -76,40 +70,50 @@ public class Bot
             IsButtonValid(buttons[7]) ||
             IsButtonValid(buttons[8]))
         {
-            int turn = 0;
-            bool isTurnValid = false;
-
-            while (!isTurnValid)
-            {
-                turn = Random.Range(0, 9);
-                if (IsButtonValid(buttons[turn]))
-                {
-                    isTurnValid = true;
-                }
-            }
-
-            GridSpace button = buttons[turn].GetComponentInParent<GridSpace>();
-
-            return button;
+            return true;
         }
 
-        return null;
+        return false;
     }
-    private bool IsButtonValid(Text button)
+    protected bool IsButtonValid(Text button)
     {
         return (button != null && button.text == "");
     }
     private void SetDelay()
     {
-        m_delay = Random.Range(0.1f, 0.2f);
+        m_delay = Random.Range(0.4f, 1.0f);
+    }
+}
+
+class RandomBot : Bot
+{
+    public override GridSpace GetTurn(Text[] buttons)
+    {
+        int turn = 0;
+        bool isTurnValid = false;
+
+        while (!isTurnValid)
+        {
+            turn = Random.Range(0, 9);
+            if (IsButtonValid(buttons[turn]))
+            {
+                isTurnValid = true;
+            }
+        }
+
+        GridSpace button = buttons[turn].GetComponentInParent<GridSpace>();
+
+        return button;
     }
 }
 
 public class GameController : MonoBehaviour
 {
     public PlayersController playersController;
+    private RandomBot jonnyBot;
 
-    Bot jonnyBot;
+    public BackgroundAudio bgAudio;
+    public AudioEffects audioEffects;
 
     public Text[] buttons;
 
@@ -138,13 +142,9 @@ public class GameController : MonoBehaviour
     private string side;
     private int moveCount;
 
-    private int winnerFirst = -1;
-    private int winnerSecond = -1;
-    private int winnerThird = -1;
-
     void Awake()
     {
-        jonnyBot = new Bot();
+        jonnyBot = new RandomBot();
         InitGameControllerReferenceOnButtons();
         SetMenuScene();
     }
@@ -159,18 +159,21 @@ public class GameController : MonoBehaviour
     private void Update()
     {
         UpdateCurrentTurn();
-        jonnyBot.Update();
 
         if (mode == GameMode.AVA)
         {
+            jonnyBot.Update();
             if (jonnyBot.IsReady())
+            {
                 jonnyBot.Turn(buttons);
+            }
         }
 
         if (mode == GameMode.AVP)
         {
             if (!isPlayerTurn)
             {
+                jonnyBot.Update();
                 if (jonnyBot.IsReady())
                 {
                     jonnyBot.Turn(buttons);
@@ -194,7 +197,7 @@ public class GameController : MonoBehaviour
     public void RestartGame()
     {
         SetGameplayInterface();
-        EnableBoardForPlayer();
+        SetBoardInteractable(true);
 
         if (isPlayerFirstInMatch)
         {
@@ -205,9 +208,6 @@ public class GameController : MonoBehaviour
             side = playersController.GetSecondPlayerSide();
         }
         moveCount = 0;
-        winnerFirst = -1;
-        winnerSecond = -1;
-        winnerThird = -1;
 
         for (int i = 0; i < buttons.Length; i++)
         {
@@ -228,12 +228,14 @@ public class GameController : MonoBehaviour
     }
     public void SetMenuScene()
     {
+        bgAudio.PlayMenuMusic();
         ResetInterfaces();
         mode = GameMode.PAUSE;
         menuObjects.SetActive(true);
     }
     public void SetGameScene()
     {
+        bgAudio.PlayGameplayMusic();
         ResetInterfaces();
         gameplayObjects.SetActive(true);
         RestartGame();
@@ -253,28 +255,21 @@ public class GameController : MonoBehaviour
     }
     private void SetGameOverInterface(string message)
     {
-        PaintWinnerFields();
-        DisableBoardForPlayer();
+        SetBoardInteractable(false);
         restartButton.SetActive(true);
         undoButton.SetActive(false);
         currentTurn.SetActive(false);
         CreateGameOverMessage(message);
     }
 
-    private void EnableBoardForPlayer()
-    {
-        SetBoardInteractable(true);
-    }
-    private void DisableBoardForPlayer()
-    {
-        SetBoardInteractable(false);
-    } 
     private void SetBoardInteractable(bool toggle)
     {
         for (int i = 0; i < buttons.Length; i++)
         {
             if (buttons[i] != null && buttons[i].GetComponentInParent<Button>() != null)
+            {
                 buttons[i].GetComponentInParent<Button>().interactable = toggle;
+            }
         }
     }
     public void SetPVPMode()
@@ -282,6 +277,7 @@ public class GameController : MonoBehaviour
         futureGameMode = GameMode.PVP;
         playersController.SetPVPMode();
         playersController.NormalInit();
+        isPlayerFirstInMatch = true;
         SetGameScene();
     }
     public void SetAVPMode()
@@ -291,6 +287,7 @@ public class GameController : MonoBehaviour
     }
     public void SetAVAMode()
     {
+        audioEffects.ComputerHello();
         futureGameMode = GameMode.AVA;
         playersController.SetAVAMode();
         playersController.NormalInit();
@@ -298,6 +295,7 @@ public class GameController : MonoBehaviour
     }
     public void SetPlayerFirst()
     {
+        audioEffects.PlayerHello();
         playersController.SetAVPMode();
         playersController.NormalInit();
         isPlayerFirstInMatch = true;
@@ -305,6 +303,7 @@ public class GameController : MonoBehaviour
     }
     public void SetComputerFirst()
     {
+        audioEffects.ComputerHello();
         playersController.SetAVPMode();
         playersController.InvertInit();
         isPlayerFirstInMatch = false;
@@ -316,6 +315,10 @@ public class GameController : MonoBehaviour
         return side;
     }
 
+    public bool IsPlayerTurn()
+    {
+        return isPlayerTurn;
+    }
     public void UndoLastTurn()
     {
         undoButton.SetActive(false);
@@ -323,10 +326,17 @@ public class GameController : MonoBehaviour
         lastButton.GetComponentInChildren<Text>().text = "";
         --moveCount;
         ChangeSides();
+
+        if (mode == GameMode.AVP)
+        {
+            jonnyBot.Restart();
+            isPlayerTurn = !isPlayerTurn;
+        }
     }
     public void PlayerTurn()
     {
-        isPlayerTurn = false;
+        if (mode != GameMode.PAUSE && mode != GameMode.PVP)
+            isPlayerTurn = false;
     }
     public void Turn()
     {
@@ -349,6 +359,7 @@ public class GameController : MonoBehaviour
 
     private void GameOver()
     {
+        PlayGameOverEffect();
         mode = GameMode.PAUSE;
         jonnyBot.Stop();
         string message = "It`s a draw";
@@ -366,44 +377,62 @@ public class GameController : MonoBehaviour
         gameOverPanel.SetActive(true);
         gameOverText.text = message;
     }
+    private void PlayGameOverEffect()
+    {
+        if (mode == GameMode.AVP)
+        {
+            if (IsPlayerWin())
+            {
+                audioEffects.Winner();
+            }
+            else
+            {
+                audioEffects.Looser();
+            }
+        }
+        else
+        {
+            audioEffects.Winner();
+        }
+    }
 
+    private bool IsPlayerWin()
+    {
+        string playerSide = playersController.GetFirstPlayerSide();
+
+        return (playerSide == side);
+    }
     private bool IsSomobodyWin()
     {
         // 0 1 2
         // 3 4 5
         // 6 7 8
         bool isSomobodyWin = (
-        CheckCombinationAndMemorize(0, 1, 2) ||
-        CheckCombinationAndMemorize(3, 4, 5) ||
-        CheckCombinationAndMemorize(6, 7, 8) ||
-        CheckCombinationAndMemorize(0, 3, 6) ||
-        CheckCombinationAndMemorize(1, 4, 7) ||
-        CheckCombinationAndMemorize(2, 5, 8) ||
-        CheckCombinationAndMemorize(0, 4, 8) ||
-        CheckCombinationAndMemorize(2, 4, 6)
+            CheckCombinationAndPrint(0, 1, 2) ||
+            CheckCombinationAndPrint(3, 4, 5) ||
+            CheckCombinationAndPrint(6, 7, 8) ||
+            CheckCombinationAndPrint(0, 3, 6) ||
+            CheckCombinationAndPrint(1, 4, 7) ||
+            CheckCombinationAndPrint(2, 5, 8) ||
+            CheckCombinationAndPrint(0, 4, 8) ||
+            CheckCombinationAndPrint(2, 4, 6)
         );
 
         return isSomobodyWin;
     }
-    private bool CheckCombinationAndMemorize(int firstField, int secondField, int thirdField)
+    private bool CheckCombinationAndPrint(int firstField, int secondField, int thirdField)
     {
         if (buttons[firstField].text == side &&
             buttons[secondField].text == side &&
             buttons[thirdField].text == side)
         {
-            DefineWinFields(firstField, secondField, thirdField);
+            PaintWinnerFields(firstField, secondField, thirdField);
             return true;
         }
 
         return false;
     }
-    private void DefineWinFields(int firstField, int secondField, int thirdField)
-    {
-        winnerFirst = firstField;
-        winnerSecond = secondField;
-        winnerThird = thirdField;
-    }
-    private void PaintWinnerFields()
+    private void PaintWinnerFields(int winnerFirst, int winnerSecond, int winnerThird)
     {
         for (int i = 0; i < buttons.Length; i++)
         {
