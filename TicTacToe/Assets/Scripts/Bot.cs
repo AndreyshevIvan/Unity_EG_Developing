@@ -121,8 +121,6 @@ abstract class Bot
         if (button == null) button = GetOneOfThree(buttons, 0, 4, 8);
         if (button == null) button = GetOneOfThree(buttons, 6, 4, 2);
 
-        if (button == null) button = GetRandomTurn(buttons);
-
         return button;
     }
     protected GridSpace GetOneOfThree(Text[] buttons, int firstNum, int secondNum, int thirdNum)
@@ -192,6 +190,11 @@ class DefenseBot : Bot
     {
         GridSpace button = GetBestOfThree(buttons);
 
+        if (button == null)
+        {
+            button = GetRandomTurn(buttons);
+        }
+
         return button;
     }
 }
@@ -207,6 +210,11 @@ class AttackBot : Bot
     public override GridSpace GetTurn(Text[] buttons)
     {
         GridSpace button = GetBestOfThree(buttons);
+
+        if (button == null)
+        {
+            button = GetRandomTurn(buttons);
+        }
 
         return button;
     }
@@ -224,6 +232,11 @@ class MixedBot : Bot
     {
         SetRandomDefenseOrAttac();
         GridSpace button = GetBestOfThree(buttons);
+
+        if (button == null)
+        {
+            button = GetRandomTurn(buttons);
+        }
 
         return button;
     }
@@ -248,43 +261,26 @@ class FullMixedBot : Bot
     public FullMixedBot(string side)
     {
         m_side = side;
-        SetRandomType();
     }
-    enum BotType
-    {
-        DEFENSE = 0,
-        ATTACK,
-        RANDOM,
-    }
-
-    private int m_type;
 
     public override GridSpace GetTurn(Text[] buttons)
     {
         GridSpace button;
 
-        SetRandomType();
-        button = (m_type == (int)BotType.RANDOM) ? GetRandomTurn(buttons) : GetBestOfThree(buttons);
+        m_searchSide = (m_side == "X") ? "O" : "X";
+        button = GetBestOfThree(buttons);
+
+        if (button == null)
+        {
+            m_searchSide = m_side;
+            button = GetBestOfThree(buttons);
+
+            if (button == null)
+            {
+                button = GetRandomTurn(buttons);
+            }
+        }
 
         return button;
-    }
-    private void SetRandomType()
-    {
-        int m_type = Random.Range(0, 3);
-
-        if (m_type == (int)BotType.DEFENSE)
-        {
-            Debug.Log((int)BotType.DEFENSE);
-            m_searchSide = m_side;
-        }
-        else if (m_type == (int)BotType.ATTACK)
-        {
-            Debug.Log((int)BotType.ATTACK);
-            m_searchSide = (m_side == "X") ? "O" : "X";
-        }
-        else
-        {
-            Debug.Log((int)BotType.RANDOM);
-        }
     }
 }

@@ -63,27 +63,32 @@ public class GameController : MonoBehaviour
     {
         UpdateCurrentTurn();
 
-        if (mode == GameMode.AVA)
+        switch (mode)
         {
-            jonnyBot.Update();
-            if (jonnyBot.IsReady())
-            {
-                jonnyBot.InvertSide();
-                jonnyBot.Turn(buttons);
-            }
-        }
-
-        if (mode == GameMode.AVP)
-        {
-            if (!isPlayerTurn)
+            case GameMode.AVA:
             {
                 jonnyBot.Update();
                 if (jonnyBot.IsReady())
                 {
+                    jonnyBot.InvertSide();
                     jonnyBot.Turn(buttons);
-                    isPlayerTurn = !isPlayerTurn;
                 }
             }
+            break;
+
+            case GameMode.AVP:
+            {
+                if (!isPlayerTurn)
+                {
+                    jonnyBot.Update();
+                    if (jonnyBot.IsReady())
+                    {
+                        jonnyBot.Turn(buttons);
+                        isPlayerTurn = !isPlayerTurn;
+                    }
+                }
+            }
+            break;
         }
     }
     public void UpdateUndoButton(Button button)
@@ -103,15 +108,9 @@ public class GameController : MonoBehaviour
         SetGameplayInterface();
         SetBoardInteractable(true);
 
-        if (isPlayerFirstInMatch)
-        {
-            jonnyBot = new AttackBot("O");
-        }
-        else
-        {
-            jonnyBot = new AttackBot("X");
-        }
+        string botSide = (isPlayerFirstInMatch) ? "O" : "X";
 
+        jonnyBot = new FullMixedBot(botSide);
         turnSide = "X";
         moveCount = 0;
 
