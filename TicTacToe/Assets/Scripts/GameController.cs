@@ -10,107 +10,11 @@ public enum GameMode
     AVA,
 }
 
-abstract class Bot
-{
-    private float m_time = 0;
-    private float m_delay = 1;
-    private bool m_isActive = false;
-
-    public bool IsReady()
-    {
-        return m_time >= m_delay;
-    }
-    public void Start()
-    {
-        m_isActive = true;
-    }
-    public void Stop()
-    {
-        m_isActive = false;
-    }
-    public void Restart()
-    {
-        Start();
-        m_time = 0;
-    }
-    public void Update()
-    {
-        if (m_isActive && m_time <= m_delay)
-        {
-            m_time += Time.deltaTime;
-        }
-    }
-    public virtual void Turn(Text[] buttons)
-    {
-        if (IsEmptyFieldExist(buttons))
-        {
-            GridSpace button = GetTurn(buttons);
-
-            if (button != null)
-            {
-                button.SetSpace();
-
-                Restart();
-                SetDelay();
-            }
-        }
-    }
-
-    public abstract GridSpace GetTurn(Text[] buttons);
-
-    private bool IsEmptyFieldExist(Text[] buttons)
-    {
-        if (IsButtonValid(buttons[0]) ||
-            IsButtonValid(buttons[1]) ||
-            IsButtonValid(buttons[2]) ||
-            IsButtonValid(buttons[3]) ||
-            IsButtonValid(buttons[4]) ||
-            IsButtonValid(buttons[5]) ||
-            IsButtonValid(buttons[6]) ||
-            IsButtonValid(buttons[7]) ||
-            IsButtonValid(buttons[8]))
-        {
-            return true;
-        }
-
-        return false;
-    }
-    protected bool IsButtonValid(Text button)
-    {
-        return (button != null && button.text == "");
-    }
-    private void SetDelay()
-    {
-        m_delay = Random.Range(0.4f, 1.0f);
-    }
-}
-
-class RandomBot : Bot
-{
-    public override GridSpace GetTurn(Text[] buttons)
-    {
-        int turn = 0;
-        bool isTurnValid = false;
-
-        while (!isTurnValid)
-        {
-            turn = Random.Range(0, 9);
-            if (IsButtonValid(buttons[turn]))
-            {
-                isTurnValid = true;
-            }
-        }
-
-        GridSpace button = buttons[turn].GetComponentInParent<GridSpace>();
-
-        return button;
-    }
-}
 
 public class GameController : MonoBehaviour
 {
     public PlayersController playersController;
-    private RandomBot jonnyBot;
+    private Bot jonnyBot;
 
     public BackgroundAudio bgAudio;
     public AudioEffects audioEffects;
@@ -139,12 +43,11 @@ public class GameController : MonoBehaviour
     private bool isPlayerFirstInMatch = true;
     private bool isPlayerTurn;
 
-    private string side;
+    private string turnSide;
     private int moveCount;
 
     void Awake()
     {
-        jonnyBot = new RandomBot();
         InitGameControllerReferenceOnButtons();
         SetMenuScene();
     }
@@ -165,6 +68,7 @@ public class GameController : MonoBehaviour
             jonnyBot.Update();
             if (jonnyBot.IsReady())
             {
+                jonnyBot.InvertSide();
                 jonnyBot.Turn(buttons);
             }
         }
@@ -190,7 +94,7 @@ public class GameController : MonoBehaviour
     {
         if (currentTurn != null)
         {
-            currentTurn.GetComponentInChildren<Text>().text = side + " turn";
+            currentTurn.GetComponentInChildren<Text>().text = turnSide + " turn";
         }
     }
 
@@ -201,12 +105,14 @@ public class GameController : MonoBehaviour
 
         if (isPlayerFirstInMatch)
         {
-            side = playersController.GetFirstPlayerSide();
+            jonnyBot = new AttackBot("O");
         }
         else
         {
-            side = playersController.GetSecondPlayerSide();
+            jonnyBot = new AttackBot("X");
         }
+
+        turnSide = "X";
         moveCount = 0;
 
         for (int i = 0; i < buttons.Length; i++)
@@ -312,7 +218,7 @@ public class GameController : MonoBehaviour
 
     public string GetPlayerSide()
     {
-        return side;
+        return turnSide;
     }
 
     public bool IsPlayerTurn()
@@ -354,7 +260,7 @@ public class GameController : MonoBehaviour
     }
     private void ChangeSides()
     {
-        side = (side == "X") ? "O" : "X";
+        turnSide = (turnSide == "X") ? "O" : "X";
     }
 
     private void GameOver()
@@ -366,8 +272,8 @@ public class GameController : MonoBehaviour
 
         if (IsSomobodyWin())
         {
-            playersController.HighlightWinner(side);
-            message = playersController.GetWinnerName(side) + " Wins";
+            playersController.HighlightWinner(turnSide);
+            message = playersController.GetWinnerName(turnSide) + " Wins";
         }
 
         SetGameOverInterface(message);
@@ -400,7 +306,7 @@ public class GameController : MonoBehaviour
     {
         string playerSide = playersController.GetFirstPlayerSide();
 
-        return (playerSide == side);
+        return (playerSide == turnSide);
     }
     private bool IsSomobodyWin()
     {
@@ -422,9 +328,9 @@ public class GameController : MonoBehaviour
     }
     private bool CheckCombinationAndPrint(int firstField, int secondField, int thirdField)
     {
-        if (buttons[firstField].text == side &&
-            buttons[secondField].text == side &&
-            buttons[thirdField].text == side)
+        if (buttons[firstField].text == turnSide &&
+            buttons[secondField].text == turnSide &&
+            buttons[thirdField].text == turnSide)
         {
             PaintWinnerFields(firstField, secondField, thirdField);
             return true;
