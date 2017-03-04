@@ -4,31 +4,83 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
-    GameBehavior m_currentBehavior;
-    GameBehavior m_gameplay;
-    GameBehavior m_pause;
+    GameBehaviour m_currentBehaviour;
 
-    public GameplayBehavior m_gameplayBehavior;
-    public PauseBehavior m_pauseBehavior;
+    GameBehaviour m_gameplay;
+    GameBehaviour m_pause;
+    GameBehaviour m_menu;
+    GameBehaviour m_changeLevel;
+    GameBehaviour m_gameover;
+    GameBehaviour m_exit;
+
+    public GameplayBehaviour m_gameplayBehaviour;
+    public PauseBehaviour m_pauseBehavior;
+    public MenuBehaviour m_menuBehaviour;
+    public ChangeLevelBehaviour m_changeLevelBehavior;
+    public GameoverBehaviour m_gameoverBehavior;
+    public ExitBehaviour m_exitBehavior;
+
+    public GameItems m_items;
 
     private void Awake()
     {
-        m_gameplayBehavior.Init(this);
-        m_pauseBehavior.Init(this);
+        InitBehaviours();
 
-        m_gameplay = m_gameplayBehavior;
+        m_currentBehaviour = m_gameplay;
+    }
+
+    private void InitBehaviours()
+    {
+        m_gameplay = m_gameplayBehaviour;
         m_pause = m_pauseBehavior;
+        m_menu = m_menuBehaviour;
+        m_changeLevel = m_changeLevelBehavior;
+        m_gameover = m_gameoverBehavior;
+        m_exit = m_exitBehavior;
 
-        m_currentBehavior = m_gameplay;
+        m_gameplayBehaviour.Init(this);
+        m_pauseBehavior.Init(this);
+        m_menuBehaviour.Init(this);
+        m_changeLevelBehavior.Init(this);
+        m_gameoverBehavior.Init(this);
+        m_exitBehavior.Init(this);
     }
 
     void FixedUpdate()
     {
-        m_currentBehavior.UpdateBehavior();
+        m_currentBehaviour.UpdateBehavior();
     }
 
-    public void SwitchBehavior()
+    public GameItems GetItems()
     {
-        m_currentBehavior = (m_currentBehavior == m_gameplay) ? m_pause : m_gameplay;
+        return m_items;
+    }
+
+    public void SwitchBehaviour()
+    {
+        if (m_currentBehaviour == m_gameplay)
+        {
+            m_currentBehaviour = m_pause;
+        }
+        else if (m_currentBehaviour == m_pause)
+        {
+            m_currentBehaviour = m_menu;
+        }
+        else if (m_currentBehaviour == m_menu)
+        {
+            m_currentBehaviour = m_changeLevel;
+        }
+        else if (m_currentBehaviour == m_changeLevel)
+        {
+            m_currentBehaviour = m_gameover;
+        }
+        else if (m_currentBehaviour == m_gameover)
+        {
+            m_currentBehaviour = m_exit;
+        }
+        else if (m_currentBehaviour == m_exit)
+        {
+            m_currentBehaviour = m_gameplay;
+        }
     }
 }
