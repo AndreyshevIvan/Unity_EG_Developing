@@ -55,32 +55,4 @@ public class GameController : MonoBehaviour
     {
         return m_items;
     }
-
-    public void SwitchBehaviour()
-    {
-        if (m_currentBehaviour == m_gameplay)
-        {
-            m_currentBehaviour = m_pause;
-        }
-        else if (m_currentBehaviour == m_pause)
-        {
-            m_currentBehaviour = m_menu;
-        }
-        else if (m_currentBehaviour == m_menu)
-        {
-            m_currentBehaviour = m_changeLevel;
-        }
-        else if (m_currentBehaviour == m_changeLevel)
-        {
-            m_currentBehaviour = m_gameover;
-        }
-        else if (m_currentBehaviour == m_gameover)
-        {
-            m_currentBehaviour = m_exit;
-        }
-        else if (m_currentBehaviour == m_exit)
-        {
-            m_currentBehaviour = m_gameplay;
-        }
-    }
 }
