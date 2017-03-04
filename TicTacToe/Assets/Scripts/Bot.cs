@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-
 abstract class Bot
 {
     private float m_time = 0;
@@ -90,18 +89,31 @@ abstract class Bot
     protected GridSpace GetRandomTurn(Text[] buttons)
     {
         int turn = 0;
-        bool isTurnValid = false;
+        int emptyButtonsCount = 0;
+        GridSpace button = null;
 
-        while (!isTurnValid)
+        for (int i = 0; i < buttons.Length; i++)
         {
-            turn = Random.Range(0, 9);
-            if (IsButtonValid(buttons[turn]))
+            if (buttons[i].text == "")
             {
-                isTurnValid = true;
+                emptyButtonsCount++;
+            }
+        }
+        
+        turn = Random.Range(0, emptyButtonsCount);
+
+        for (int i = 0; i < buttons.Length; i++)
+        {
+            if (buttons[i].text == "")
+            {
+                if (turn == 0)
+                {
+                    button = buttons[i].GetComponentInParent<GridSpace>();
+                }
+                turn--;
             }
         }
 
-        GridSpace button = buttons[turn].GetComponentInParent<GridSpace>();
         return button;
     }
     protected GridSpace GetBestOfThree(Text[] buttons)
@@ -267,12 +279,12 @@ class FullMixedBot : Bot
     {
         GridSpace button;
 
-        m_searchSide = (m_side == "X") ? "O" : "X";
+        m_searchSide = m_side;
         button = GetBestOfThree(buttons);
 
         if (button == null)
         {
-            m_searchSide = m_side;
+            m_searchSide = (m_side == "X") ? "O" : "X";
             button = GetBestOfThree(buttons);
 
             if (button == null)
