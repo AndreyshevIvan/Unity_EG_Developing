@@ -16,6 +16,7 @@ public class GameBehaviour : MonoBehaviour, IGameBehaviour
     protected ItemsController m_items;
     protected CameraController m_cameraController;
     protected PlatformController m_platformController;
+    protected BallController m_ballController;
 
     public void Init(GameController controller)
     {
@@ -23,6 +24,7 @@ public class GameBehaviour : MonoBehaviour, IGameBehaviour
         m_items = controller.GetItems();
         m_cameraController = controller.GetCameraController();
         m_platformController = controller.GetPlatformController();
+        m_ballController = controller.GetBallController();
 
         PersonalInit();
     }

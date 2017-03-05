@@ -22,12 +22,14 @@ public class GameController : MonoBehaviour
     public ItemsController m_items;
     public CameraController m_cameraController;
     public PlatformController m_platformController;
+    public BallController m_ballController;
 
     void Awake()
     {
         InitBehaviours();
         InitCameraController();
         InitPlatformController();
+        InitBallController();
 
         SetMenuBehaviour();
     }
@@ -55,7 +57,16 @@ public class GameController : MonoBehaviour
     }
     void InitPlatformController()
     {
-        m_platformController.Init();
+        GameObject platform = m_items.m_mapItems.m_platform;
+
+        m_platformController.Init(platform);
+    }
+    void InitBallController()
+    {
+        GameObject ball = m_items.m_mapItems.m_ball;
+        GameObject platform = m_items.m_mapItems.m_platform;
+
+        m_ballController.Init(ball, platform);
     }
 
     void FixedUpdate()
@@ -74,6 +85,10 @@ public class GameController : MonoBehaviour
     public PlatformController GetPlatformController()
     {
         return m_platformController;
+    }
+    public BallController GetBallController()
+    {
+        return m_ballController;
     }
 
     public void SetGameplayBehaviour()

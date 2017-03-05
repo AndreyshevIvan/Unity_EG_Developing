@@ -41,6 +41,7 @@ public class ItemsController : MonoBehaviour
     public void EnablePauseItems(bool isPauseActive)
     {
         m_pauseItems.SetActive(isPauseActive);
+        HideGameplayButtons(isPauseActive);
     }
     public void EnableExitItems()
     {
@@ -49,5 +50,11 @@ public class ItemsController : MonoBehaviour
     public void EnableChangeLevelItems()
     {
         m_changeLevelItems.SetActive(true);
+    }
+
+    private void HideGameplayButtons(bool isPauseActive)
+    {
+        m_gameplayItems.m_gameoverButton.SetActive(isPauseActive);
+        m_gameplayItems.m_pauseButton.SetActive(isPauseActive);
     }
 }

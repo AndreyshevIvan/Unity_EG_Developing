@@ -5,5 +5,6 @@ using UnityEngine;
 public class MapItems : Items
 {
 
-    GameObject m_cube;
+    public GameObject m_platform;
+    public GameObject m_ball;
 }

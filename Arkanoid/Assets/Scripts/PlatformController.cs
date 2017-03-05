@@ -5,23 +5,22 @@ using UnityEngine;
 public class PlatformController : MonoBehaviour
 {
 
-    public GameObject m_platform;
+    GameObject m_platform;
     Rigidbody m_body;
     public Vector3 m_startPosition;
 
     public float m_speed = 20;
 
-    private void Awake()
+    public void Init(GameObject platform)
     {
-        m_body = m_platform.GetComponent<Rigidbody>();
-    }
-    public void Init()
-    {
+        m_platform = platform;
+        //m_body = m_platform.GetComponent<Rigidbody>();
+
         Reset();
     }
     public void Reset()
     {
-        m_body.position = m_startPosition;
+        m_platform.transform.position = m_startPosition;
     }
 
     public void HandlePlatfomEvents()
@@ -39,6 +38,6 @@ public class PlatformController : MonoBehaviour
             movement = new Vector3(m_speed * dt, 0, 0);
         }
 
-        m_body.MovePosition(currentPos + movement);
+        m_platform.transform.position = currentPos + movement;
     }
 }

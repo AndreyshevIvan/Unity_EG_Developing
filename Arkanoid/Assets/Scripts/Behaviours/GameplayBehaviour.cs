@@ -9,6 +9,8 @@ public class GameplayBehaviour : GameBehaviour
     public override void StartOptions()
     {
         m_cameraController.ResetOptions();
+        m_ballController.Reset();
+        m_platformController.Reset();
     }
 
     public override void UpdateBehavior()
@@ -37,5 +39,6 @@ public class GameplayBehaviour : GameBehaviour
     {
         m_cameraController.HandleCameraEvents();
         m_platformController.HandlePlatfomEvents();
+        m_ballController.HandleBallEvents();
     }
 }
