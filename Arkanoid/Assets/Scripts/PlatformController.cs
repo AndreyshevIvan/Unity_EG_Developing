@@ -6,15 +6,15 @@ public class PlatformController : MonoBehaviour
 {
 
     GameObject m_platform;
-    Rigidbody m_body;
     public Vector3 m_startPosition;
 
     public float m_speed = 20;
+    private float m_maxOffset = 0;
 
-    public void Init(GameObject platform)
+    public void Init(GameObject platform, float floorWidth)
     {
         m_platform = platform;
-        //m_body = m_platform.GetComponent<Rigidbody>();
+        m_maxOffset = floorWidth / 2;
 
         Reset();
     }
@@ -29,11 +29,11 @@ public class PlatformController : MonoBehaviour
         Vector3 movement = Vector3.zero;
         Vector3 currentPos = m_platform.transform.position;
 
-        if (Input.GetKey(KeyCode.LeftArrow))
+        if (Input.GetKey(KeyCode.LeftArrow) && currentPos.x > -m_maxOffset)
         {
             movement = new Vector3(-m_speed * dt, 0, 0);
         }
-        if (Input.GetKey(KeyCode.RightArrow))
+        if (Input.GetKey(KeyCode.RightArrow) && currentPos.x < m_maxOffset)
         {
             movement = new Vector3(m_speed * dt, 0, 0);
         }

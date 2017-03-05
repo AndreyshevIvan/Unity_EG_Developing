@@ -9,8 +9,10 @@ public class BallController : MonoBehaviour
     Rigidbody m_ballBody;
     GameObject m_platform;
     public float m_onPlatformOffset;
+    Vector3 m_force = new Vector3(500, 0, 500);
+    Vector3 m_pausePosition;
 
-    bool m_isBallMov = false;
+    bool m_isBallStarted = false;
 
     public void Init(GameObject ball, GameObject platform)
     {
@@ -22,35 +24,32 @@ public class BallController : MonoBehaviour
     public void Reset()
     {
         MagnetToPlatform();
+        StopBall();
+        m_ballBody.AddForce(m_force);
     }
 
     public void StartBall()
     {
-        m_isBallMov = true;
-
-        m_ballBody.AddForce(new Vector3(500, 0, 500));
+        m_ballBody.WakeUp();
     }
     public void StopBall()
     {
-        m_isBallMov = false;
+        m_ballBody.Sleep();
     }
 
     public void HandleBallEvents()
     {
-        if (!m_isBallMov && Input.GetKey(KeyCode.S))
+        if (!m_isBallStarted && Input.GetKey(KeyCode.S))
         {
+            m_isBallStarted = true;
             StartBall();
         }
 
-        UpdateBall(m_isBallMov);
+        UpdateBall();
     }
-    private void UpdateBall(bool isBallMov)
+    private void UpdateBall()
     {
-        if (isBallMov)
-        {
-
-        }
-        else
+        if (!m_isBallStarted)
         {
             MagnetToPlatform();
         }

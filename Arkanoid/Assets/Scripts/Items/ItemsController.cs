@@ -54,7 +54,7 @@ public class ItemsController : MonoBehaviour
 
     private void HideGameplayButtons(bool isPauseActive)
     {
-        m_gameplayItems.m_gameoverButton.SetActive(isPauseActive);
-        m_gameplayItems.m_pauseButton.SetActive(isPauseActive);
+        m_gameplayItems.m_gameoverButton.SetActive(!isPauseActive);
+        m_gameplayItems.m_pauseButton.SetActive(!isPauseActive);
     }
 }

@@ -17,6 +17,7 @@ public class GameBehaviour : MonoBehaviour, IGameBehaviour
     protected CameraController m_cameraController;
     protected PlatformController m_platformController;
     protected BallController m_ballController;
+    protected Spawner m_spawner;
 
     public void Init(GameController controller)
     {
@@ -25,6 +26,7 @@ public class GameBehaviour : MonoBehaviour, IGameBehaviour
         m_cameraController = controller.GetCameraController();
         m_platformController = controller.GetPlatformController();
         m_ballController = controller.GetBallController();
+        m_spawner = controller.GetSpawner();
 
         PersonalInit();
     }

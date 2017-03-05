@@ -23,6 +23,7 @@ public class GameController : MonoBehaviour
     public CameraController m_cameraController;
     public PlatformController m_platformController;
     public BallController m_ballController;
+    public Spawner m_spawner;
 
     void Awake()
     {
@@ -30,6 +31,7 @@ public class GameController : MonoBehaviour
         InitCameraController();
         InitPlatformController();
         InitBallController();
+        InitSpawner();
 
         SetMenuBehaviour();
     }
@@ -58,8 +60,11 @@ public class GameController : MonoBehaviour
     void InitPlatformController()
     {
         GameObject platform = m_items.m_mapItems.m_platform;
+        GameObject floor = m_items.m_gameplayItems.m_floorBlock;
 
-        m_platformController.Init(platform);
+        float floorWidth = floor.transform.localScale.x;
+
+        m_platformController.Init(platform, floorWidth);
     }
     void InitBallController()
     {
@@ -67,6 +72,17 @@ public class GameController : MonoBehaviour
         GameObject platform = m_items.m_mapItems.m_platform;
 
         m_ballController.Init(ball, platform);
+    }
+    void InitSpawner()
+    {
+        GameObject floor = m_items.m_gameplayItems.m_floorBlock;
+        GameObject platform = m_items.m_mapItems.m_platform;
+
+        Vector3 floorScale = floor.transform.localScale;
+        Vector3 floorPosition = floor.transform.position;
+        float height = platform.transform.position.y;
+
+        m_spawner.Init(floorScale, floorPosition, height);
     }
 
     void FixedUpdate()
@@ -89,6 +105,10 @@ public class GameController : MonoBehaviour
     public BallController GetBallController()
     {
         return m_ballController;
+    }
+    public Spawner GetSpawner()
+    {
+        return m_spawner;
     }
 
     public void SetGameplayBehaviour()
