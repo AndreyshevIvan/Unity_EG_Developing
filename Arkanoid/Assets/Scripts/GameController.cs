@@ -24,6 +24,7 @@ public class GameController : MonoBehaviour
     public PlatformController m_platformController;
     public BallController m_ballController;
     public Spawner m_spawner;
+    public BlocksController m_blocksController;
 
     void Awake()
     {
@@ -44,11 +45,11 @@ public class GameController : MonoBehaviour
         m_gameover = m_gameoverBehavior;
         m_exit = m_exitBehavior;
 
-        m_gameplayBehaviour.Init(this);
-        m_menuBehaviour.Init(this);
-        m_changeLevelBehavior.Init(this);
-        m_gameoverBehavior.Init(this);
-        m_exitBehavior.Init(this);
+        m_gameplay.Init(this);
+        m_menu.Init(this);
+        m_changeLevel.Init(this);
+        m_gameover.Init(this);
+        m_exit.Init(this);
     }
     void InitCameraController()
     {
@@ -75,14 +76,12 @@ public class GameController : MonoBehaviour
     }
     void InitSpawner()
     {
-        GameObject floor = m_items.m_gameplayItems.m_floorBlock;
         GameObject platform = m_items.m_mapItems.m_platform;
+        GameObject floor = m_items.m_gameplayItems.m_floorBlock;
 
-        Vector3 floorScale = floor.transform.localScale;
-        Vector3 floorPosition = floor.transform.position;
         float height = platform.transform.position.y;
 
-        m_spawner.Init(floorScale, floorPosition, height);
+        m_spawner.Init(m_blocksController, floor, height);
     }
 
     void FixedUpdate()
