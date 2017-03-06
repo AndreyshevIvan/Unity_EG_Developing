@@ -2,14 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IGameBehaviour
-{
-    void Init(GameController controller);
-    void UpdateBehavior();
-    void StartOptions();
-}
-
-public class GameBehaviour : MonoBehaviour, IGameBehaviour
+public class GameBehaviour : MonoBehaviour
 {
     GameController m_controller;
 
@@ -18,6 +11,7 @@ public class GameBehaviour : MonoBehaviour, IGameBehaviour
     protected PlatformController m_platformController;
     protected BallController m_ballController;
     protected Spawner m_spawner;
+    protected BlocksController m_blocksController;
 
     public void Init(GameController controller)
     {
@@ -27,6 +21,7 @@ public class GameBehaviour : MonoBehaviour, IGameBehaviour
         m_platformController = controller.GetPlatformController();
         m_ballController = controller.GetBallController();
         m_spawner = controller.GetSpawner();
+        m_blocksController = controller.GetBlocksController();
 
         PersonalInit();
     }

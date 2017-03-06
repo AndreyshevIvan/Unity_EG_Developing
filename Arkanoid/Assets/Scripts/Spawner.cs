@@ -82,7 +82,7 @@ public class Spawner : MonoBehaviour
         if (spawnBlock != null)
         {
             Block block = Instantiate(spawnBlock, gameObject.transform.position, Quaternion.identity);
-            m_blocksController.AddBlockToList(block);
+            m_blocksController.AddBlock(block);
         }
     }
     void MoveToNextBlockPos()

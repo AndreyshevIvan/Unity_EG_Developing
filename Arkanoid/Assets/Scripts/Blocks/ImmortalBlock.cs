@@ -5,7 +5,7 @@ using UnityEngine;
 public class ImmortalBlock : Block
 {
 
-    protected override void SetImmortal()
+    private void Awake()
     {
         m_isImmortal = true;
     }

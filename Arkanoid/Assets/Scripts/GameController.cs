@@ -109,6 +109,10 @@ public class GameController : MonoBehaviour
     {
         return m_spawner;
     }
+    public BlocksController GetBlocksController()
+    {
+        return m_blocksController;
+    }
 
     public void SetGameplayBehaviour()
     {

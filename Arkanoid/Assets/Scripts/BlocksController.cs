@@ -7,58 +7,42 @@ public class BlocksController : MonoBehaviour
 
     ArrayList m_blocksOnMap;
 
-    Block m_easyBlock;
-    Block m_normalBlock;
-    Block m_hardBlock;
-    Block m_immortalBlock;
-
-    public EasyBlock easyBlock;
-    public NormalBlock normalBlock;
-    public HardBlock hardBlock;
-    public ImmortalBlock immortalBlock;
+    public EasyBlock m_easyBlock;
+    public NormalBlock m_normalBlock;
+    public HardBlock m_hardBlock;
+    public ImmortalBlock m_immortalBlock;
 
     private void Awake()
     {
-        m_easyBlock = easyBlock;
-        m_normalBlock = normalBlock;
-        m_hardBlock = hardBlock;
-        m_immortalBlock = immortalBlock;
-
         m_blocksOnMap = new ArrayList();
+    }
+    public void AddBlock(Block block)
+    {
+        m_blocksOnMap.Add(block);
     }
 
     private void FixedUpdate()
     {
-        if (m_blocksOnMap != null && m_blocksOnMap.Capacity != 0)
-        {
-            CheckBlocks();
-        }
-    }
+        ArrayList toDelete = new ArrayList();
 
-    private void CheckBlocks()
-    {
-        List<Block> toDelete = new List<Block>();
-
-        foreach(Block block in m_blocksOnMap)
+        if (m_blocksOnMap.Capacity != 0)
         {
-            if (!block.IsImmortal() && !block.IsLive())
+            foreach(Block block in m_blocksOnMap)
             {
-                toDelete.Add(block);
+                if (!block.IsLive())
+                {
+                    toDelete.Add(block);
+                }
             }
         }
 
-        foreach(Block block in toDelete)
+        foreach(Block deleteBlock in toDelete)
         {
-            block.DestroyBlock();
-            m_blocksOnMap.Remove(block);
+            m_blocksOnMap.Remove(deleteBlock);
+            deleteBlock.DestroyBlock();
         }
 
         toDelete.Clear();
-    }
-
-    public void AddBlockToList(Block blocks)
-    {
-        m_blocksOnMap.Add(blocks);
     }
 
     public Block GetEasyBlock()
@@ -79,8 +63,21 @@ public class BlocksController : MonoBehaviour
     }
     public Vector3 GetBlockScale()
     {
-        Vector3 scale = GetEasyBlock().m_body.transform.localScale;
+        Vector3 scale = GetEasyBlock().gameObject.transform.localScale;
 
         return scale;
+    }
+
+    public void ClearBlocks()
+    {
+        if (m_blocksOnMap.Capacity != 0)
+        {
+            foreach(Block block in m_blocksOnMap)
+            {
+                block.DestroyBlock();
+            }
+        }
+
+        m_blocksOnMap.Clear();
     }
 }

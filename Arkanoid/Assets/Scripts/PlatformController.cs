@@ -6,7 +6,7 @@ public class PlatformController : MonoBehaviour
 {
 
     GameObject m_platform;
-    public Vector3 m_startPosition;
+    Vector3 m_startPosition;
 
     public float m_speed = 20;
     private float m_maxOffset = 0;
@@ -15,6 +15,7 @@ public class PlatformController : MonoBehaviour
     {
         m_platform = platform;
         m_maxOffset = floorWidth / 2;
+        m_startPosition = m_platform.transform.position;
 
         Reset();
     }

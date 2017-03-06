@@ -5,33 +5,42 @@ using UnityEngine;
 public class Block : MonoBehaviour
 {
 
-    public GameObject m_body;
-
     protected bool m_isImmortal = false;
     public int m_health;
 
-    public Block()
-    {
-        SetImmortal();
-    }
+    public Material m_demageMaterial;
 
-    protected virtual void SetImmortal()
+    private void OnCollisionEnter(Collision collision)
     {
-        m_isImmortal = false;
+        if(!IsImmortal())
+        {
+            Debug.Log("Health down");
+            m_health--;
+        }
+
+        CollisionEvents();
     }
+    protected virtual void CollisionEvents() { }
 
     public bool IsLive()
     {
-        return (m_health > 0);
+        if(!IsImmortal())
+        {
+            return (m_health > 0);
+        }
+
+        return false;
     }
-    public bool IsImmortal()
+    bool IsImmortal()
     {
         return m_isImmortal;
     }
 
     public virtual void DestroyBlock()
     {
-        Destroy(m_body);
-        Destroy(this);
+        DestroyEvents();
+
+        Destroy(gameObject);
     }
+    protected virtual void DestroyEvents() { }
 }
