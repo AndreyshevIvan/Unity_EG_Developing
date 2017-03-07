@@ -39,8 +39,8 @@ public class GameplayBehaviour : GameBehaviour
     }
     void GameplayUpdate()
     {
-        m_cameraController.HandleCameraEvents();
-        m_platformController.HandlePlatfomEvents();
-        m_ballsController.HandleBallsEvents();
+        m_cameraController.HandleEventsAndUpdate();
+        m_platformController.HandleEventsAndUpdate();
+        m_ballsController.HandleEventsAndUpdate();
     }
 }

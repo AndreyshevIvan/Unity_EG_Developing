@@ -7,8 +7,15 @@ public class Block : MonoBehaviour
 
     protected bool m_isImmortal = false;
     public int m_health;
+    int m_startHealth;
 
-    public Material m_demageMaterial;
+    public Material m_lowDemageMaterial;
+    public Material m_hardDemageMaterial;
+
+    private void Awake()
+    {
+        m_startHealth = m_health;
+    }
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -20,6 +27,19 @@ public class Block : MonoBehaviour
         CollisionEvents();
     }
     protected virtual void CollisionEvents() { }
+
+    private void FixedUpdate()
+    {
+        if (m_health < m_startHealth)
+        {
+            SetMaterial(m_lowDemageMaterial);
+        }
+    }
+
+    void SetMaterial(Material newMaterial)
+    {
+        GetComponent<MeshRenderer>().material = newMaterial;
+    }
 
     public bool IsLive()
     {

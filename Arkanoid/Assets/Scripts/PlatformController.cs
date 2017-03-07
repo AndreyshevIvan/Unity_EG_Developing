@@ -9,7 +9,7 @@ public class PlatformController : MonoBehaviour
     Vector3 m_startPosition;
 
     public float m_speed = 20;
-    private float m_maxOffset = 0;
+    float m_maxOffset = 0;
 
     public void Init(GameObject platform, float floorWidth)
     {
@@ -24,7 +24,12 @@ public class PlatformController : MonoBehaviour
         m_platform.transform.position = m_startPosition;
     }
 
-    public void HandlePlatfomEvents()
+    public void HandleEventsAndUpdate()
+    {
+        HandleEvents();
+        UpdatePlatform();
+    }
+    void HandleEvents()
     {
         Vector3 movement = Vector3.zero;
         Vector3 currentPos = m_platform.transform.position;
@@ -43,5 +48,9 @@ public class PlatformController : MonoBehaviour
         }
 
         m_platform.transform.position = currentPos + movement;
+    }
+    void UpdatePlatform()
+    {
+
     }
 }

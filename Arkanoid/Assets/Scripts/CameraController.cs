@@ -8,6 +8,10 @@ public class CameraController : MonoBehaviour
 
     public Camera m_camera;
     public float m_speed = 1;
+    public GameObject m_anchorPoint;
+
+    public Vector3 m_maxRotation;
+    public Vector3 m_minRotation;
 
     float m_rotationRadius;
 
@@ -29,10 +33,13 @@ public class CameraController : MonoBehaviour
 
     }
 
-    public void HandleCameraEvents()
+    public void HandleEventsAndUpdate()
     {
-        UpdatePositionData();
-
+        HandleEvents();
+        UpdateCamera();
+    }
+    void HandleEvents()
+    {
         if (Input.GetKey(KeyCode.W))
         {
             RotateForward();
@@ -41,16 +48,15 @@ public class CameraController : MonoBehaviour
         {
             RotateBack();
         }
-        else if (Input.GetKey(KeyCode.A))
+        else if (Input.GetKey(KeyCode.R))
         {
-            RotateLeft();
-        }
-        else if (Input.GetKey(KeyCode.D))
-        {
-            RotateRight();
+            SetStartRotation();
         }
     }
-
+    void UpdateCamera()
+    {
+        UpdatePositionData();
+    }
     void UpdatePositionData()
     {
         m_posX = m_camera.transform.position.x;
@@ -61,20 +67,43 @@ public class CameraController : MonoBehaviour
         m_rotY = m_camera.transform.rotation.y;
     }
 
-    private void RotateForward()
+    Vector3 GetCameraRotation()
     {
+        Vector3 rotation = m_anchorPoint.transform.localEulerAngles;
 
+        return rotation;
     }
-    private void RotateBack()
-    {
 
+    void RotateForward()
+    {
+        if (IsVerticalRotationAllowed(Vector3.left))
+        {
+            m_anchorPoint.transform.Rotate(Vector3.left);
+        }
     }
-    private void RotateLeft()
+    void RotateBack()
     {
-
+        if (IsVerticalRotationAllowed(Vector3.right))
+        {
+            m_anchorPoint.transform.Rotate(Vector3.right);
+        }
     }
-    private void RotateRight()
+    void SetStartRotation()
     {
+        m_anchorPoint.transform.rotation = Quaternion.identity;
+    }
 
+    bool IsVerticalRotationAllowed(Vector3 rotation)
+    {
+        Vector3 futureRotation = GetCameraRotation() + rotation;
+
+        float xRot = 360 - futureRotation.x;
+
+        if (xRot > m_maxRotation.x && xRot < 360 + m_minRotation.x)
+        {
+            return false;
+        }
+
+        return true;
     }
 }

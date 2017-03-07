@@ -45,6 +45,28 @@ public class BlocksController : MonoBehaviour
         toDelete.Clear();
     }
 
+    public void SetColliderWithOffset(float offsetBetweenBlocks)
+    {
+        SetFactorToCollider(m_easyBlock, offsetBetweenBlocks);
+        SetFactorToCollider(m_normalBlock, offsetBetweenBlocks);
+        SetFactorToCollider(m_hardBlock, offsetBetweenBlocks);
+        SetFactorToCollider(m_immortalBlock, offsetBetweenBlocks);
+    }
+    void SetFactorToCollider(Block block, float addingSize)
+    {
+        BoxCollider collider = block.GetComponent<BoxCollider>();
+        collider.size = new Vector3(1, 1, 1);
+        Vector3 boxSize = block.transform.localScale;
+
+        float newSizeX = 1 + addingSize / boxSize.x;
+        float newSizeY = 1 + addingSize / boxSize.y;
+        float newSizeZ = 1 + addingSize / boxSize.z;
+
+        Vector3 newSize = new Vector3(newSizeX, newSizeY, newSizeZ);
+
+        collider.size = newSize;
+    }
+
     public Block GetEasyBlock()
     {
         return (m_easyBlock);

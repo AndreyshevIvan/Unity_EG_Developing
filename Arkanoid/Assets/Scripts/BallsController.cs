@@ -18,7 +18,7 @@ public class BallsController : MonoBehaviour
     int m_ballsLayer;
 
     const int m_minBallsCount = 1;
-    const int m_maxBallsCount = 16;
+    const int m_maxBallsCount = 64;
     int m_ballsCount;
 
     public void Init(GameObject platform)
@@ -41,11 +41,18 @@ public class BallsController : MonoBehaviour
     void CreateOnlyOneBall()
     {
         ClearBalls();
-        m_ballsOnMap.Add(Instantiate(m_ball, Vector3.zero, Quaternion.identity));
+        Ball newBall = Instantiate(m_ball, Vector3.zero, Quaternion.identity);
+        m_ballsOnMap.Add(newBall);
+        gameObject.AddComponent<Ball>();
         m_ballsCount = m_minBallsCount;
     }
 
-    public void HandleBallsEvents()
+    public void HandleEventsAndUpdate()
+    {
+        HandleEvents();
+        UpdateBalls();
+    }
+    void HandleEvents()
     {
         if (!m_isGameStart && Input.GetKey(KeyCode.Space))
         {
@@ -57,17 +64,16 @@ public class BallsController : MonoBehaviour
             }
         }
 
-        UpdateBalls();
+        if (m_isGameStart && Input.GetKeyDown(KeyCode.F))
+        {
+            DoubleAll();
+        }
     }
-    private void UpdateBalls()
+    void UpdateBalls()
     {
         if (!m_isGameStart)
         {
             MagnetToPlatform();
-        }
-        else if (Input.GetKeyDown(KeyCode.D))
-        {
-            DoubleAll();
         }
     }
 

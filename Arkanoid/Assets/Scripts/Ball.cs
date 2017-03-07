@@ -10,7 +10,7 @@ public class Ball : MonoBehaviour
     bool m_isFreeze = false;
     int m_bitMask;
 
-    private void Awake()
+    void Awake()
     {
 
     }
@@ -18,7 +18,8 @@ public class Ball : MonoBehaviour
     public Ball GetDublicate()
     {
         Ball dublicate = Instantiate(this, GetPosition(), Quaternion.identity);
-        dublicate.SetInvertForce();
+        Vector3 parentVelocity = this.GetRigidbody().velocity;
+        dublicate.SetInvertForce(parentVelocity, GetForce());
 
         return dublicate;
     }
@@ -55,33 +56,33 @@ public class Ball : MonoBehaviour
         m_force = force;
         GetRigidbody().AddForce(m_force);
     }
-    void SetInvertForce()
+    void SetInvertForce(Vector3 parentVelocity, Vector3 parentForce)
     {
-        Vector3 velocity = GetRigidbody().velocity;
         Vector3 force = Vector3.zero;
 
-        Debug.Log(velocity);
+        float newForceX = (parentForce.x < 0) ? -parentForce.x : parentForce.x;
+        float newForceZ = (parentForce.z < 0) ? -parentForce.z : parentForce.z;
 
-        if (velocity.x > 0 && velocity.z > 0)
+        if (parentVelocity.x > 0 && parentVelocity.z > 0)
         {
-            force = new Vector3(-500, 0, 500);
+            force = new Vector3(-newForceX, 0, newForceZ);
         }
-        else if (velocity.x < 0 && velocity.z > 0)
+        else if (parentVelocity.x < 0 && parentVelocity.z > 0)
         {
-            force = new Vector3(500, 0, 500);
+            force = new Vector3(newForceX, 0, newForceZ);
         }
-        else if (velocity.x < 0 && velocity.z < 0)
+        else if (parentVelocity.x < 0 && parentVelocity.z < 0)
         {
-            force = new Vector3(500, 0, -500);
+            force = new Vector3(newForceX, 0, -newForceZ);
         }
-        else if (velocity.x > 0 && velocity.z < 0)
+        else if (parentVelocity.x > 0 && parentVelocity.z < 0)
         {
-            force = new Vector3(-500, 0, -500);
+            force = new Vector3(-newForceX, 0, -newForceZ);
         }
         SetForce(force);
     }
 
-    private void FixedUpdate()
+    void FixedUpdate()
     {
         if (m_isFreeze)
         {

@@ -6,7 +6,7 @@ using System.IO;
 public class Spawner : MonoBehaviour
 {
     public string[] m_mapsPath;
-    private int m_blocksInLine = 20;
+    private int m_blocksInLine = 16;
 
     StreamReader m_reader;
     BlocksController m_blocksController;
@@ -15,7 +15,8 @@ public class Spawner : MonoBehaviour
     Vector3 m_floorPosition;
     Vector3 m_blockScale;
     float m_height;
-    float m_posZFactor = 0.94f;
+    float m_posZFactor = 0.95f;
+    public float m_offsetSize = 0.05f;
 
     char m_stopReadId = '-';
     char m_easyBlockId = 'E';
@@ -30,6 +31,7 @@ public class Spawner : MonoBehaviour
         m_height = blocksHeight;
 
         m_blocksController = blocksController;
+        m_blocksController.SetColliderWithOffset(m_offsetSize);
         m_blockScale = m_blocksController.GetBlockScale();
     }
 
@@ -47,6 +49,17 @@ public class Spawner : MonoBehaviour
         }
 
         m_reader.Close();
+    }
+    void SetStartPosition()
+    {
+        int offsetCount = (m_blocksInLine - 1);
+        float offset = (m_blockScale.x + m_offsetSize);
+
+        float posX = m_floorPosition.x - (offsetCount * offset) / 2;
+        float posY = m_height;
+        float posZ = (m_floorPosition.z + m_floorScale.z / 2.0f) * m_posZFactor;
+
+        gameObject.transform.position = new Vector3(posX, posY, posZ);
     }
 
     void SpawnLine(string line)
@@ -88,19 +101,12 @@ public class Spawner : MonoBehaviour
     }
     void MoveToNextBlockPos()
     {
-        gameObject.transform.position += new Vector3(m_blockScale.x, 0, 0);
+        gameObject.transform.position += new Vector3(m_blockScale.x + m_offsetSize, 0, 0);
     }
     void MoveToNextLine()
     {
-        gameObject.transform.position -= new Vector3(m_blockScale.x * m_blocksInLine, 0, m_blockScale.z);
-    }
-         
-    void SetStartPosition()
-    {
-        float posX = m_floorPosition.x - ((m_blocksInLine - 1) * m_blockScale.x) / 2;
-        float posY = m_height;
-        float posZ = (m_floorPosition.z + m_floorScale.z / 2.0f) * m_posZFactor;
-
-        gameObject.transform.position = new Vector3(posX, posY, posZ);
+        float blockOffset = m_blockScale.x + m_offsetSize;
+        float rowOffset = m_blockScale.z + m_offsetSize;
+        gameObject.transform.position -= new Vector3(blockOffset * m_blocksInLine, 0, rowOffset);
     }
 }
