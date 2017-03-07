@@ -9,8 +9,9 @@ public class GameplayBehaviour : GameBehaviour
     public override void StartOptions()
     {
         m_cameraController.ResetOptions();
-        m_ballController.Reset();
         m_platformController.Reset();
+        m_ballsController.Reset();
+        m_blocksController.ClearBlocks();
         m_spawner.SpawnLevel();
     }
 
@@ -29,26 +30,17 @@ public class GameplayBehaviour : GameBehaviour
     public void SetPause(bool isPause)
     {
         m_isPause = isPause;
-
-        if (m_isPause)
-        {
-            m_ballController.StopBall();
-        }
-        else
-        {
-            m_ballController.StartBall();
-        }
+        m_ballsController.FreezeAll(isPause);
     }
 
     void PauseUpdate()
     {
 
     }
-
     void GameplayUpdate()
     {
         m_cameraController.HandleCameraEvents();
         m_platformController.HandlePlatfomEvents();
-        m_ballController.HandleBallEvents();
+        m_ballsController.HandleBallsEvents();
     }
 }

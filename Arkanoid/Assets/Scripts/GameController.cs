@@ -22,7 +22,7 @@ public class GameController : MonoBehaviour
     public ItemsController m_items;
     public CameraController m_cameraController;
     public PlatformController m_platformController;
-    public BallController m_ballController;
+    public BallsController m_ballsController;
     public Spawner m_spawner;
     public BlocksController m_blocksController;
 
@@ -72,7 +72,7 @@ public class GameController : MonoBehaviour
         GameObject ball = m_items.m_mapItems.m_ball;
         GameObject platform = m_items.m_mapItems.m_platform;
 
-        m_ballController.Init(ball, platform);
+        m_ballsController.Init(platform);
     }
     void InitSpawner()
     {
@@ -101,9 +101,9 @@ public class GameController : MonoBehaviour
     {
         return m_platformController;
     }
-    public BallController GetBallController()
+    public BallsController GetBallsController()
     {
-        return m_ballController;
+        return m_ballsController;
     }
     public Spawner GetSpawner()
     {

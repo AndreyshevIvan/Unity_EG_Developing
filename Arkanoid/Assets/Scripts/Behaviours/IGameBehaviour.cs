@@ -9,7 +9,7 @@ public class GameBehaviour : MonoBehaviour
     protected ItemsController m_items;
     protected CameraController m_cameraController;
     protected PlatformController m_platformController;
-    protected BallController m_ballController;
+    protected BallsController m_ballsController;
     protected Spawner m_spawner;
     protected BlocksController m_blocksController;
 
@@ -19,7 +19,7 @@ public class GameBehaviour : MonoBehaviour
         m_items = controller.GetItems();
         m_cameraController = controller.GetCameraController();
         m_platformController = controller.GetPlatformController();
-        m_ballController = controller.GetBallController();
+        m_ballsController = controller.GetBallsController();
         m_spawner = controller.GetSpawner();
         m_blocksController = controller.GetBlocksController();
 

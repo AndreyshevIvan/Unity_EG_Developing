@@ -14,8 +14,7 @@ public class Block : MonoBehaviour
     {
         if(!IsImmortal())
         {
-            Debug.Log("Health down");
-            m_health--;
+            m_health -= 1;
         }
 
         CollisionEvents();
