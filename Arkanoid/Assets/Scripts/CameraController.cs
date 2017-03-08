@@ -28,7 +28,7 @@ public class CameraController : MonoBehaviour
 
         ResetOptions();
     }
-    public void ResetOptions()
+    void ResetOptions()
     {
 
     }
