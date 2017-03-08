@@ -7,7 +7,7 @@ public class BallsController : MonoBehaviour
     public Ball m_ball;
     ArrayList m_ballsOnMap;
 
-    GameObject m_platform;
+    public Vector3 m_initPosition;
 
     public float m_onPlatformOffset;
     public Vector3 m_startForce = new Vector3(500, 0, 500);
@@ -21,10 +21,9 @@ public class BallsController : MonoBehaviour
     const int m_maxBallsCount = 64;
     int m_ballsCount;
 
-    public void Init(GameObject platform)
+    void Awake()
     {
         m_ballsLayer = m_ball.GetLayer();
-        m_platform = platform;
         m_ballsOnMap = new ArrayList();
         CreateOnlyOneBall();
         Physics.IgnoreLayerCollision(m_ballsLayer, m_ballsLayer);
@@ -47,7 +46,7 @@ public class BallsController : MonoBehaviour
         m_ballsCount = m_minBallsCount;
     }
 
-    public void HandleEventsAndUpdate()
+    void FixedUpdate()
     {
         HandleEvents();
         UpdateBalls();
@@ -88,7 +87,7 @@ public class BallsController : MonoBehaviour
     {
         foreach (Ball ball in m_ballsOnMap)
         {
-            Vector3 platformPos = m_platform.transform.position;
+            Vector3 platformPos = m_initPosition;
 
             ball.SetPosition(platformPos);
         }

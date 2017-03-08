@@ -5,11 +5,12 @@ using System.IO;
 
 public class Spawner : MonoBehaviour
 {
-    public string[] m_mapsPath;
-    private int m_blocksInLine = 16;
+    public BlocksController m_blocksController;
 
     StreamReader m_reader;
-    BlocksController m_blocksController;
+    public string[] m_mapsPath;
+
+    private int m_blocksInLine = 16;
 
     Vector3 m_floorScale;
     Vector3 m_floorPosition;
@@ -35,11 +36,11 @@ public class Spawner : MonoBehaviour
         m_blockScale = m_blocksController.GetBlockScale();
     }
 
-    public void SpawnLevel()
+    public void SpawnLevel(int levelNumber)
     {
         SetStartPosition();
 
-        m_reader = new StreamReader(m_mapsPath[0]);
+        m_reader = new StreamReader(m_mapsPath[levelNumber]);
 
         string line = m_reader.ReadLine();
         while (line != null && line[0] != m_stopReadId)
