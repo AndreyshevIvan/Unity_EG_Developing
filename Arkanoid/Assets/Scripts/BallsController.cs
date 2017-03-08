@@ -7,10 +7,10 @@ public class BallsController : MonoBehaviour
     public Ball m_ball;
     ArrayList m_ballsOnMap;
 
-    public Vector3 m_initPosition;
+    public GameObject platform;
 
-    public float m_onPlatformOffset;
     public Vector3 m_startForce = new Vector3(500, 0, 500);
+    public float m_onPlatformOffset;
 
     bool m_isBallsPaused = false;
     bool m_isGameStart = false;
@@ -72,7 +72,10 @@ public class BallsController : MonoBehaviour
     {
         if (!m_isGameStart)
         {
-            MagnetToPlatform();
+            Vector3 platformPosition = platform.transform.position;
+            Vector3 posOnPlatform = new Vector3(platformPosition.x, platformPosition.y, platformPosition.z + m_onPlatformOffset);
+
+            SetPosition(posOnPlatform);
         }
     }
 
@@ -83,13 +86,11 @@ public class BallsController : MonoBehaviour
             ball.SetFreeze(isFreeze);
         }
     }
-    void MagnetToPlatform()
+    void SetPosition(Vector3 position)
     {
         foreach (Ball ball in m_ballsOnMap)
         {
-            Vector3 platformPos = m_initPosition;
-
-            ball.SetPosition(platformPos);
+            ball.SetPosition(position);
         }
     }
     void DoubleAll()

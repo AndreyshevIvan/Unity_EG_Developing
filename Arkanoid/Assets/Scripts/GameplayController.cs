@@ -11,6 +11,7 @@ public class GameplayController : MonoBehaviour
     bool m_isPause = false;
 
     public Platform m_platform;
+    public BallsController m_ballsController;
 
     private void Awake()
     {
@@ -46,5 +47,7 @@ public class GameplayController : MonoBehaviour
     {
         m_isPause = isPause;
         m_pauseItems.SetActive(isPause);
+        m_ballsController.FreezeAll(isPause);
+        m_gameplayItems.SetActive(!isPause);
     }
 }

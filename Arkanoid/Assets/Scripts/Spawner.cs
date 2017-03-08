@@ -8,15 +8,14 @@ public class Spawner : MonoBehaviour
     public BlocksController m_blocksController;
 
     StreamReader m_reader;
-    public string[] m_mapsPath;
+    public string[] m_levels;
 
     private int m_blocksInLine = 16;
 
-    Vector3 m_floorScale;
-    Vector3 m_floorPosition;
     Vector3 m_blockScale;
-    float m_height;
-    float m_posZFactor = 0.95f;
+    public GameObject m_floor;
+    public float m_heightOnFloor;
+    public float m_posZFactor = 0.95f;
     public float m_offsetSize = 0.05f;
 
     char m_stopReadId = '-';
@@ -25,22 +24,22 @@ public class Spawner : MonoBehaviour
     char m_hardBlockId = 'H';
     char m_immortalBlockId = 'I';
 
-    public void Init(BlocksController blocksController, GameObject floor, float blocksHeight)
+    void Awake()
     {
-        m_floorScale = floor.transform.localScale;
-        m_floorPosition = floor.transform.position;
-        m_height = blocksHeight;
-
-        m_blocksController = blocksController;
         m_blocksController.SetColliderWithOffset(m_offsetSize);
         m_blockScale = m_blocksController.GetBlockScale();
+
+        SpawnLevel();
     }
 
-    public void SpawnLevel(int levelNumber)
+    public void SpawnLevel()
     {
         SetStartPosition();
 
-        m_reader = new StreamReader(m_mapsPath[levelNumber]);
+        int levelNumber = PlayerPrefs.GetInt("SpawnLevel", 0);
+
+        Debug.Log(levelNumber);
+        m_reader = new StreamReader("Assets/Maps/" + m_levels[levelNumber]);
 
         string line = m_reader.ReadLine();
         while (line != null && line[0] != m_stopReadId)
@@ -56,11 +55,13 @@ public class Spawner : MonoBehaviour
         int offsetCount = (m_blocksInLine - 1);
         float offset = (m_blockScale.x + m_offsetSize);
 
-        float posX = m_floorPosition.x - (offsetCount * offset) / 2;
-        float posY = m_height;
-        float posZ = (m_floorPosition.z + m_floorScale.z / 2.0f) * m_posZFactor;
+        Vector3 floorPos = m_floor.transform.position;
+        Vector3 floorScale = m_floor.transform.localScale;
 
-        gameObject.transform.position = new Vector3(posX, posY, posZ);
+        float posX = floorPos.x - (offsetCount * offset) / 2;
+        float posZ = (floorPos.z + floorScale.z / 2.0f) * m_posZFactor;
+
+        gameObject.transform.position = new Vector3(posX, m_heightOnFloor, posZ);
     }
 
     void SpawnLine(string line)
