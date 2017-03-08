@@ -12,10 +12,11 @@ public class GameplayController : MonoBehaviour
 
     public Platform m_platform;
     public BallsController m_ballsController;
+    public BlocksController m_blocksController;
 
     private void Awake()
     {
-        SetPause(m_isPause);
+        StartLevel();
     }
 
     void FixedUpdate()
@@ -49,5 +50,12 @@ public class GameplayController : MonoBehaviour
         m_pauseItems.SetActive(isPause);
         m_ballsController.FreezeAll(isPause);
         m_gameplayItems.SetActive(!isPause);
+    }
+    public void StartLevel()
+    {
+
+        SetPause(false);
+        m_ballsController.Reset();
+        m_blocksController.CreateLevel();
     }
 }

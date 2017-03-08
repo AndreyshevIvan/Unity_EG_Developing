@@ -5,7 +5,13 @@ using System.IO;
 
 public class Spawner : MonoBehaviour
 {
-    public BlocksController m_blocksController;
+
+    public EasyBlock m_easyBlock;
+    public NormalBlock m_normalBlock;
+    public HardBlock m_hardBlock;
+    public ImmortalBlock m_immortalBlock;
+
+    ArrayList m_spawnedBlocks;
 
     StreamReader m_reader;
     public string[] m_levels;
@@ -26,15 +32,15 @@ public class Spawner : MonoBehaviour
 
     void Awake()
     {
-        m_blocksController.SetColliderWithOffset(m_offsetSize);
-        m_blockScale = m_blocksController.GetBlockScale();
+        SetColliderWithOffset(m_offsetSize);
+        m_blockScale = GetBlockScale();
 
-        SpawnLevel();
+        m_spawnedBlocks = new ArrayList();
     }
-
-    public void SpawnLevel()
+    public ArrayList SpawnLevel()
     {
         SetStartPosition();
+        Clear();
 
         int levelNumber = PlayerPrefs.GetInt("SpawnLevel", 0);
 
@@ -49,7 +55,10 @@ public class Spawner : MonoBehaviour
         }
 
         m_reader.Close();
+
+        return m_spawnedBlocks;
     }
+
     void SetStartPosition()
     {
         int offsetCount = (m_blocksInLine - 1);
@@ -62,6 +71,34 @@ public class Spawner : MonoBehaviour
         float posZ = (floorPos.z + floorScale.z / 2.0f) * m_posZFactor;
 
         gameObject.transform.position = new Vector3(posX, m_heightOnFloor, posZ);
+    }
+    public void SetColliderWithOffset(float offsetBetweenBlocks)
+    {
+        SetFactorToCollider(m_easyBlock, offsetBetweenBlocks);
+        SetFactorToCollider(m_normalBlock, offsetBetweenBlocks);
+        SetFactorToCollider(m_hardBlock, offsetBetweenBlocks);
+        SetFactorToCollider(m_immortalBlock, offsetBetweenBlocks);
+    }
+    void SetFactorToCollider(Block block, float addingSize)
+    {
+        BoxCollider collider = block.GetComponent<BoxCollider>();
+        collider.size = new Vector3(1, 1, 1);
+        Vector3 boxSize = block.transform.localScale;
+
+        float newSizeX = 1 + addingSize / boxSize.x;
+        float newSizeY = 1 + addingSize / boxSize.y;
+        float newSizeZ = 1 + addingSize / boxSize.z;
+
+        Vector3 newSize = new Vector3(newSizeX, newSizeY, newSizeZ);
+
+        collider.size = newSize;
+    }
+
+    public Vector3 GetBlockScale()
+    {
+        Vector3 scale = m_easyBlock.gameObject.transform.localScale;
+
+        return scale;
     }
 
     void SpawnLine(string line)
@@ -79,26 +116,26 @@ public class Spawner : MonoBehaviour
 
         if (blockId == m_easyBlockId)
         {
-            spawnBlock = m_blocksController.GetEasyBlock();
+            spawnBlock = m_easyBlock;
         }
         else if (blockId == m_normalBlockId)
         {
-            spawnBlock = m_blocksController.GetNormalBlock();
+            spawnBlock = m_normalBlock;
         }
         else if (blockId == m_hardBlockId)
         {
-            spawnBlock = m_blocksController.GetHardBlock();
+            spawnBlock = m_hardBlock;
         }
         else if (blockId == m_immortalBlockId)
         {
-            spawnBlock = m_blocksController.GetImmortalBlock();
+            spawnBlock = m_immortalBlock;
         }
 
         if (spawnBlock != null)
         {
             Vector3 spawnPosition = gameObject.transform.position;
             Block block = Instantiate(spawnBlock, spawnPosition, Quaternion.identity);
-            m_blocksController.AddBlock(block);
+            m_spawnedBlocks.Add(block);
         }
     }
     void MoveToNextBlockPos()
@@ -110,5 +147,15 @@ public class Spawner : MonoBehaviour
         float blockOffset = m_blockScale.x + m_offsetSize;
         float rowOffset = m_blockScale.z + m_offsetSize;
         gameObject.transform.position -= new Vector3(blockOffset * m_blocksInLine, 0, rowOffset);
+    }
+
+    void Clear()
+    {
+        foreach(Block block in m_spawnedBlocks)
+        {
+            block.DestroyBlock();
+        }
+
+        m_spawnedBlocks.Clear();
     }
 }
