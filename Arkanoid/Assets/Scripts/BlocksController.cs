@@ -6,16 +6,15 @@ public class BlocksController : MonoBehaviour
 {
 
     ArrayList m_blocksOnMap;
+    ArrayList m_toDelete;
 
     public Spawner m_spawner;
+    public AbstractPlayer m_player;
 
-    private void Awake()
+    void Awake()
     {
         m_blocksOnMap = new ArrayList();
-    }
-    public void AddBlock(Block block)
-    {
-        m_blocksOnMap.Add(block);
+        m_toDelete = new ArrayList();
     }
     public void CreateLevel()
     {
@@ -23,28 +22,31 @@ public class BlocksController : MonoBehaviour
         m_blocksOnMap = m_spawner.SpawnLevel();
     }
 
-    private void FixedUpdate()
+    void FixedUpdate()
     {
-        ArrayList toDelete = new ArrayList();
-
+        CheckBlocksLife();
+    }
+    void CheckBlocksLife()
+    {
         if (m_blocksOnMap.Capacity != 0)
         {
-            foreach(Block block in m_blocksOnMap)
+            foreach (Block block in m_blocksOnMap)
             {
-                if (!block.IsLive())
+                if (block != null && !block.IsLive())
                 {
-                    toDelete.Add(block);
+                    m_toDelete.Add(block);
+                    m_player.AddPoints(block.GetPoints());
                 }
             }
         }
 
-        foreach(Block deleteBlock in toDelete)
+        foreach (Block deleteBlock in m_toDelete)
         {
             m_blocksOnMap.Remove(deleteBlock);
             deleteBlock.DestroyBlock();
         }
 
-        toDelete.Clear();
+        m_toDelete.Clear();
     }
 
     public void ClearBlocks()

@@ -8,32 +8,40 @@ public class Block : MonoBehaviour
     protected bool m_isImmortal = false;
     public int m_health;
     int m_startHealth;
+    public int m_points = 0;
 
     public Material m_lowDemageMaterial;
     public Material m_hardDemageMaterial;
 
-    private void Awake()
+    void Awake()
     {
+        PersonalAwake();
         m_startHealth = m_health;
     }
+    protected virtual void PersonalAwake() { }
 
-    private void OnCollisionEnter(Collision collision)
+    void OnCollisionEnter(Collision collision)
     {
-        if(!IsImmortal())
+        CollisionEvents();
+
+        if (!IsImmortal())
         {
             m_health -= 1;
         }
-
-        CollisionEvents();
     }
     protected virtual void CollisionEvents() { }
 
-    private void FixedUpdate()
+    void FixedUpdate()
     {
         if (m_health < m_startHealth)
         {
             SetMaterial(m_lowDemageMaterial);
         }
+    }
+
+    public int GetPoints()
+    {
+        return m_points;
     }
 
     void SetMaterial(Material newMaterial)
@@ -59,7 +67,10 @@ public class Block : MonoBehaviour
     {
         DestroyEvents();
 
-        Destroy(gameObject);
+        if (gameObject != null)
+        {
+            Destroy(gameObject);
+        }
     }
     protected virtual void DestroyEvents() { }
 }

@@ -79,18 +79,23 @@ public class BallsController : MonoBehaviour
         }
     }
 
-    public void FreezeAll(bool isFreeze)
-    {
-        foreach (Ball ball in m_ballsOnMap)
-        {
-            ball.SetFreeze(isFreeze);
-        }
-    }
     void SetPosition(Vector3 position)
     {
         foreach (Ball ball in m_ballsOnMap)
         {
             ball.SetPosition(position);
+        }
+    }
+    public void SetFireBalls(int blockLayer, bool isFire)
+    {
+        Physics.IgnoreLayerCollision(m_ballsLayer, blockLayer);
+    }
+
+    public void FreezeAll(bool isFreeze)
+    {
+        foreach (Ball ball in m_ballsOnMap)
+        {
+            ball.SetFreeze(isFreeze);
         }
     }
     void DoubleAll()
