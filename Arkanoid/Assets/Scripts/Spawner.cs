@@ -24,7 +24,7 @@ public class Spawner : MonoBehaviour
     public HardBlock m_hardBlock;
     public ImmortalBlock m_immortalBlock;
 
-    private int m_blocksInLine = 16;
+    int m_blocksInLine = 16;
 
     public Vector3 m_blockScale;
     public GameObject m_floor;
@@ -102,16 +102,6 @@ public class Spawner : MonoBehaviour
         }
     }
 
-    public void Clear(ArrayList mapBlocks)
-    {
-        foreach (Block block in mapBlocks)
-        {
-            block.DestroyBlock();
-        }
-
-        mapBlocks.Clear();
-    }
-
     public void SetColliderWithOffset(Block block, float addingSize)
     {
         BoxCollider collider = block.GetComponent<BoxCollider>();
@@ -150,26 +140,13 @@ public class Spawner : MonoBehaviour
         gameObject.transform.position -= new Vector3(blockOffset * m_blocksInLine, 0, rowOffset);
     }
 
-    void ClearNulls(ArrayList blocks)
+    public void Clear(ArrayList mapBlocks)
     {
-        ArrayList toDelete = new ArrayList();
-
-        if (blocks.Capacity != 0)
+        foreach (Block block in mapBlocks)
         {
-            foreach (Block block in blocks)
-            {
-                if (block == null)
-                {
-                    toDelete.Add(block);
-                }
-            }
+            block.DestroyBlock();
         }
 
-        foreach (Block deleteBlock in toDelete)
-        {
-            blocks.Remove(deleteBlock);
-        }
-
-        toDelete.Clear();
+        mapBlocks.Clear();
     }
 }

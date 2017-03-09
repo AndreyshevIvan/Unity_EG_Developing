@@ -26,7 +26,6 @@ public class BallsController : MonoBehaviour
         m_ballsLayer = m_ball.GetLayer();
         m_ballsOnMap = new ArrayList();
         CreateOnlyOneBall();
-        Physics.IgnoreLayerCollision(m_ballsLayer, m_ballsLayer);
 
         Reset();
     }
@@ -77,6 +76,28 @@ public class BallsController : MonoBehaviour
 
             SetPosition(posOnPlatform);
         }
+
+        CheckBallsExist();
+    }
+    void CheckBallsExist()
+    {
+        ArrayList toDelete = new ArrayList();
+
+        foreach(Ball ball in m_ballsOnMap)
+        {
+            if (!ball.IsLive())
+            {
+                toDelete.Add(ball);
+            }
+        }
+
+        foreach(Ball ball in toDelete)
+        {
+            ball.DestroyBall();
+            m_ballsOnMap.Remove(ball);
+        }
+
+        toDelete.Clear();
     }
 
     void SetPosition(Vector3 position)
@@ -86,9 +107,17 @@ public class BallsController : MonoBehaviour
             ball.SetPosition(position);
         }
     }
-    public void SetFireBalls(int blockLayer, bool isFire)
+
+    public int GetBallsCount()
     {
-        Physics.IgnoreLayerCollision(m_ballsLayer, blockLayer);
+        int count = 0;
+
+        foreach(Ball ball in m_ballsOnMap)
+        {
+            count++;
+        }
+
+        return count;
     }
 
     public void FreezeAll(bool isFreeze)

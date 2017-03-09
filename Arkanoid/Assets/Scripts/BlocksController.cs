@@ -10,6 +10,7 @@ public class BlocksController : MonoBehaviour
 
     public Spawner m_spawner;
     public AbstractPlayer m_player;
+    public BonusController m_bonusController;
 
     void Awake()
     {
@@ -35,6 +36,7 @@ public class BlocksController : MonoBehaviour
                 if (block != null && !block.IsLive())
                 {
                     m_toDelete.Add(block);
+                    m_bonusController.CreateBottomWallBonus(block.transform.position);
                     m_player.AddPoints(block.GetPoints());
                 }
             }

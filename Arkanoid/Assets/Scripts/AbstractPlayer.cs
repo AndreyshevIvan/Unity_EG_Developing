@@ -6,22 +6,68 @@ using UnityEngine.UI;
 public class AbstractPlayer : MonoBehaviour
 {
     public Text m_UIpoints;
+    public Text m_UIlife;
+    public GameObject m_wall;
 
-    public float m_addingPointsSpeed = 0.01f;
-    int m_pointsPerOneAdd = 1;
+    float m_addingPointsSpeed = 0.01f;
     float m_addingTime = 0;
+    int m_pointsPerOneAdd = 1;
 
     int m_points;
     int m_pointsToAdd;
 
-    private void Awake()
+    int m_life;
+
+    public void Start()
+    {
+        m_life = 3;
+
+    }
+    public void ResetToNextLife()
     {
 
     }
 
-    private void FixedUpdate()
+    void FixedUpdate()
     {
-        AddingPoints();
+        UpdateUI();
+        UpdateEffects();
+    }
+    void UpdateUI()
+    {
+        AddPointsToUI();
+        SetLifeToUI();
+        UpdateWallInUI();
+    }
+    void UpdateEffects()
+    {
+
+    }
+
+    public void SetWallActive(bool isActive)
+    {
+        m_wall.SetActive(isActive);
+    }
+    void UpdateWallInUI()
+    {
+
+    }
+
+    public bool IsPlayerLive()
+    {
+        return (m_life > 0);
+    }
+    public void AddLife()
+    {
+        m_life++;
+    }
+    public void ReduceLife()
+    {
+        m_life--;
+    }
+    void SetLifeToUI()
+    {
+        m_UIlife.text = "Life: " + m_life.ToString();
     }
 
     public void AddPoints(int points)
@@ -29,8 +75,7 @@ public class AbstractPlayer : MonoBehaviour
         m_points += points;
         m_pointsToAdd += points;
     }
-
-    void AddingPoints()
+    void AddPointsToUI()
     {
         m_addingTime += Time.deltaTime;
 
@@ -50,12 +95,15 @@ public class AbstractPlayer : MonoBehaviour
             m_addingTime = 0;
         }
     }
-
     void AddPointsToString(int points)
     {
         int currPoints = int.Parse(m_UIpoints.text);
         int newPoints = currPoints + points;
 
         m_UIpoints.text = newPoints.ToString();
+    }
+    public void ReducePoints(int reducePoints)
+    {
+        m_points -= reducePoints;
     }
 }

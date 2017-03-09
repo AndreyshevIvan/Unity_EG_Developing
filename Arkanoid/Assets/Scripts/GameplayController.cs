@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameplayController : MonoBehaviour
 {
@@ -13,10 +14,38 @@ public class GameplayController : MonoBehaviour
     public Platform m_platform;
     public BallsController m_ballsController;
     public BlocksController m_blocksController;
+    public BonusController m_bonusController;
+    public AbstractPlayer m_player;
+
+    public int m_ballsLayer;
+    public int m_blocksLayer;
+    public int m_bonusesLayer;
+    public int m_platformLayer;
 
     private void Awake()
     {
         StartLevel();
+        SetPhysicsOptions();
+    }
+    public void StartNewLife()
+    {
+        m_player.ResetToNextLife();
+        m_ballsController.Reset();
+        m_bonusController.ClearBonuses();
+    }
+    public void StartLevel()
+    {
+        SetPause(false);
+        m_ballsController.Reset();
+        m_blocksController.CreateLevel();
+    }
+    void SetPhysicsOptions()
+    {
+        Physics.IgnoreLayerCollision(m_ballsLayer, m_ballsLayer);
+        Physics.IgnoreLayerCollision(m_bonusesLayer, m_blocksLayer);
+        Physics.IgnoreLayerCollision(m_bonusesLayer, m_ballsLayer);
+        Physics.IgnoreLayerCollision(m_bonusesLayer, m_bonusesLayer);
+        Physics.IgnoreLayerCollision(m_bonusesLayer, m_bonusesLayer);
     }
 
     void FixedUpdate()
@@ -42,20 +71,35 @@ public class GameplayController : MonoBehaviour
     void GameUpdate()
     {
         m_platform.HandleEventsAndUpdate();
+        CheckPlayerLife();
+    }
+    void CheckPlayerLife()
+    {
+        if (m_ballsController.GetBallsCount() <= 0)
+        {
+            m_player.ReduceLife();
+
+            if (m_player.IsPlayerLive())
+            {
+                StartNewLife();
+            }
+            else
+            {
+                SetGameoverScene();
+            }
+        }
     }
 
+    public void SetGameoverScene()
+    {
+        SceneManager.LoadScene("Scenes/Gameover");
+    }
     public void SetPause(bool isPause)
     {
         m_isPause = isPause;
         m_pauseItems.SetActive(isPause);
         m_ballsController.FreezeAll(isPause);
         m_gameplayItems.SetActive(!isPause);
-    }
-    public void StartLevel()
-    {
-
-        SetPause(false);
-        m_ballsController.Reset();
-        m_blocksController.CreateLevel();
+        m_bonusController.SetFreeze(isPause);
     }
 }

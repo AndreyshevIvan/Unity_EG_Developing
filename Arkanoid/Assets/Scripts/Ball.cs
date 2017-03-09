@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
-
+    public float m_criticalPosition;
     Vector3 m_force;
     Vector3 m_freezePosition;
     bool m_isFreeze = false;
@@ -88,6 +88,12 @@ public class Ball : MonoBehaviour
         {
             SetPosition(m_freezePosition);
         }
+    }
+    public bool IsLive()
+    {
+        Vector3 currPos = gameObject.transform.position;
+
+        return (currPos.z >= m_criticalPosition);
     }
 
     public void DestroyBall()
