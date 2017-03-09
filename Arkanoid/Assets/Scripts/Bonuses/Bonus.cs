@@ -4,25 +4,18 @@ using UnityEngine;
 
 public class Bonus : MonoBehaviour
 {
-    protected AbstractPlayer m_player;
+    protected PlayerController m_player;
     public float m_criticalPosition = 18.5f;
-    public float m_fallingSpeed = 1;
-
+    public float m_fallingSpeed = 3;
     bool m_isFreeze = false;
 
     private void Awake()
     {
     }
-    public void Init(AbstractPlayer player)
+    public void Init(PlayerController player)
     {
         m_player = player;
     }
-
-    public void Create()
-    {
-        CreateOptions();
-    }
-    protected virtual void CreateOptions() { }
 
     public void SetFreeze(bool isFreeze)
     {
@@ -38,8 +31,8 @@ public class Bonus : MonoBehaviour
         if (!m_isFreeze)
         {
             Vector3 currPos = gameObject.transform.position;
-            float offset = Time.deltaTime * m_fallingSpeed;
-            Vector3 newPos = new Vector3(currPos.x, currPos.y, currPos.z - offset);
+            float movement = Time.deltaTime * m_fallingSpeed;
+            Vector3 newPos = new Vector3(currPos.x, currPos.y, currPos.z - movement);
 
             gameObject.transform.position = newPos;
         }

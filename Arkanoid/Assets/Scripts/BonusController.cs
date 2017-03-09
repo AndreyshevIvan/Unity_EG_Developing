@@ -5,14 +5,13 @@ using UnityEngine;
 public class BonusController : MonoBehaviour
 {
 
-    public BottomWall m_bottomWall;
-    public Life m_life;
-    public MultyBall m_multyBall;
-    public FireBall m_fireBall;
-
-    public AbstractPlayer m_player;
+    public PlayerController m_player;
 
     ArrayList m_bonuses;
+
+    public BottomWall m_bottomWallBonus;
+    public Life m_lifeBonus;
+    public MultyBall m_multyBallBonus;
 
     private void Awake()
     {
@@ -84,32 +83,22 @@ public class BonusController : MonoBehaviour
         {
             CreateMultyBall(position);
         }
-        else if (random >= 45 && random < 100)
-        {
-            CreateFireBall(position);
-        }
     }
     void CreateBottomWallBonus(Vector3 position)
     {
-        Bonus newBonus = Instantiate(m_bottomWall, position, Quaternion.identity);
+        Bonus newBonus = Instantiate(m_bottomWallBonus, position, Quaternion.identity);
         newBonus.Init(m_player);
         m_bonuses.Add(newBonus);
     }
     void CreateLifeBonus(Vector3 position)
     {
-        Bonus newBonus = Instantiate(m_life, position, Quaternion.identity);
+        Bonus newBonus = Instantiate(m_lifeBonus, position, Quaternion.identity);
         newBonus.Init(m_player);
         m_bonuses.Add(newBonus);
     }
     void CreateMultyBall(Vector3 position)
     {
-        Bonus newBonus = Instantiate(m_multyBall, position, Quaternion.identity);
-        newBonus.Init(m_player);
-        m_bonuses.Add(newBonus);
-    }
-    void CreateFireBall(Vector3 position)
-    {
-        Bonus newBonus = Instantiate(m_fireBall, position, Quaternion.identity);
+        Bonus newBonus = Instantiate(m_multyBallBonus, position, Quaternion.identity);
         newBonus.Init(m_player);
         m_bonuses.Add(newBonus);
     }

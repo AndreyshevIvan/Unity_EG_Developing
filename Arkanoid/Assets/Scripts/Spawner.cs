@@ -140,7 +140,7 @@ public class Spawner : MonoBehaviour
         gameObject.transform.position -= new Vector3(blockOffset * m_blocksInLine, 0, rowOffset);
     }
 
-    public void Clear(ArrayList mapBlocks)
+    void Clear(ArrayList mapBlocks)
     {
         foreach (Block block in mapBlocks)
         {

@@ -13,8 +13,6 @@ public class Platform : MonoBehaviour
     public void Awake()
     {
         m_startPosition = gameObject.transform.position;
-
-        Reset();
     }
     public void Reset()
     {
@@ -28,23 +26,23 @@ public class Platform : MonoBehaviour
     }
     void HandleEvents()
     {
-        Vector3 movement = Vector3.zero;
+        float movement = 0;
         Vector3 currentPos = gameObject.transform.position;
         float platformHalfWidth = gameObject.transform.localScale.x / 2.0f;
 
         bool isLeftMovAllowed = (currentPos.x - platformHalfWidth) > -m_maxOffset;
         bool isRightMovAllowed = (currentPos.x + platformHalfWidth) < m_maxOffset;
 
-        if (Input.GetKey(KeyCode.LeftArrow) && isLeftMovAllowed)
+        if (isLeftMovAllowed && Input.GetKey(KeyCode.LeftArrow))
         {
-            movement = new Vector3(-m_speed * Time.deltaTime, 0, 0);
+            movement = -m_speed * Time.deltaTime;
         }
-        if (Input.GetKey(KeyCode.RightArrow) && isRightMovAllowed)
+        if (isRightMovAllowed && Input.GetKey(KeyCode.RightArrow))
         {
-            movement = new Vector3(m_speed * Time.deltaTime, 0, 0);
+            movement = m_speed * Time.deltaTime;
         }
 
-        gameObject.transform.position = currentPos + movement;
+        gameObject.transform.position = currentPos + (new Vector3(movement, 0, 0));
     }
     void UpdatePlatform()
     {

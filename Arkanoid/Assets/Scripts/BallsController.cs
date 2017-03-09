@@ -15,16 +15,12 @@ public class BallsController : MonoBehaviour
     bool m_isBallsPaused = false;
     bool m_isGameStart = false;
 
-    public int m_ballsLayer;
-    public int m_blocksLayer;
-
     const int m_minBallsCount = 1;
     const int m_maxBallsCount = 64;
     int m_ballsCount;
 
     void Awake()
     {
-        m_ballsLayer = m_ball.GetLayer();
         m_ballsOnMap = new ArrayList();
         CreateOnlyOneBall();
 
@@ -110,15 +106,6 @@ public class BallsController : MonoBehaviour
             ball.SetPosition(position);
         }
     }
-    public void SetFireballMode(bool isFire)
-    {
-        foreach(Ball ball in m_ballsOnMap)
-        {
-            ball.SetFireballMode(isFire);
-        }
-
-        Physics.IgnoreLayerCollision(m_ballsLayer, m_blocksLayer);
-    }
 
     public int GetBallsCount()
     {
@@ -130,10 +117,6 @@ public class BallsController : MonoBehaviour
         }
 
         return count;
-    }
-    public int GetDmg()
-    {
-        return m_ball.GetDMG();
     }
 
     public void FreezeAll(bool isFreeze)

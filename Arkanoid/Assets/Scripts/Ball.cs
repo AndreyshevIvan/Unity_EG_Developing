@@ -5,13 +5,9 @@ using UnityEngine;
 public class Ball : MonoBehaviour
 {
     public float m_criticalPosition;
-    public Material m_normalMaterial;
-    public Material m_fireMaterial;
     Vector3 m_force;
     Vector3 m_freezePosition;
     bool m_isFreeze = false;
-    int m_bitMask;
-    public int m_demage = 0;
 
     void Awake()
     {
@@ -21,8 +17,8 @@ public class Ball : MonoBehaviour
     public Ball GetDublicate()
     {
         Ball dublicate = Instantiate(this, GetPosition(), Quaternion.identity);
-        Vector3 parentVelocity = this.GetRigidbody().velocity;
-        dublicate.SetInvertForce(parentVelocity, GetForce());
+        Vector3 parentVelocity = GetRigidbody().velocity;
+        dublicate.SetRandomForce(GetForce());
 
         return dublicate;
     }
@@ -40,14 +36,6 @@ public class Ball : MonoBehaviour
     {
         return m_force;
     }
-    public int GetLayer()
-    {
-        return gameObject.layer;
-    }
-    public int GetDMG()
-    {
-        return m_demage;
-    }
 
     public void SetFreeze(bool isFreeze)
     {
@@ -61,40 +49,13 @@ public class Ball : MonoBehaviour
     public void SetForce(Vector3 force)
     {
         m_force = force;
-        GetRigidbody().AddForce(m_force);
+        GetRigidbody().AddForce(force);
     }
-    void SetInvertForce(Vector3 parentVelocity, Vector3 parentForce)
+    void SetRandomForce(Vector3 parentForce)
     {
-        Vector3 force = Vector3.zero;
+        Vector3 force = new Vector3(-parentForce.x, 0, -parentForce.z);
 
-        float newForceX = (parentForce.x < 0) ? -parentForce.x : parentForce.x;
-        float newForceZ = (parentForce.z < 0) ? -parentForce.z : parentForce.z;
-
-        if (parentVelocity.x > 0 && parentVelocity.z > 0)
-        {
-            force = new Vector3(-newForceX, 0, newForceZ);
-        }
-        else if (parentVelocity.x < 0 && parentVelocity.z > 0)
-        {
-            force = new Vector3(newForceX, 0, newForceZ);
-        }
-        else if (parentVelocity.x < 0 && parentVelocity.z < 0)
-        {
-            force = new Vector3(newForceX, 0, -newForceZ);
-        }
-        else if (parentVelocity.x > 0 && parentVelocity.z < 0)
-        {
-            force = new Vector3(-newForceX, 0, -newForceZ);
-        }
         SetForce(force);
-    }
-    public void SetFireballMode(bool isModeActive)
-    {
-        Material newMaterial = (isModeActive) ? m_fireMaterial : m_normalMaterial;
-        gameObject.GetComponent<MeshRenderer>().material = newMaterial;
-        //gameObject.GetComponent<Collider>().isTrigger = isModeActive;
-
-        m_demage = (isModeActive) ? m_demage * 2 : m_demage / 2;
     }
 
     void FixedUpdate()

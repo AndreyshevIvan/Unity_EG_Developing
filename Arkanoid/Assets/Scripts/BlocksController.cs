@@ -9,7 +9,7 @@ public class BlocksController : MonoBehaviour
     ArrayList m_toDelete;
 
     public Spawner m_spawner;
-    public AbstractPlayer m_player;
+    public PlayerController m_player;
     public BonusController m_bonusController;
     public BallsController m_ballsController;
 
@@ -27,7 +27,6 @@ public class BlocksController : MonoBehaviour
     void FixedUpdate()
     {
         CheckBlocksLife();
-        GiveDemage();
     }
     void CheckBlocksLife()
     {
@@ -48,18 +47,6 @@ public class BlocksController : MonoBehaviour
         }
 
         m_toDelete.Clear();
-    }
-    void GiveDemage()
-    {
-        int demage = m_ballsController.GetDmg();
-
-        foreach(Block block in m_blocksOnMap)
-        {
-            int dmgCount = block.GetDmgCount();
-
-            block.SetDemage(dmgCount * demage);
-            block.SetDmgCount(0);
-        }
     }
 
     public void ClearBlocks()

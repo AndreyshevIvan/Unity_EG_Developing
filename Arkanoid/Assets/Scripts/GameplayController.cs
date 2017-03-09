@@ -15,7 +15,7 @@ public class GameplayController : MonoBehaviour
     public BallsController m_ballsController;
     public BlocksController m_blocksController;
     public BonusController m_bonusController;
-    public AbstractPlayer m_player;
+    public PlayerController m_player;
 
     public int m_ballsLayer;
     public int m_blocksLayer;
@@ -38,14 +38,6 @@ public class GameplayController : MonoBehaviour
         SetPause(false);
         m_ballsController.Reset();
         m_blocksController.CreateLevel();
-    }
-    void SetPhysicsOptions()
-    {
-        Physics.IgnoreLayerCollision(m_ballsLayer, m_ballsLayer);
-        Physics.IgnoreLayerCollision(m_bonusesLayer, m_blocksLayer);
-        Physics.IgnoreLayerCollision(m_bonusesLayer, m_ballsLayer);
-        Physics.IgnoreLayerCollision(m_bonusesLayer, m_bonusesLayer);
-        Physics.IgnoreLayerCollision(m_bonusesLayer, m_bonusesLayer);
     }
 
     void FixedUpdate()
@@ -90,6 +82,14 @@ public class GameplayController : MonoBehaviour
         }
     }
 
+    void SetPhysicsOptions()
+    {
+        Physics.IgnoreLayerCollision(m_ballsLayer, m_ballsLayer);
+        Physics.IgnoreLayerCollision(m_bonusesLayer, m_blocksLayer);
+        Physics.IgnoreLayerCollision(m_bonusesLayer, m_ballsLayer);
+        Physics.IgnoreLayerCollision(m_bonusesLayer, m_bonusesLayer);
+        Physics.IgnoreLayerCollision(m_bonusesLayer, m_bonusesLayer);
+    }
     public void SetGameoverScene()
     {
         SceneManager.LoadScene("Scenes/Gameover");
