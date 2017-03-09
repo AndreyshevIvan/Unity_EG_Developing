@@ -6,6 +6,11 @@ public class BonusController : MonoBehaviour
 {
 
     public BottomWall m_bottomWall;
+    public Life m_life;
+    public MultyBall m_multyBall;
+    public FireBall m_fireBall;
+
+    public AbstractPlayer m_player;
 
     ArrayList m_bonuses;
 
@@ -63,9 +68,49 @@ public class BonusController : MonoBehaviour
         toDelete.Clear();
     }
 
-    public void CreateBottomWallBonus(Vector3 position)
+    public void DropBonus(Vector3 position)
+    {
+        int random = Random.Range(0, 100);
+
+        if (random < 15)
+        {
+            CreateBottomWallBonus(position);
+        }
+        else if (random >= 15 && random < 30)
+        {
+            CreateLifeBonus(position);
+        }
+        else if (random >= 30 && random < 45)
+        {
+            CreateMultyBall(position);
+        }
+        else if (random >= 45 && random < 100)
+        {
+            CreateFireBall(position);
+        }
+    }
+    void CreateBottomWallBonus(Vector3 position)
     {
         Bonus newBonus = Instantiate(m_bottomWall, position, Quaternion.identity);
+        newBonus.Init(m_player);
+        m_bonuses.Add(newBonus);
+    }
+    void CreateLifeBonus(Vector3 position)
+    {
+        Bonus newBonus = Instantiate(m_life, position, Quaternion.identity);
+        newBonus.Init(m_player);
+        m_bonuses.Add(newBonus);
+    }
+    void CreateMultyBall(Vector3 position)
+    {
+        Bonus newBonus = Instantiate(m_multyBall, position, Quaternion.identity);
+        newBonus.Init(m_player);
+        m_bonuses.Add(newBonus);
+    }
+    void CreateFireBall(Vector3 position)
+    {
+        Bonus newBonus = Instantiate(m_fireBall, position, Quaternion.identity);
+        newBonus.Init(m_player);
         m_bonuses.Add(newBonus);
     }
 

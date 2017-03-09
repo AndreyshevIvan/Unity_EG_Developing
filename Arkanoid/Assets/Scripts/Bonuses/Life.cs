@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Life : Bonus
 {
-
+    protected override void AddEffect()
+    {
+        m_player.AddLife();
+    }
 
 }

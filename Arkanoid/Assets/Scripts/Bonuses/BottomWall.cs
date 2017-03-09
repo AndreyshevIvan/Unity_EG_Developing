@@ -4,5 +4,9 @@ using UnityEngine;
 
 public class BottomWall : Bonus
 {
+    protected override void AddEffect()
+    {
+        m_player.SetWallActive(true);
+    }
 
 }

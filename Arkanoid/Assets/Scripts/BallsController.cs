@@ -15,7 +15,8 @@ public class BallsController : MonoBehaviour
     bool m_isBallsPaused = false;
     bool m_isGameStart = false;
 
-    int m_ballsLayer;
+    public int m_ballsLayer;
+    public int m_blocksLayer;
 
     const int m_minBallsCount = 1;
     const int m_maxBallsCount = 64;
@@ -77,6 +78,8 @@ public class BallsController : MonoBehaviour
             SetPosition(posOnPlatform);
         }
 
+        m_ballsCount = GetBallsCount();
+
         CheckBallsExist();
     }
     void CheckBallsExist()
@@ -107,6 +110,15 @@ public class BallsController : MonoBehaviour
             ball.SetPosition(position);
         }
     }
+    public void SetFireballMode(bool isFire)
+    {
+        foreach(Ball ball in m_ballsOnMap)
+        {
+            ball.SetFireballMode(isFire);
+        }
+
+        Physics.IgnoreLayerCollision(m_ballsLayer, m_blocksLayer);
+    }
 
     public int GetBallsCount()
     {
@@ -119,6 +131,10 @@ public class BallsController : MonoBehaviour
 
         return count;
     }
+    public int GetDmg()
+    {
+        return m_ball.GetDMG();
+    }
 
     public void FreezeAll(bool isFreeze)
     {
@@ -127,9 +143,9 @@ public class BallsController : MonoBehaviour
             ball.SetFreeze(isFreeze);
         }
     }
-    void DoubleAll()
+    public void DoubleAll()
     {
-        if (m_ballsCount < m_maxBallsCount)
+        if (m_ballsCount * 2 <= m_maxBallsCount)
         {
             ArrayList toDouble = new ArrayList();
 

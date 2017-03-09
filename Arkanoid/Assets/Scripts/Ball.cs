@@ -5,10 +5,13 @@ using UnityEngine;
 public class Ball : MonoBehaviour
 {
     public float m_criticalPosition;
+    public Material m_normalMaterial;
+    public Material m_fireMaterial;
     Vector3 m_force;
     Vector3 m_freezePosition;
     bool m_isFreeze = false;
     int m_bitMask;
+    public int m_demage = 0;
 
     void Awake()
     {
@@ -40,6 +43,10 @@ public class Ball : MonoBehaviour
     public int GetLayer()
     {
         return gameObject.layer;
+    }
+    public int GetDMG()
+    {
+        return m_demage;
     }
 
     public void SetFreeze(bool isFreeze)
@@ -81,12 +88,21 @@ public class Ball : MonoBehaviour
         }
         SetForce(force);
     }
+    public void SetFireballMode(bool isModeActive)
+    {
+        Material newMaterial = (isModeActive) ? m_fireMaterial : m_normalMaterial;
+        gameObject.GetComponent<MeshRenderer>().material = newMaterial;
+        //gameObject.GetComponent<Collider>().isTrigger = isModeActive;
+
+        m_demage = (isModeActive) ? m_demage * 2 : m_demage / 2;
+    }
 
     void FixedUpdate()
     {
         if (m_isFreeze)
         {
             SetPosition(m_freezePosition);
+            Debug.Log("Freeze");
         }
     }
     public bool IsLive()

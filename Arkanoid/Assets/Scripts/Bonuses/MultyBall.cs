@@ -4,9 +4,8 @@ using UnityEngine;
 
 public class MultyBall : Bonus
 {
-
     protected override void AddEffect()
     {
-        m_player.AddLife();
+        m_player.MuliplyBalls();
     }
 }

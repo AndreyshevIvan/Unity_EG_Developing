@@ -8,11 +8,15 @@ public class AbstractPlayer : MonoBehaviour
     public Text m_UIpoints;
     public Text m_UIlife;
     public GameObject m_wall;
+    public BallsController m_ballsController;
+
+    bool m_isWallActive = false;
+    float m_wallDuration = 20;
+    float m_currWallDuration = 0;
 
     float m_addingPointsSpeed = 0.01f;
     float m_addingTime = 0;
     int m_pointsPerOneAdd = 1;
-
     int m_points;
     int m_pointsToAdd;
 
@@ -21,32 +25,56 @@ public class AbstractPlayer : MonoBehaviour
     public void Start()
     {
         m_life = 3;
-
+        SetWallActive(false);
     }
     public void ResetToNextLife()
     {
-
+        SetWallActive(false);
     }
 
     void FixedUpdate()
     {
+        UpdateWall();
         UpdateUI();
-        UpdateEffects();
     }
     void UpdateUI()
     {
+        UpdateWallInUI();
         AddPointsToUI();
         SetLifeToUI();
-        UpdateWallInUI();
     }
-    void UpdateEffects()
-    {
 
+    public void SetFireBall(bool isFire)
+    {
+        m_ballsController.SetFireballMode(isFire);
+    }
+
+    public void MuliplyBalls()
+    {
+        m_ballsController.DoubleAll();
     }
 
     public void SetWallActive(bool isActive)
     {
-        m_wall.SetActive(isActive);
+        if (!m_isWallActive)
+        {
+            m_wall.SetActive(isActive);
+            m_isWallActive = isActive;
+        }
+    }
+    void UpdateWall()
+    {
+        if (m_isWallActive)
+        {
+            m_currWallDuration += Time.deltaTime;
+
+            if (m_currWallDuration >= m_wallDuration)
+            {
+                m_currWallDuration = 0;
+                m_isWallActive = false;
+                SetWallActive(m_isWallActive);
+            }
+        }
     }
     void UpdateWallInUI()
     {

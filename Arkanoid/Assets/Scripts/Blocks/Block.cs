@@ -9,6 +9,7 @@ public class Block : MonoBehaviour
     public int m_health;
     int m_startHealth;
     public int m_points = 0;
+    int m_demageCount = 0;
 
     public Material m_lowDemageMaterial;
     public Material m_hardDemageMaterial;
@@ -26,7 +27,7 @@ public class Block : MonoBehaviour
 
         if (!IsImmortal())
         {
-            m_health -= 1;
+            m_demageCount++;
         }
     }
     protected virtual void CollisionEvents() { }
@@ -42,6 +43,21 @@ public class Block : MonoBehaviour
     public int GetPoints()
     {
         return m_points;
+    }
+    public int GetDmgCount()
+    {
+        return m_demageCount;
+    }
+    public void SetDmgCount(int count)
+    {
+        m_demageCount = count;
+    }
+    public void SetDemage(int dmg)
+    {
+        if (!IsImmortal())
+        {
+            m_health -= dmg;
+        }
     }
 
     void SetMaterial(Material newMaterial)

@@ -11,6 +11,7 @@ public class BlocksController : MonoBehaviour
     public Spawner m_spawner;
     public AbstractPlayer m_player;
     public BonusController m_bonusController;
+    public BallsController m_ballsController;
 
     void Awake()
     {
@@ -26,19 +27,17 @@ public class BlocksController : MonoBehaviour
     void FixedUpdate()
     {
         CheckBlocksLife();
+        GiveDemage();
     }
     void CheckBlocksLife()
     {
-        if (m_blocksOnMap.Capacity != 0)
+        foreach (Block block in m_blocksOnMap)
         {
-            foreach (Block block in m_blocksOnMap)
+            if (block != null && !block.IsLive())
             {
-                if (block != null && !block.IsLive())
-                {
-                    m_toDelete.Add(block);
-                    m_bonusController.CreateBottomWallBonus(block.transform.position);
-                    m_player.AddPoints(block.GetPoints());
-                }
+                m_toDelete.Add(block);
+                m_bonusController.DropBonus(block.transform.position);
+                m_player.AddPoints(block.GetPoints());
             }
         }
 
@@ -49,6 +48,18 @@ public class BlocksController : MonoBehaviour
         }
 
         m_toDelete.Clear();
+    }
+    void GiveDemage()
+    {
+        int demage = m_ballsController.GetDmg();
+
+        foreach(Block block in m_blocksOnMap)
+        {
+            int dmgCount = block.GetDmgCount();
+
+            block.SetDemage(dmgCount * demage);
+            block.SetDmgCount(0);
+        }
     }
 
     public void ClearBlocks()

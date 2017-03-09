@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Bonus : MonoBehaviour
 {
-    public AbstractPlayer m_player;
+    protected AbstractPlayer m_player;
     public float m_criticalPosition = 18.5f;
     public float m_fallingSpeed = 1;
 
@@ -12,6 +12,10 @@ public class Bonus : MonoBehaviour
 
     private void Awake()
     {
+    }
+    public void Init(AbstractPlayer player)
+    {
+        m_player = player;
     }
 
     public void Create()
