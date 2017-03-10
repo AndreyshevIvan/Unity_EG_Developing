@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bonus : LivingBody
+public class Bonus : MonoBehaviour
 {
     protected AbstractUser m_player;
     public float m_criticalPosition = 18.5f;
@@ -38,7 +38,7 @@ public class Bonus : LivingBody
         }
     }
 
-    public override bool IsLive()
+    public bool IsLive()
     {
         Vector3 currPos = gameObject.transform.position;
 
@@ -47,7 +47,7 @@ public class Bonus : LivingBody
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other.gameObject.layer);
+        int lay = other.gameObject.layer;
 
         AddEffect();
         DestroyBonus();

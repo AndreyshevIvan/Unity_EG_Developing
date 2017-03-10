@@ -11,6 +11,8 @@ public class Platform : MonoBehaviour
     public GameObject m_rightTurret;
     public GameObject m_leftTurret;
 
+    public GameObject m_bullets;
+
     public Bullet m_bullet;
     bool m_isFireMode = false;
 
@@ -42,8 +44,8 @@ public class Platform : MonoBehaviour
 
             Quaternion rotation = Quaternion.AngleAxis(90, Vector3.left);
 
-            Bullet leftBullet = Instantiate(m_bullet, leftTurretPos, rotation);
-            Bullet rightBullet = Instantiate(m_bullet, rightTurretPos, rotation);
+            Instantiate(m_bullet, leftTurretPos, rotation);
+            Instantiate(m_bullet, rightTurretPos, rotation);
         }
     }
 

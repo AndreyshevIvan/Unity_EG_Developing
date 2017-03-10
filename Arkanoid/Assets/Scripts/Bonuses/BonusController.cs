@@ -62,10 +62,7 @@ public class BonusController : MonoBehaviour
 
         foreach (Bonus ball in toDelete)
         {
-            if (ball == null)
-            {
-                m_bonuses.Remove(ball);
-            }
+            m_bonuses.Remove(ball);
         }
 
         toDelete.Clear();
@@ -73,34 +70,34 @@ public class BonusController : MonoBehaviour
 
     public void DropBonus(Vector3 position)
     {
-        int random = Random.Range(0, 105);
+        int random = Random.Range(0, 15);
         Bonus newBonus = null;
 
-        if (random < 15)
+        if (random == 0)
         {
             newBonus = m_bottomWallBonus;
         }
-        else if (random >= 15 && random < 30)
+        else if (random == 1)
         {
             newBonus = m_lifeBonus;
         }
-        else if (random >= 30 && random < 45)
+        else if (random == 2)
         {
             newBonus = m_multyBallBonus;
         }
-        else if (random >= 45 && random < 60)
+        else if (random == 3)
         {
             newBonus = m_timeScaleBonus;
         }
-        else if (random >= 60 && random < 75)
+        else if (random == 4)
         {
             newBonus = m_multiplitter;
         }
-        else if (random >= 75 && random < 90)
+        else if (random == 5)
         {
             newBonus = m_fireball;
         }
-        else if (random >= 90 && random < 105)
+        else if (random == 6)
         {
             newBonus = m_attackMode;
         }

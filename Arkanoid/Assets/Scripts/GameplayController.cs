@@ -24,11 +24,6 @@ public class GameplayController : MonoBehaviour
     private void Awake()
     {
         StartLevel();
-
-        int fireBallLayer = m_ballsController.GetFireballLayer();
-        int onFireBlocksLayer = m_blocksController.GetOnFireLayer();
-
-        Physics.IgnoreLayerCollision(fireBallLayer, onFireBlocksLayer);
     }
     public void StartNewLife()
     {

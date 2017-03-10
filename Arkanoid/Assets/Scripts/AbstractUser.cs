@@ -12,11 +12,13 @@ public class AbstractUser : MonoBehaviour
     public BlocksController m_blocksController;
     public Platform m_platform;
 
-    bool m_isFireMode = false;
+    bool m_isFireballMode = false;
+    float m_fireballDuration = 0;
+    float m_maxFireballDuration = 4;
 
     bool m_isAttackMode = false;
-    float m_attackDuration;
-    float m_maxAttackDuration;
+    float m_attackDuration = 0;
+    float m_maxAttackDuration = 4;
 
     float m_multiplitterDuration = 4;
     float m_maxMultiplitterDuration = 4;
@@ -60,6 +62,8 @@ public class AbstractUser : MonoBehaviour
         UpdateWall();
         UpdateTimeScale();
         UpdateMultiplitter();
+        UpdateFireballMode();
+        UpdateAttackMode();
 
         UpdateUI();
     }
@@ -77,16 +81,50 @@ public class AbstractUser : MonoBehaviour
         m_UIController.UpdateMultiplitter(m_multiplitter);
     }
 
+    void UpdateFireballMode()
+    {
+        if (m_isFireballMode)
+        {
+            m_fireballDuration += Time.deltaTime;
+
+            if (m_fireballDuration >= m_maxFireballDuration)
+            {
+                SetFireBallsMode(false);
+            }
+        }
+    }
     public void SetFireBallsMode(bool isFireModeOn)
     {
-        m_isFireMode = isFireModeOn;
+        m_isFireballMode = isFireModeOn;
         m_ballsController.SetFireMode(isFireModeOn);
+
+        if (m_isFireballMode)
+        {
+            m_fireballDuration = 0;
+        }
     }
 
+    void UpdateAttackMode()
+    {
+        if (m_isAttackMode)
+        {
+            m_attackDuration += Time.deltaTime;
+
+            if (m_attackDuration >= m_maxAttackDuration)
+            {
+                SetAttackMode(false);
+            }
+        }
+    }
     public void SetAttackMode(bool isAttack)
     {
         m_isAttackMode = isAttack;
         m_platform.SetAttackMode(m_isAttackMode);
+
+        if (!m_isAttackMode)
+        {
+            m_attackDuration = 0;
+        }
     }
 
     public void AddMultiplitter()
@@ -116,7 +154,7 @@ public class AbstractUser : MonoBehaviour
         m_isWallActive = isActive;
         m_wall.SetActive(isActive);
 
-        if (!isActive)
+        if (!m_isWallActive)
         {
             m_currWallDuration = 0;
         }
@@ -207,7 +245,7 @@ public class AbstractUser : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Alpha6))
         {
-            SetFireBallsMode(!m_isFireMode);
+            SetFireBallsMode(!m_isFireballMode);
         }
     }
 

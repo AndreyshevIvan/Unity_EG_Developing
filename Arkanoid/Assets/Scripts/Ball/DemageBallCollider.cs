@@ -4,16 +4,12 @@ using UnityEngine;
 
 public class DemageBallCollider : MonoBehaviour
 {
-    int m_basicDemage;
-    int m_fireDemage;
+    public int m_basicDemage;
+    public int m_fireDemage;
 
     bool m_isFireMode = false;
 
-    public void Init(int basicDemage, int fireDemage)
-    {
-        m_basicDemage = basicDemage;
-        m_fireDemage = fireDemage;
-    }
+    int m_collideNum = 0;
 
     public void SetFireMode(bool isFireModeOn)
     {
@@ -22,13 +18,19 @@ public class DemageBallCollider : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        m_collideNum++;
+
         LivingBody body = other.gameObject.GetComponent<LivingBody>();
 
         if (body != null)
         {
             int demage = (m_isFireMode) ? m_fireDemage : m_basicDemage;
 
+
+
             body.AddDemage(demage);
+
+
         }
     }
 }

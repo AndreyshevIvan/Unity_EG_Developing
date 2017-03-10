@@ -5,7 +5,7 @@ using UnityEngine;
 public class Ball : MonoBehaviour
 {
     public GameObject m_basicCollider;
-    public GameObject m_fireCollider;
+    public GameObject m_demageCollider;
 
     public Material m_fireMaterial;
     public Material m_basicMaterial;
@@ -17,16 +17,7 @@ public class Ball : MonoBehaviour
     bool m_isFreeze = false;
 
     public int m_basicLayer;
-    public int m_fireballLayer;
-
-    void Awake()
-    {
-        if (m_fireCollider != null)
-        {
-            m_fireCollider.GetComponent<DemageBallCollider>().Init(m_demage, m_demage * 2);
-            m_fireCollider.layer = m_basicLayer;
-        }
-    }
+    public int m_fireLayer;
 
     public Ball GetDublicate()
     {
@@ -60,7 +51,7 @@ public class Ball : MonoBehaviour
     }
     public int GetFireballLayer()
     {
-        return m_fireballLayer;
+        return m_fireLayer;
     }
 
     public void SetFreeze(bool isFreeze)
@@ -87,7 +78,7 @@ public class Ball : MonoBehaviour
     {
         if (isFireModeOn)
         {
-            m_basicCollider.layer = m_fireballLayer;
+            m_basicCollider.layer = m_fireLayer;
             gameObject.GetComponent<MeshRenderer>().material = m_fireMaterial;
         }
         else
