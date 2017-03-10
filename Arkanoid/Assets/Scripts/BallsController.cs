@@ -58,11 +58,6 @@ public class BallsController : MonoBehaviour
                 ball.SetForce(m_startForce);
             }
         }
-
-        if (m_isGameStart && Input.GetKeyDown(KeyCode.F))
-        {
-            DoubleAll();
-        }
     }
     void UpdateBalls()
     {

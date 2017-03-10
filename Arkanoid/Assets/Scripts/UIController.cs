@@ -10,10 +10,12 @@ public class UIController : MonoBehaviour
     public Text m_lifeUI;
     public Text m_wallUI;
     public Text m_ballsUI;
+    public Text m_timeScaleUI;
+    public Text m_multiplitterUI;
 
     float m_addingPointsSpeed = 0.01f;
     float m_addingTime = 0;
-    int m_pointsPerOneAdd = 1;
+    int m_pointsPerOneAdd = 10;
 
     public void UpdateBalls(int ballsCount)
     {
@@ -23,13 +25,13 @@ public class UIController : MonoBehaviour
     {
         int seconds = (int)maxDuration - (int)duration;
 
-        if (seconds != 0)
+        if (duration != 0)
         {
             m_wallUI.text = "Wall time: " + seconds.ToString();
         }
         else
         {
-            m_wallUI.text = "Wall disable";
+            m_wallUI.text = "Wall is off";
         }
     }
     public void UpdateLife(int lifeCount)
@@ -56,6 +58,26 @@ public class UIController : MonoBehaviour
 
             m_addingTime = 0;
         }
+    }
+    public void UpdateTimeScale(float duration, float maxDuration)
+    {
+        float time = maxDuration - duration;
+        string message;
+
+        if (time >= maxDuration)
+        {
+            message = " Off";
+        }
+        else
+        {
+            message = ": " + ((int)time).ToString();
+        }
+
+        m_timeScaleUI.text = "TimeScale" + message;
+    }
+    public void UpdateMultiplitter(int multiplitter)
+    {
+        m_multiplitterUI.text = "Multiplitter: x" + multiplitter.ToString();
     }
     void AddPointsToText(int points)
     {

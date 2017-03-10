@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Block : MonoBehaviour
+public class Block : LivingBody
 {
 
-    protected bool m_isImmortal = false;
-    public int m_health;
     public int m_points = 0;
 
     public Material m_lowDemageMaterial;
@@ -14,40 +12,26 @@ public class Block : MonoBehaviour
 
     void Awake()
     {
+        m_startHealth = m_health;
         PersonalAwake();
     }
     protected virtual void PersonalAwake() { }
 
-    void OnCollisionEnter(Collision collision)
-    {
-        if (!IsImmortal())
-        {
-            m_health--;
-        }
-    }
-
     void FixedUpdate()
     {
-
+        if (m_health < m_startHealth)
+        {
+            gameObject.GetComponent<MeshRenderer>().material = m_hardDemageMaterial;
+        }
+        else
+        {
+            gameObject.GetComponent<MeshRenderer>().material = m_lowDemageMaterial;
+        }
     }
 
     public int GetPoints()
     {
         return m_points;
-    }
-
-    public bool IsLive()
-    {
-        if(!IsImmortal())
-        {
-            return (m_health > 0);
-        }
-
-        return false;
-    }
-    bool IsImmortal()
-    {
-        return m_isImmortal;
     }
 
     public virtual void DestroyBlock()

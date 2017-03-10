@@ -95,22 +95,22 @@ public class Spawner : MonoBehaviour
         if (spawnBlock != null)
         {
             Vector3 spawnPosition = gameObject.transform.position;
-            SetColliderWithOffset(spawnBlock, m_offsetSize);
+            SetColliderWithOffset(spawnBlock);
             Block block = Instantiate(spawnBlock, spawnPosition, Quaternion.identity);
 
             m_map.Add(block);
         }
     }
 
-    public void SetColliderWithOffset(Block block, float addingSize)
+    public void SetColliderWithOffset(Block block)
     {
         BoxCollider collider = block.GetComponent<BoxCollider>();
         collider.size = new Vector3(1, 1, 1);
         Vector3 boxSize = block.transform.localScale;
 
-        float newSizeX = 1 + addingSize / boxSize.x;
-        float newSizeY = 1 + addingSize / boxSize.y;
-        float newSizeZ = 1 + addingSize / boxSize.z;
+        float newSizeX = 1 + m_offsetSize / boxSize.x;
+        float newSizeY = 1 + m_offsetSize / boxSize.y;
+        float newSizeZ = 1 + m_offsetSize / boxSize.z;
 
         Vector3 newSize = new Vector3(newSizeX, newSizeY, newSizeZ);
 

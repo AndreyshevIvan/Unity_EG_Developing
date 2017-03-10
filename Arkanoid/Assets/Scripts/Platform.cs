@@ -8,23 +8,51 @@ public class Platform : MonoBehaviour
     public float m_maxOffset;
     Vector3 m_startPosition;
 
+    public GameObject m_rightTurret;
+    public GameObject m_leftTurret;
+
+    public Bullet m_bullet;
+    bool m_isFireMode = false;
+
     public float m_speed = 20;
 
     public void Awake()
     {
         m_startPosition = gameObject.transform.position;
+        SetAttackMode(false);
     }
     public void Reset()
     {
         gameObject.transform.position = m_startPosition;
+        SetAttackMode(false);
     }
 
-    public void HandleEventsAndUpdate()
+    public void SetAttackMode(bool isModeOn)
     {
-        HandleEvents();
-        UpdatePlatform();
+        m_isFireMode = isModeOn;
+        m_rightTurret.SetActive(m_isFireMode);
+        m_leftTurret.SetActive(m_isFireMode);
     }
-    void HandleEvents()
+    public void Fire()
+    {
+        if (m_isFireMode)
+        {
+            Vector3 leftTurretPos = m_leftTurret.transform.position;
+            Vector3 rightTurretPos = m_rightTurret.transform.position;
+
+            Quaternion rotation = Quaternion.AngleAxis(90, Vector3.left);
+
+            Bullet leftBullet = Instantiate(m_bullet, leftTurretPos, rotation);
+            Bullet rightBullet = Instantiate(m_bullet, rightTurretPos, rotation);
+        }
+    }
+
+    public void HandleEvents()
+    {
+        HandleMoveing();
+        HandleFire();
+    }
+    void HandleMoveing()
     {
         float movement = 0;
         Vector3 currentPos = gameObject.transform.position;
@@ -44,7 +72,15 @@ public class Platform : MonoBehaviour
 
         gameObject.transform.position = currentPos + (new Vector3(movement, 0, 0));
     }
-    void UpdatePlatform()
+    void HandleFire()
+    {
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            Fire();
+        }
+    }
+
+    public void UpdatePlatform()
     {
 
     }

@@ -5,6 +5,7 @@ using UnityEngine;
 public class Ball : MonoBehaviour
 {
     public float m_criticalPosition;
+    public int m_demage;
     Vector3 m_force;
     Vector3 m_freezePosition;
     bool m_isFreeze = false;
@@ -58,12 +59,22 @@ public class Ball : MonoBehaviour
         SetForce(force);
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        LivingBody body = collision.gameObject.GetComponent<LivingBody>();
+
+
+        if (body != null)
+        {
+            body.SetDemage(m_demage);
+        }
+    }
+
     void FixedUpdate()
     {
         if (m_isFreeze)
         {
             SetPosition(m_freezePosition);
-            Debug.Log("Freeze");
         }
     }
     public bool IsLive()

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bonus : MonoBehaviour
+public class Bonus : LivingBody
 {
-    protected PlayerController m_player;
+    protected AbstractUser m_player;
     public float m_criticalPosition = 18.5f;
     public float m_fallingSpeed = 3;
     bool m_isFreeze = false;
@@ -12,7 +12,7 @@ public class Bonus : MonoBehaviour
     private void Awake()
     {
     }
-    public void Init(PlayerController player)
+    public void Init(AbstractUser player)
     {
         m_player = player;
     }
@@ -38,7 +38,7 @@ public class Bonus : MonoBehaviour
         }
     }
 
-    public bool IsLive()
+    public override bool IsLive()
     {
         Vector3 currPos = gameObject.transform.position;
 

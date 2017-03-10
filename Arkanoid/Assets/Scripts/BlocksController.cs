@@ -9,7 +9,7 @@ public class BlocksController : MonoBehaviour
     ArrayList m_toDelete;
 
     public Spawner m_spawner;
-    public PlayerController m_player;
+    public AbstractUser m_player;
     public BonusController m_bonusController;
     public BallsController m_ballsController;
 

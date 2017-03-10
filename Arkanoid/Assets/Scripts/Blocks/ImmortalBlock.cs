@@ -7,6 +7,6 @@ public class ImmortalBlock : Block
 
     protected override void PersonalAwake()
     {
-        m_isImmortal = true;
+        SetImmortal(true);
     }
 }

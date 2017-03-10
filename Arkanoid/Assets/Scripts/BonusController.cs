@@ -5,13 +5,15 @@ using UnityEngine;
 public class BonusController : MonoBehaviour
 {
 
-    public PlayerController m_player;
+    public AbstractUser m_player;
 
     ArrayList m_bonuses;
 
     public BottomWall m_bottomWallBonus;
     public Life m_lifeBonus;
     public MultyBall m_multyBallBonus;
+    public TimeScale m_timeScaleBonus;
+    public PointsMultiplitter m_multiplitter;
 
     private void Awake()
     {
@@ -70,35 +72,37 @@ public class BonusController : MonoBehaviour
     public void DropBonus(Vector3 position)
     {
         int random = Random.Range(0, 100);
+        Bonus newBonus = null;
 
         if (random < 15)
         {
-            CreateBottomWallBonus(position);
+            newBonus = m_bottomWallBonus;
         }
         else if (random >= 15 && random < 30)
         {
-            CreateLifeBonus(position);
+            newBonus = m_lifeBonus;
         }
         else if (random >= 30 && random < 45)
         {
-            CreateMultyBall(position);
+            newBonus = m_multyBallBonus;
+        }
+        else if (random >= 45 && random < 60)
+        {
+            newBonus = m_timeScaleBonus;
+        }
+        else if (random >= 60 && random < 75)
+        {
+            newBonus = m_multiplitter;
+        }
+
+        if (newBonus != null)
+        {
+            CreateBonus(newBonus, position);
         }
     }
-    void CreateBottomWallBonus(Vector3 position)
+    void CreateBonus(Bonus m_newBonus, Vector3 position)
     {
-        Bonus newBonus = Instantiate(m_bottomWallBonus, position, Quaternion.identity);
-        newBonus.Init(m_player);
-        m_bonuses.Add(newBonus);
-    }
-    void CreateLifeBonus(Vector3 position)
-    {
-        Bonus newBonus = Instantiate(m_lifeBonus, position, Quaternion.identity);
-        newBonus.Init(m_player);
-        m_bonuses.Add(newBonus);
-    }
-    void CreateMultyBall(Vector3 position)
-    {
-        Bonus newBonus = Instantiate(m_multyBallBonus, position, Quaternion.identity);
+        Bonus newBonus = Instantiate(m_newBonus, position, Quaternion.identity);
         newBonus.Init(m_player);
         m_bonuses.Add(newBonus);
     }

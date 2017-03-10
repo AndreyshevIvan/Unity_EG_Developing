@@ -15,22 +15,23 @@ public class GameplayController : MonoBehaviour
     public BallsController m_ballsController;
     public BlocksController m_blocksController;
     public BonusController m_bonusController;
-    public PlayerController m_player;
+    public AbstractUser m_player;
 
     public int m_ballsLayer;
     public int m_blocksLayer;
     public int m_bonusesLayer;
     public int m_platformLayer;
+    public int m_borderLayer;
 
     private void Awake()
     {
         StartLevel();
-        SetPhysicsOptions();
     }
     public void StartNewLife()
     {
         m_player.ResetToNextLife();
         m_ballsController.Reset();
+        m_platform.Reset();
         m_bonusController.ClearBonuses();
     }
     public void StartLevel()
@@ -42,19 +43,28 @@ public class GameplayController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (Input.GetKey(KeyCode.Escape))
-        {
-            SetPause(!m_isPause);
-        }
-
         if (m_isPause)
         {
+            HandlePauseEvents();
             PauseUpdate();
         }
         else
         {
+            HandleGameplayEvents();
             GameUpdate();
         }
+    }
+    void HandlePauseEvents()
+    {
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            SetPause(!m_isPause);
+        }
+    }
+    void HandleGameplayEvents()
+    {
+        m_platform.HandleEvents();
+        m_player.HandleCheats();
     }
     void PauseUpdate()
     {
@@ -62,9 +72,9 @@ public class GameplayController : MonoBehaviour
     }
     void GameUpdate()
     {
-        m_platform.HandleEventsAndUpdate();
         CheckPlayerLife();
     }
+
     void CheckPlayerLife()
     {
         if (m_ballsController.GetBallsCount() <= 0)
@@ -82,14 +92,6 @@ public class GameplayController : MonoBehaviour
         }
     }
 
-    void SetPhysicsOptions()
-    {
-        Physics.IgnoreLayerCollision(m_ballsLayer, m_ballsLayer);
-        Physics.IgnoreLayerCollision(m_bonusesLayer, m_blocksLayer);
-        Physics.IgnoreLayerCollision(m_bonusesLayer, m_ballsLayer);
-        Physics.IgnoreLayerCollision(m_bonusesLayer, m_bonusesLayer);
-        Physics.IgnoreLayerCollision(m_bonusesLayer, m_bonusesLayer);
-    }
     public void SetGameoverScene()
     {
         SceneManager.LoadScene("Scenes/Gameover");
