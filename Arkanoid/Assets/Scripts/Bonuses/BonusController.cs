@@ -14,6 +14,8 @@ public class BonusController : MonoBehaviour
     public MultyBall m_multyBallBonus;
     public TimeScale m_timeScaleBonus;
     public PointsMultiplitter m_multiplitter;
+    public Fireball m_fireball;
+    public AttackMode m_attackMode;
 
     private void Awake()
     {
@@ -71,7 +73,7 @@ public class BonusController : MonoBehaviour
 
     public void DropBonus(Vector3 position)
     {
-        int random = Random.Range(0, 100);
+        int random = Random.Range(0, 105);
         Bonus newBonus = null;
 
         if (random < 15)
@@ -93,6 +95,14 @@ public class BonusController : MonoBehaviour
         else if (random >= 60 && random < 75)
         {
             newBonus = m_multiplitter;
+        }
+        else if (random >= 75 && random < 90)
+        {
+            newBonus = m_fireball;
+        }
+        else if (random >= 90 && random < 105)
+        {
+            newBonus = m_attackMode;
         }
 
         if (newBonus != null)

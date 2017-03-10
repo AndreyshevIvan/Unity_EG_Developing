@@ -12,7 +12,7 @@ public class AbstractUser : MonoBehaviour
     public BlocksController m_blocksController;
     public Platform m_platform;
 
-    bool is_fireMode = false;
+    bool m_isFireMode = false;
 
     bool m_isAttackMode = false;
     float m_attackDuration;
@@ -77,13 +77,13 @@ public class AbstractUser : MonoBehaviour
         m_UIController.UpdateMultiplitter(m_multiplitter);
     }
 
-    public void SetFireMode(bool isFireModeOn)
+    public void SetFireBallsMode(bool isFireModeOn)
     {
-        is_fireMode = isFireModeOn;
+        m_isFireMode = isFireModeOn;
         m_ballsController.SetFireMode(isFireModeOn);
     }
 
-    void SetAttackMode(bool isAttack)
+    public void SetAttackMode(bool isAttack)
     {
         m_isAttackMode = isAttack;
         m_platform.SetAttackMode(m_isAttackMode);
@@ -207,7 +207,7 @@ public class AbstractUser : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Alpha6))
         {
-            SetFireMode(!is_fireMode);
+            SetFireBallsMode(!m_isFireMode);
         }
     }
 
