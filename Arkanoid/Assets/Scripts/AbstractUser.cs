@@ -9,7 +9,10 @@ public class AbstractUser : MonoBehaviour
 
     public UIController m_UIController;
     public BallsController m_ballsController;
+    public BlocksController m_blocksController;
     public Platform m_platform;
+
+    bool is_fireMode = false;
 
     bool m_isAttackMode = false;
     float m_attackDuration;
@@ -34,6 +37,11 @@ public class AbstractUser : MonoBehaviour
     int m_ballsCount;
 
     int m_life;
+
+    private void Awake()
+    {
+
+    }
 
     public void Start()
     {
@@ -67,6 +75,12 @@ public class AbstractUser : MonoBehaviour
         m_UIController.UpdateBalls(m_ballsCount);
         m_UIController.UpdateTimeScale(m_currScaleDuration, m_maxScaleDuration);
         m_UIController.UpdateMultiplitter(m_multiplitter);
+    }
+
+    public void SetFireMode(bool isFireModeOn)
+    {
+        is_fireMode = isFireModeOn;
+        m_ballsController.SetFireMode(isFireModeOn);
     }
 
     void SetAttackMode(bool isAttack)
@@ -191,5 +205,15 @@ public class AbstractUser : MonoBehaviour
         {
             SetAttackMode(!m_isAttackMode);
         }
+        if (Input.GetKeyDown(KeyCode.Alpha6))
+        {
+            SetFireMode(!is_fireMode);
+        }
+    }
+
+    public void WinEvents()
+    {
+        PlayerPrefs.SetInt("Points", m_points);
+        SetTimeScale(false);
     }
 }

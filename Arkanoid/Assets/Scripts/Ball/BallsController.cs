@@ -101,6 +101,13 @@ public class BallsController : MonoBehaviour
             ball.SetPosition(position);
         }
     }
+    public void SetFireMode(bool isFireModeOn)
+    {
+        foreach(Ball ball in m_ballsOnMap)
+        {
+            ball.SetFireMode(isFireModeOn);
+        }
+    }
 
     public int GetBallsCount()
     {
@@ -112,6 +119,20 @@ public class BallsController : MonoBehaviour
         }
 
         return count;
+    }
+    public int GetCriticalDemage()
+    {
+       return m_ball.GetCriticalDemage();
+    }
+    public int GetBallsColliderLayer()
+    {
+        int layer = m_ball.GetBasicLayer();
+
+        return layer;
+    }
+    public int GetFireballLayer()
+    {
+        return m_ball.GetFireballLayer();
     }
 
     public void FreezeAll(bool isFreeze)

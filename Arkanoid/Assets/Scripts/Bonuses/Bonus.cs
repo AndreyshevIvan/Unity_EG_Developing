@@ -47,6 +47,8 @@ public class Bonus : LivingBody
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log(other.gameObject.layer);
+
         AddEffect();
         DestroyBonus();
     }

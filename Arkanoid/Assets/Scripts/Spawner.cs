@@ -88,7 +88,7 @@ public class Spawner : MonoBehaviour
     void InitLevel()
     {
         int levelNumber = PlayerPrefs.GetInt(m_mapKey, 0);
-        m_reader = new StreamReader(m_root + m_levels[levelNumber]);
+        m_reader = new StreamReader(m_root + m_levels[levelNumber - 1]);
     }
     void AddBlockToList(Block spawnBlock)
     {

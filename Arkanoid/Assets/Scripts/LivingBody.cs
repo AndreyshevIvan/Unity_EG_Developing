@@ -13,7 +13,7 @@ public class LivingBody : MonoBehaviour
         m_startHealth = m_health;
     }
 
-    public void SetDemage(int demage)
+    public void AddDemage(int demage)
     {
         if (!m_isImmortal)
         {
@@ -31,7 +31,16 @@ public class LivingBody : MonoBehaviour
 
     public virtual bool IsLive()
     {
-        return (m_isImmortal || (m_health > 0));
+        return (IsImmortal() || (m_health > 0));
+    }
+    public bool IsImmortal()
+    {
+        return m_isImmortal;
+    }
+
+    public int GetHealth()
+    {
+        return m_health;
     }
 
     protected void SetImmortal(bool isImmortal)

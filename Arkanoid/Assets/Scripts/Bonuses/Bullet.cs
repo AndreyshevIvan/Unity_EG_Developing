@@ -20,7 +20,7 @@ public class Bullet : MonoBehaviour
 
         if (collideBody != null)
         {
-            collideBody.SetDemage(m_demage);
+            collideBody.AddDemage(m_demage);
         }
 
         Destroy(gameObject);

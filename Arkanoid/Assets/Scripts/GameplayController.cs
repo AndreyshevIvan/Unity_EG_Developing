@@ -16,16 +16,19 @@ public class GameplayController : MonoBehaviour
     public BlocksController m_blocksController;
     public BonusController m_bonusController;
     public AbstractUser m_player;
+    public SwitchScenesCommands m_sceneSwithcer;
 
-    public int m_ballsLayer;
-    public int m_blocksLayer;
-    public int m_bonusesLayer;
-    public int m_platformLayer;
-    public int m_borderLayer;
+    int m_levelNumber;
+    int m_maxLevels;
 
     private void Awake()
     {
         StartLevel();
+
+        int fireBallLayer = m_ballsController.GetFireballLayer();
+        int onFireBlocksLayer = m_blocksController.GetOnFireLayer();
+
+        Physics.IgnoreLayerCollision(fireBallLayer, onFireBlocksLayer);
     }
     public void StartNewLife()
     {
@@ -36,6 +39,9 @@ public class GameplayController : MonoBehaviour
     }
     public void StartLevel()
     {
+        m_maxLevels = PlayerPrefs.GetInt("LevelsCount", 1);
+        m_levelNumber = PlayerPrefs.GetInt("SpawnLevel", 1);
+
         SetPause(false);
         m_ballsController.Reset();
         m_blocksController.CreateLevel();
@@ -56,13 +62,17 @@ public class GameplayController : MonoBehaviour
     }
     void HandlePauseEvents()
     {
-        if (Input.GetKey(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             SetPause(!m_isPause);
         }
     }
     void HandleGameplayEvents()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            SetPause(!m_isPause);
+        }
         m_platform.HandleEvents();
         m_player.HandleCheats();
     }
@@ -73,6 +83,7 @@ public class GameplayController : MonoBehaviour
     void GameUpdate()
     {
         CheckPlayerLife();
+        CheckWin();
     }
 
     void CheckPlayerLife()
@@ -91,10 +102,30 @@ public class GameplayController : MonoBehaviour
             }
         }
     }
+    void CheckWin()
+    {
+        if (m_blocksController.GetBlocksCount(false) == 0)
+        {
+            m_player.WinEvents();
+            UnlockNewLevel();
+            PlayerPrefs.Save();
+
+            m_sceneSwithcer.SetWinScene();
+        }
+    }
+    void UnlockNewLevel()
+    {
+        int newUnlockedLevelsCount = m_levelNumber + 1;
+
+        if (m_maxLevels >= newUnlockedLevelsCount)
+        {
+            PlayerPrefs.SetInt("OpenLevelsCount", newUnlockedLevelsCount);
+        }
+    }
 
     public void SetGameoverScene()
     {
-        SceneManager.LoadScene("Scenes/Gameover");
+        m_sceneSwithcer.SetGameoverScene();
     }
     public void SetPause(bool isPause)
     {

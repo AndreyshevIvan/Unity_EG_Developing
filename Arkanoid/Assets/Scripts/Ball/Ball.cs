@@ -4,15 +4,28 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
+    public GameObject m_basicCollider;
+    public GameObject m_fireCollider;
+
+    public Material m_fireMaterial;
+    public Material m_basicMaterial;
+
     public float m_criticalPosition;
     public int m_demage;
     Vector3 m_force;
     Vector3 m_freezePosition;
     bool m_isFreeze = false;
 
+    public int m_basicLayer;
+    public int m_fireballLayer;
+
     void Awake()
     {
-
+        if (m_fireCollider != null)
+        {
+            m_fireCollider.GetComponent<DemageBallCollider>().Init(m_demage, m_demage * 2);
+            m_fireCollider.layer = m_basicLayer;
+        }
     }
 
     public Ball GetDublicate()
@@ -37,6 +50,18 @@ public class Ball : MonoBehaviour
     {
         return m_force;
     }
+    public int GetCriticalDemage()
+    {
+        return m_demage * 2;
+    }
+    public int GetBasicLayer()
+    {
+        return m_basicCollider.layer;
+    }
+    public int GetFireballLayer()
+    {
+        return m_fireballLayer;
+    }
 
     public void SetFreeze(bool isFreeze)
     {
@@ -58,15 +83,17 @@ public class Ball : MonoBehaviour
 
         SetForce(force);
     }
-
-    private void OnCollisionEnter(Collision collision)
+    public void SetFireMode(bool isFireModeOn)
     {
-        LivingBody body = collision.gameObject.GetComponent<LivingBody>();
-
-
-        if (body != null)
+        if (isFireModeOn)
         {
-            body.SetDemage(m_demage);
+            m_basicCollider.layer = m_fireballLayer;
+            gameObject.GetComponent<MeshRenderer>().material = m_fireMaterial;
+        }
+        else
+        {
+            m_basicCollider.layer = m_basicLayer;
+            gameObject.GetComponent<MeshRenderer>().material = m_basicMaterial;
         }
     }
 

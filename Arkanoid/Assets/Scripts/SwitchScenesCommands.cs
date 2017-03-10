@@ -27,6 +27,10 @@ public class SwitchScenesCommands : MonoBehaviour
     {
         SceneManager.LoadScene("Scenes/Exit");
     }
+    public void SetWinScene()
+    {
+        SceneManager.LoadScene("Scenes/WinScene");
+    }
 
     public void ExitGame()
     {
