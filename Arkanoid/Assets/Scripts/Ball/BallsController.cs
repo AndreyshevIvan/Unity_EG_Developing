@@ -5,14 +5,13 @@ using UnityEngine;
 public class BallsController : MonoBehaviour
 {
     public Ball m_ball;
-    ArrayList m_ballsOnMap;
+    List<Ball> m_ballsOnMap;
 
     public GameObject platform;
 
     public float m_startForce = 6500;
     public float m_onPlatformOffset;
 
-    bool m_isBallsPaused = false;
     bool m_isGameStart = false;
 
     const int m_minBallsCount = 1;
@@ -21,15 +20,13 @@ public class BallsController : MonoBehaviour
 
     void Awake()
     {
-        m_ballsOnMap = new ArrayList();
-        CreateOnlyOneBall();
+        m_ballsOnMap = new List<Ball>();
 
         Reset();
     }
     public void Reset()
     {
         CreateOnlyOneBall();
-        m_ballsCount = m_minBallsCount;
         m_isGameStart = false;
     }
 
@@ -38,8 +35,7 @@ public class BallsController : MonoBehaviour
         ClearBalls();
         Ball newBall = Instantiate(m_ball, Vector3.zero, Quaternion.identity);
         m_ballsOnMap.Add(newBall);
-        gameObject.AddComponent<Ball>();
-        m_ballsCount = m_minBallsCount;
+        m_ballsCount = GetBallsCount();
     }
 
     void FixedUpdate()
@@ -52,7 +48,6 @@ public class BallsController : MonoBehaviour
         if (!m_isGameStart && Input.GetMouseButtonDown(0))
         {
             m_isGameStart = true;
-            bool isBallOnlyOne = m_ballsOnMap.Count == 1;
 
             foreach (Ball ball in m_ballsOnMap)
             {
@@ -76,7 +71,7 @@ public class BallsController : MonoBehaviour
     }
     void CheckBallsExist()
     {
-        ArrayList toDelete = new ArrayList();
+        List<Ball> toDelete = new List<Ball>();
 
         foreach(Ball ball in m_ballsOnMap)
         {
@@ -112,22 +107,11 @@ public class BallsController : MonoBehaviour
 
     public int GetBallsCount()
     {
-        int count = 0;
-
-        foreach(Ball ball in m_ballsOnMap)
-        {
-            count++;
-        }
-
-        return count;
+        return m_ballsOnMap.Count;
     }
     public int GetCriticalDemage()
     {
        return m_ball.GetCriticalDemage();
-    }
-    public int GetFireballLayer()
-    {
-        return m_ball.GetFireballLayer();
     }
 
     public void PauseBalls(bool isFreeze)

@@ -46,10 +46,6 @@ public class Ball : MonoBehaviour
 
         return (dmgCollider.GetFireDemage());
     }
-    public int GetFireballLayer()
-    {
-        return m_fireLayer;
-    }
     Vector3 GetDublicateVelocity(Vector3 parentVelocity)
     {
         Vector3 newVelocity = new Vector3(0, 0, 0);
