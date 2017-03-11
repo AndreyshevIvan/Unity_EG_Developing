@@ -10,14 +10,15 @@ public class Ball : MonoBehaviour
     public Material m_fireMaterial;
     public Material m_basicMaterial;
 
-    public float m_criticalPosition;
-    public int m_demage;
-    Vector3 m_force;
-    Vector3 m_freezePosition;
-    bool m_isFreeze = false;
-
     public int m_basicLayer;
     public int m_fireLayer;
+
+    public float m_criticalPosition;
+
+    Vector3 m_force;
+    Vector3 m_freezePosition;
+
+    bool m_isFreeze = false;
 
     public Ball GetDublicate()
     {
@@ -43,7 +44,9 @@ public class Ball : MonoBehaviour
     }
     public int GetCriticalDemage()
     {
-        return m_demage * 2;
+        DemageBallCollider dmgCollider = m_demageCollider.GetComponent<DemageBallCollider>();
+
+        return (dmgCollider.GetFireDemage());
     }
     public int GetBasicLayer()
     {
@@ -76,6 +79,9 @@ public class Ball : MonoBehaviour
     }
     public void SetFireMode(bool isFireModeOn)
     {
+        DemageBallCollider dmgCollider = m_demageCollider.GetComponent<DemageBallCollider>();
+        dmgCollider.SetFireMode(isFireModeOn);
+
         if (isFireModeOn)
         {
             m_basicCollider.layer = m_fireLayer;

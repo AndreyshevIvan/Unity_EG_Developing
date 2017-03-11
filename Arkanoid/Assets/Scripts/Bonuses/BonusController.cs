@@ -8,6 +8,7 @@ public class BonusController : MonoBehaviour
     public AbstractUser m_player;
 
     ArrayList m_bonuses;
+    List<Bonus> m_newBonuses;
 
     public BottomWall m_bottomWallBonus;
     public Life m_lifeBonus;
@@ -17,14 +18,36 @@ public class BonusController : MonoBehaviour
     public Fireball m_fireball;
     public AttackMode m_attackMode;
 
+    int m_blocksPerDrop = 5;
+    int m_currDropNumber = 0;
+    float m_dropTimer = 0;
+    float m_oneDropTime = 4;
+
     private void Awake()
     {
+        m_newBonuses = new List<Bonus>();
         m_bonuses = new ArrayList();
+
+        m_newBonuses.Add(m_bottomWallBonus);
+        m_newBonuses.Add(m_lifeBonus);
+        m_newBonuses.Add(m_multyBallBonus);
+        m_newBonuses.Add(m_timeScaleBonus);
+        m_newBonuses.Add(m_multiplitter);
+        m_newBonuses.Add(m_fireball);
+        m_newBonuses.Add(m_attackMode);
     }
 
     private void FixedUpdate()
     {
         CheckBonusesExist();
+        UpdateDropTimer();
+    }
+    void UpdateDropTimer()
+    {
+        if (m_dropTimer <= m_oneDropTime)
+        {
+            m_dropTimer += Time.deltaTime;
+        }
     }
     void CheckBonusesExist()
     {
@@ -70,41 +93,15 @@ public class BonusController : MonoBehaviour
 
     public void DropBonus(Vector3 position)
     {
-        int random = Random.Range(0, 15);
-        Bonus newBonus = null;
+        m_currDropNumber++;
 
-        if (random == 0)
+        if (IsDropAllowed())
         {
-            newBonus = m_bottomWallBonus;
-        }
-        else if (random == 1)
-        {
-            newBonus = m_lifeBonus;
-        }
-        else if (random == 2)
-        {
-            newBonus = m_multyBallBonus;
-        }
-        else if (random == 3)
-        {
-            newBonus = m_timeScaleBonus;
-        }
-        else if (random == 4)
-        {
-            newBonus = m_multiplitter;
-        }
-        else if (random == 5)
-        {
-            newBonus = m_fireball;
-        }
-        else if (random == 6)
-        {
-            newBonus = m_attackMode;
-        }
+            int random = Random.Range(0, m_newBonuses.Count);
+            CreateBonus(m_newBonuses[random], position);
 
-        if (newBonus != null)
-        {
-            CreateBonus(newBonus, position);
+            m_dropTimer = 0;
+            m_currDropNumber = 0;
         }
     }
     void CreateBonus(Bonus m_newBonus, Vector3 position)
@@ -112,6 +109,13 @@ public class BonusController : MonoBehaviour
         Bonus newBonus = Instantiate(m_newBonus, position, Quaternion.identity);
         newBonus.Init(m_player);
         m_bonuses.Add(newBonus);
+    }
+    bool IsDropAllowed()
+    {
+        bool isTimeValid = (m_dropTimer > m_oneDropTime);
+        bool isDropNumberValid = (m_currDropNumber > m_blocksPerDrop);
+
+        return isTimeValid && isDropNumberValid;
     }
 
     public void SetFreeze(bool isFreeze)
