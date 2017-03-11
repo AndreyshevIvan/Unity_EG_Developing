@@ -6,37 +6,35 @@ using UnityEngine.UI;
 public class ChangeLevelController : MonoBehaviour
 {
 
-    public Button[] m_levels;
+    public Button[] m_levelButtons;
 
-    int m_maxLevels;
+    public InfoController m_info;
+
     int m_openLevelsCount;
 
     bool m_isLevelHackActive = false;
 
     void Awake()
     {
-        m_maxLevels = m_levels.Length;
-        
-        PlayerPrefs.SetInt("LevelsCount", m_maxLevels);
-        m_openLevelsCount = PlayerPrefs.GetInt("OpenLevelsCount", 1);
-        PlayerPrefs.Save();
+        m_openLevelsCount = m_info.GetOpenLevelsCount();
+        Debug.Log(m_openLevelsCount);
 
-        UnlockLevels(m_openLevelsCount);
+        UnlockLevelButtons(m_openLevelsCount);
     }
     void Reset()
     {
-        foreach(Button button in m_levels)
+        foreach(Button button in m_levelButtons)
         {
             button.interactable = false;
         }
     }
-    void UnlockLevels(int levelsCount)
+    void UnlockLevelButtons(int levelsCount)
     {
         Reset();
 
         for (int i = 0; i < levelsCount; i++)
         {
-            m_levels[i].interactable = true;
+            m_levelButtons[i].interactable = true;
         }
     }
 
@@ -51,20 +49,19 @@ public class ChangeLevelController : MonoBehaviour
         {
             if (m_isLevelHackActive)
             {
-                UnlockLevels(m_openLevelsCount);
+                UnlockLevelButtons(m_openLevelsCount);
             }
             else
             {
-                UnlockLevels(m_maxLevels);
+                UnlockLevelButtons(m_info.GetMaxLevelsCount());
             }
 
             m_isLevelHackActive = !m_isLevelHackActive;
         }
     }
 
-    public void SetSpawnLevel(int level)
+    public void SetSpawnLevel(int levelNumber)
     {
-        PlayerPrefs.SetInt("SpawnLevel", level);
-        PlayerPrefs.Save();
+        m_info.SetSpawnLevel(levelNumber);
     }
 }

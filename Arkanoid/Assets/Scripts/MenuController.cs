@@ -5,8 +5,15 @@ using UnityEngine;
 public class MenuController : MonoBehaviour
 {
 
+    public InfoController m_info;
+
+    private void Awake()
+    {
+
+    }
+
     public void ResetSaves()
     {
-        PlayerPrefs.DeleteAll();
+        m_info.ResetSaves();
     }
 }

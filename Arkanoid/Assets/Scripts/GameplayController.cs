@@ -18,8 +18,9 @@ public class GameplayController : MonoBehaviour
     public AbstractUser m_player;
     public SwitchScenesCommands m_sceneSwithcer;
 
+    public InfoController m_info;
+
     int m_levelNumber;
-    int m_maxLevels;
 
     private void Awake()
     {
@@ -34,8 +35,7 @@ public class GameplayController : MonoBehaviour
     }
     public void StartLevel()
     {
-        m_maxLevels = PlayerPrefs.GetInt("LevelsCount", 1);
-        m_levelNumber = PlayerPrefs.GetInt("SpawnLevel", 1);
+        m_levelNumber = m_info.GetSpawnLevel();
 
         SetPause(false);
         m_ballsController.Reset();
@@ -103,18 +103,17 @@ public class GameplayController : MonoBehaviour
         {
             m_player.WinEvents();
             UnlockNewLevel();
-            PlayerPrefs.Save();
 
             m_sceneSwithcer.SetWinScene();
         }
     }
     void UnlockNewLevel()
     {
-        int newUnlockedLevelsCount = m_levelNumber + 1;
+        int newLevelsCount = m_levelNumber + 1;
 
-        if (m_maxLevels >= newUnlockedLevelsCount)
+        if (m_info.GetMaxLevelsCount() >= newLevelsCount)
         {
-            PlayerPrefs.SetInt("OpenLevelsCount", newUnlockedLevelsCount);
+            m_info.SetOpenLevelsCount(newLevelsCount);
         }
     }
 

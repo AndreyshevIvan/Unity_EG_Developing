@@ -14,7 +14,6 @@ public class BallsController : MonoBehaviour
 
     bool m_isGameStart = false;
 
-    const int m_minBallsCount = 1;
     const int m_maxBallsCount = 64;
     int m_ballsCount;
 
@@ -125,7 +124,7 @@ public class BallsController : MonoBehaviour
     {
         if (m_ballsCount * 2 <= m_maxBallsCount)
         {
-            ArrayList toDouble = new ArrayList();
+            List<Ball> toDouble = new List<Ball>();
 
             foreach (Ball ball in m_ballsOnMap)
             {

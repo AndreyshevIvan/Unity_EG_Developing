@@ -3,15 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 
-
 public class Spawner : MonoBehaviour
 {
     StreamReader m_reader;
     ArrayList m_map;
 
-    public string[] m_levels;
-    const string m_root = "Assets/Maps/";
-    const string m_mapKey = "SpawnLevel";
+    public InfoController m_info;
 
     const char m_stopReadId = '-';
     const char m_easyBlockId = 'E';
@@ -41,7 +38,7 @@ public class Spawner : MonoBehaviour
     {
         Clear(m_map);
         SetStartPosition();
-        InitLevel();
+        InitReader();
 
         string line = m_reader.ReadLine();
         while (line != null && line[0] != m_stopReadId)
@@ -85,10 +82,9 @@ public class Spawner : MonoBehaviour
 
         AddBlockToList(spawnBlock);
     }
-    void InitLevel()
+    void InitReader()
     {
-        int levelNumber = PlayerPrefs.GetInt(m_mapKey, 0);
-        m_reader = new StreamReader(m_root + m_levels[levelNumber - 1]);
+        m_reader = m_info.GetSpawnLevelReader();
     }
     void AddBlockToList(Block spawnBlock)
     {
