@@ -94,7 +94,7 @@ public class Spawner : MonoBehaviour
     {
         if (spawnBlock != null)
         {
-            Vector3 spawnPosition = gameObject.transform.position;
+            Vector3 spawnPosition = transform.position;
             SetColliderWithOffset(spawnBlock);
             Block block = Instantiate(spawnBlock, spawnPosition, Quaternion.identity);
 
@@ -127,17 +127,17 @@ public class Spawner : MonoBehaviour
         float posX = floorPos.x - (offsetCount * offset) / 2;
         float posZ = (floorPos.z + floorScale.z / 2.0f) * m_posZFactor;
 
-        gameObject.transform.position = new Vector3(posX, m_heightOnFloor, posZ);
+        transform.position = new Vector3(posX, m_heightOnFloor, posZ);
     }
     void MoveToNextPosition()
     {
-        gameObject.transform.position += new Vector3(m_blockScale.x + m_offsetSize, 0, 0);
+        transform.position += new Vector3(m_blockScale.x + m_offsetSize, 0, 0);
     }
     void MoveToNextRow()
     {
         float blockOffset = m_blockScale.x + m_offsetSize;
         float rowOffset = m_blockScale.z + m_offsetSize;
-        gameObject.transform.position -= new Vector3(blockOffset * m_blocksInLine, 0, rowOffset);
+        transform.position -= new Vector3(blockOffset * m_blocksInLine, 0, rowOffset);
     }
 
     void Clear(ArrayList mapBlocks)

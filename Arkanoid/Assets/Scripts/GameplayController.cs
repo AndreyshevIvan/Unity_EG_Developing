@@ -126,7 +126,7 @@ public class GameplayController : MonoBehaviour
     {
         m_isPause = isPause;
         m_pauseItems.SetActive(isPause);
-        m_ballsController.FreezeAll(isPause);
+        m_ballsController.PauseBalls(isPause);
         m_gameplayItems.SetActive(!isPause);
         m_bonusController.SetFreeze(isPause);
     }

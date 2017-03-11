@@ -61,7 +61,7 @@ public class AbstractUser : MonoBehaviour
 
         UpdateWall();
         UpdateTimeScale();
-        UpdateMultiplitter();
+        UpdateMultiplier();
         UpdateFireballMode();
         UpdateAttackMode();
 
@@ -127,12 +127,12 @@ public class AbstractUser : MonoBehaviour
         }
     }
 
-    public void AddMultiplitter()
+    public void AddMultiplier()
     {
         m_multiplitterDuration = 0;
         m_multiplitter++;
     }
-    void UpdateMultiplitter()
+    void UpdateMultiplier()
     {
         if (m_multiplitterDuration < m_maxMultiplitterDuration)
         {
@@ -237,7 +237,7 @@ public class AbstractUser : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Alpha4))
         {
-            AddMultiplitter();
+            AddMultiplier();
         }
         if (Input.GetKeyDown(KeyCode.Alpha5))
         {

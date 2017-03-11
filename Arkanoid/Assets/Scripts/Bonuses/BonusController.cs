@@ -14,7 +14,7 @@ public class BonusController : MonoBehaviour
     public Life m_lifeBonus;
     public MultyBall m_multyBallBonus;
     public TimeScale m_timeScaleBonus;
-    public PointsMultiplitter m_multiplitter;
+    public PointsMultiplier m_multiplier;
     public Fireball m_fireball;
     public AttackMode m_attackMode;
 
@@ -32,7 +32,7 @@ public class BonusController : MonoBehaviour
         m_newBonuses.Add(m_lifeBonus);
         m_newBonuses.Add(m_multyBallBonus);
         m_newBonuses.Add(m_timeScaleBonus);
-        m_newBonuses.Add(m_multiplitter);
+        m_newBonuses.Add(m_multiplier);
         m_newBonuses.Add(m_fireball);
         m_newBonuses.Add(m_attackMode);
     }

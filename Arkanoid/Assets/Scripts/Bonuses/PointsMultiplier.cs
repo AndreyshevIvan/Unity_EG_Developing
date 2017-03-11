@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PointsMultiplitter : Bonus
+public class PointsMultiplier : Bonus
 {
 
     protected override void AddEffect()
     {
-        m_player.AddMultiplitter();
+        m_player.AddMultiplier();
     }
 }

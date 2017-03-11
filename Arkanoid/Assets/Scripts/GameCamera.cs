@@ -17,8 +17,8 @@ public class GameCamera : MonoBehaviour
 
     public void Awake()
     {
-        m_startRotation = gameObject.transform.rotation;
-        m_startPosition = gameObject.transform.position;
+        m_startRotation = transform.rotation;
+        m_startPosition = transform.position;
 
         ResetOptions();
     }
@@ -54,7 +54,7 @@ public class GameCamera : MonoBehaviour
 
     float GetCameraRotation()
     {
-        Vector3 rotation = gameObject.transform.eulerAngles;
+        Vector3 rotation = transform.eulerAngles;
 
         return rotation.x;
     }
@@ -63,20 +63,20 @@ public class GameCamera : MonoBehaviour
     {
         if (IsRotationAllowed(m_speed))
         {
-            gameObject.transform.RotateAround(m_anchor, Vector3.right, m_speed);
+            transform.RotateAround(m_anchor, Vector3.right, m_speed);
         }
     }
     void RotateBack()
     {
         if (IsRotationAllowed(-m_speed))
         {
-            gameObject.transform.RotateAround(m_anchor, Vector3.right, -m_speed);
+            transform.RotateAround(m_anchor, Vector3.right, -m_speed);
         }
     }
     void SetStartRotation()
     {
-        gameObject.transform.rotation = m_startRotation;
-        gameObject.transform.position = m_startPosition;
+        transform.rotation = m_startRotation;
+        transform.position = m_startPosition;
     }
 
     bool IsRotationAllowed(float angle)

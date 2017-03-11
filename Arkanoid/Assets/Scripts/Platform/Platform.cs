@@ -9,7 +9,6 @@ public class Platform : MonoBehaviour
     Vector3 m_startPosition;
 
     public GameObject m_guns;
-
     public GameObject m_bullets;
 
     public Bullet m_bullet;
@@ -17,14 +16,19 @@ public class Platform : MonoBehaviour
 
     public float m_speed = 20;
 
+    float m_distance;
+    float m_height;
+
     public void Awake()
     {
-        m_startPosition = gameObject.transform.position;
+        m_startPosition = transform.position;
+        m_distance = (transform.position - Camera.main.transform.position).magnitude;
+        m_height = transform.position.y;
         SetAttackMode(false);
     }
     public void Reset()
     {
-        gameObject.transform.position = m_startPosition;
+        transform.position = m_startPosition;
         SetAttackMode(false);
     }
 
@@ -37,9 +41,11 @@ public class Platform : MonoBehaviour
     {
         if (m_isFireMode)
         {
-            Vector3 platformPosition = gameObject.transform.position;
+            m_guns.GetComponent<PlatformGuns>().Fire();
 
-            Vector3 platformSize = gameObject.transform.localScale;
+            Vector3 platformPosition = transform.position;
+
+            Vector3 platformSize = transform.localScale;
             Vector3 offsetFromCenter = new Vector3(platformSize.x / 2.0f, 0, 0);
 
             Vector3 leftTurretPos = m_guns.transform.position - offsetFromCenter;
@@ -60,31 +66,31 @@ public class Platform : MonoBehaviour
         HandleMoveing();
         HandleFire();
     }
-    void HandleMoveing()
-    {
-        float movement = 0;
-        Vector3 currentPos = gameObject.transform.position;
-        float platformWidth = gameObject.transform.localScale.x;
-
-        bool isLeftMovAllowed = (currentPos.x - platformWidth) > -m_maxOffset;
-        bool isRightMovAllowed = (currentPos.x + platformWidth) < m_maxOffset;
-
-        if (isLeftMovAllowed && Input.GetKey(KeyCode.LeftArrow))
-        {
-            movement = -m_speed * Time.deltaTime;
-        }
-        if (isRightMovAllowed && Input.GetKey(KeyCode.RightArrow))
-        {
-            movement = m_speed * Time.deltaTime;
-        }
-
-        gameObject.transform.position = currentPos + (new Vector3(movement, 0, 0));
-    }
     void HandleFire()
     {
-        if (Input.GetKeyDown(KeyCode.F))
+        if (Input.GetMouseButtonDown(0))
         {
             Fire();
+        }
+    }
+    void HandleMoveing()
+    {
+        Vector3 mousePosition = Input.mousePosition;
+        mousePosition.z = m_distance;
+
+        Vector3 newPosition = new Vector3(0, m_height, m_distance);
+        newPosition.x = Camera.main.ScreenToWorldPoint(mousePosition).x;
+        if (newPosition.x < m_maxOffset && newPosition.x > -m_maxOffset)
+        {
+            transform.position = newPosition;
+        }
+        else if (newPosition.x >= m_maxOffset)
+        {
+            transform.position = new Vector3(m_maxOffset, newPosition.y, newPosition.z);
+        }
+        else if (newPosition.x <= m_maxOffset)
+        {
+            transform.position = new Vector3(-m_maxOffset, newPosition.y, newPosition.z);
         }
     }
 

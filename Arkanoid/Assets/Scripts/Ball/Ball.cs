@@ -14,32 +14,31 @@ public class Ball : MonoBehaviour
 
     public float m_criticalPosition;
 
-    Vector3 m_force;
-    Vector3 m_freezePosition;
+    Rigidbody m_body;
+    Vector3 m_saveVelocity = Vector3.zero;
 
-    bool m_isFreeze = false;
+    private void Awake()
+    {
+        m_body = gameObject.GetComponent<Rigidbody>();
+    }
 
-    public Ball GetDublicate()
+    public Ball CreateDublicate()
     {
         Ball dublicate = Instantiate(this, GetPosition(), Quaternion.identity);
-        Vector3 parentVelocity = GetRigidbody().velocity;
-        dublicate.SetRandomForce(GetForce());
+        dublicate.Stop();
+        Vector3 parentVelocity = m_body.velocity;
+
+        Vector3 dublicateForce = GetDublicateVelocity(parentVelocity);
+        dublicate.SetVelocity(dublicateForce);
 
         return dublicate;
     }
+
     public Vector3 GetPosition()
     {
-        Vector3 position = gameObject.transform.position;
+        Vector3 position = transform.position;
 
         return position;
-    }
-    Rigidbody GetRigidbody()
-    {
-        return gameObject.GetComponent<Rigidbody>();
-    }
-    public Vector3 GetForce()
-    {
-        return m_force;
     }
     public int GetCriticalDemage()
     {
@@ -51,26 +50,46 @@ public class Ball : MonoBehaviour
     {
         return m_fireLayer;
     }
-
-    public void SetFreeze(bool isFreeze)
+    Vector3 GetDublicateVelocity(Vector3 parentVelocity)
     {
-        m_freezePosition = GetPosition();
-        m_isFreeze = isFreeze;
+        Vector3 newVelocity = new Vector3(0, 0, 0);
+
+        int randomQuarter = Random.Range(0, 4);
+        float randomCos = Random.Range(-1.0f, 1.0f);
+
+        float absoluteVelocity = Mathf.Sqrt(Mathf.Pow(parentVelocity.x, 2) + Mathf.Pow(parentVelocity.z, 2));
+        newVelocity.x = absoluteVelocity * randomCos;
+        newVelocity.z = Mathf.Sqrt(Mathf.Pow(absoluteVelocity, 2) - Mathf.Pow(newVelocity.x, 2));
+
+        switch (randomQuarter)
+        {
+            case 0:
+                break;
+
+            case 1:
+                newVelocity.x = -newVelocity.x;
+                break;
+
+            case 2:
+                newVelocity.x = -newVelocity.x;
+                newVelocity.z = -newVelocity.z;
+                break;
+
+            case 3:
+                newVelocity.z = -newVelocity.z;
+                break;
+        }
+
+        return newVelocity;
     }
+
     public void SetPosition(Vector3 newPosition)
     {
-        gameObject.transform.position = newPosition;
+        transform.position = newPosition;
     }
     public void SetForce(Vector3 force)
     {
-        m_force = force;
-        GetRigidbody().AddForce(force);
-    }
-    void SetRandomForce(Vector3 parentForce)
-    {
-        Vector3 force = new Vector3(-parentForce.x, 0, -parentForce.z);
-
-        SetForce(force);
+        m_body.AddForce(force);
     }
     public void SetFireMode(bool isFireModeOn)
     {
@@ -80,27 +99,41 @@ public class Ball : MonoBehaviour
         if (isFireModeOn)
         {
             gameObject.layer = m_fireLayer;
-            gameObject.GetComponent<MeshRenderer>().material = m_fireMaterial;
+            GetComponent<MeshRenderer>().material = m_fireMaterial;
         }
         else
         {
             gameObject.layer = m_basicLayer;
-            gameObject.GetComponent<MeshRenderer>().material = m_basicMaterial;
+            GetComponent<MeshRenderer>().material = m_basicMaterial;
         }
+    }
+    public void SetVelocity(Vector3 velocity)
+    {
+        m_body.velocity = velocity;
     }
 
-    void FixedUpdate()
-    {
-        if (m_isFreeze)
-        {
-            SetPosition(m_freezePosition);
-        }
-    }
     public bool IsLive()
     {
-        Vector3 currPos = gameObject.transform.position;
+        Vector3 currPos = transform.position;
 
         return (currPos.z >= m_criticalPosition);
+    }
+
+    public void Pause(bool isPause)
+    {
+        if (isPause)
+        {
+            m_saveVelocity = m_body.velocity;
+            SetVelocity(Vector3.zero);
+        }
+        else
+        {
+            SetVelocity(m_saveVelocity);
+        }
+    }
+    public void Stop()
+    {
+        SetVelocity(Vector3.zero);
     }
 
     public void DestroyBall()

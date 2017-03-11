@@ -30,17 +30,17 @@ public class Bonus : MonoBehaviour
     {
         if (!m_isFreeze)
         {
-            Vector3 currPos = gameObject.transform.position;
+            Vector3 currPos = transform.position;
             float movement = Time.deltaTime * m_fallingSpeed;
             Vector3 newPos = new Vector3(currPos.x, currPos.y, currPos.z - movement);
 
-            gameObject.transform.position = newPos;
+            transform.position = newPos;
         }
     }
 
     public bool IsLive()
     {
-        Vector3 currPos = gameObject.transform.position;
+        Vector3 currPos = transform.position;
 
         return (currPos.z >= m_criticalPosition);
     }

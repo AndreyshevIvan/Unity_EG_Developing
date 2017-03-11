@@ -9,7 +9,7 @@ public class BallsController : MonoBehaviour
 
     public GameObject platform;
 
-    public Vector3 m_startForce = new Vector3(500, 0, 500);
+    public float m_startForce = 6500;
     public float m_onPlatformOffset;
 
     bool m_isBallsPaused = false;
@@ -49,13 +49,14 @@ public class BallsController : MonoBehaviour
     }
     void HandleEvents()
     {
-        if (!m_isGameStart && Input.GetKey(KeyCode.Space))
+        if (!m_isGameStart && Input.GetMouseButtonDown(0))
         {
             m_isGameStart = true;
+            bool isBallOnlyOne = m_ballsOnMap.Count == 1;
 
             foreach (Ball ball in m_ballsOnMap)
             {
-                ball.SetForce(m_startForce);
+                ball.SetForce(new Vector3(0, 0, m_startForce));
             }
         }
     }
@@ -129,11 +130,11 @@ public class BallsController : MonoBehaviour
         return m_ball.GetFireballLayer();
     }
 
-    public void FreezeAll(bool isFreeze)
+    public void PauseBalls(bool isFreeze)
     {
         foreach (Ball ball in m_ballsOnMap)
         {
-            ball.SetFreeze(isFreeze);
+            ball.Pause(isFreeze);
         }
     }
     public void DoubleAll()
@@ -144,7 +145,7 @@ public class BallsController : MonoBehaviour
 
             foreach (Ball ball in m_ballsOnMap)
             {
-                toDouble.Add(ball.GetDublicate());
+                toDouble.Add(ball.CreateDublicate());
             }
 
             foreach (Ball dublicateBall in toDouble)
