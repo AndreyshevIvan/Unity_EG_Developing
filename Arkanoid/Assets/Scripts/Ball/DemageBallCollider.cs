@@ -25,7 +25,6 @@ public class DemageBallCollider : MonoBehaviour
         if (body != null)
         {
             int demage = (m_isFireMode) ? m_fireDemage : m_basicDemage;
-            Debug.Log("Add " + demage + " DMG");
             body.AddDemage(demage);
         }
     }

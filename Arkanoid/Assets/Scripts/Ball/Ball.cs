@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
-    public GameObject m_basicCollider;
     public GameObject m_demageCollider;
 
     public Material m_fireMaterial;
@@ -48,10 +47,6 @@ public class Ball : MonoBehaviour
 
         return (dmgCollider.GetFireDemage());
     }
-    public int GetBasicLayer()
-    {
-        return m_basicCollider.layer;
-    }
     public int GetFireballLayer()
     {
         return m_fireLayer;
@@ -84,12 +79,12 @@ public class Ball : MonoBehaviour
 
         if (isFireModeOn)
         {
-            m_basicCollider.layer = m_fireLayer;
+            gameObject.layer = m_fireLayer;
             gameObject.GetComponent<MeshRenderer>().material = m_fireMaterial;
         }
         else
         {
-            m_basicCollider.layer = m_basicLayer;
+            gameObject.layer = m_basicLayer;
             gameObject.GetComponent<MeshRenderer>().material = m_basicMaterial;
         }
     }

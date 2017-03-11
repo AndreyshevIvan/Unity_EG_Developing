@@ -124,12 +124,6 @@ public class BallsController : MonoBehaviour
     {
        return m_ball.GetCriticalDemage();
     }
-    public int GetBallsColliderLayer()
-    {
-        int layer = m_ball.GetBasicLayer();
-
-        return layer;
-    }
     public int GetFireballLayer()
     {
         return m_ball.GetFireballLayer();

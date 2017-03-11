@@ -24,7 +24,7 @@ public class Spawner : MonoBehaviour
     public HardBlock m_hardBlock;
     public ImmortalBlock m_immortalBlock;
 
-    int m_blocksInLine = 16;
+    int m_blocksInLine = 14;
 
     public Vector3 m_blockScale;
     public GameObject m_floor;
