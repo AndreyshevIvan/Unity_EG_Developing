@@ -24,6 +24,7 @@ public class BlocksController : MonoBehaviour
     {
         ClearBlocks();
         m_blocksOnMap = m_spawner.SpawnLevel();
+
     }
     public void PrepareOnFireBlocks()
     {

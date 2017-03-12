@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class WinSceneUIController : MonoBehaviour
 {
+
+    public InfoController m_info;
     public Text m_pointsUI;
 
     int m_points = 0;
@@ -16,7 +18,7 @@ public class WinSceneUIController : MonoBehaviour
 
     private void Awake()
     {
-        m_points = PlayerPrefs.GetInt("Points", 0);
+        m_points = m_info.GetLastLevelPoints();
         SetPointsPerAdd();
     }
 

@@ -17,7 +17,6 @@ public class ChangeLevelController : MonoBehaviour
     void Awake()
     {
         m_openLevelsCount = m_info.GetOpenLevelsCount();
-        Debug.Log(m_openLevelsCount);
 
         UnlockLevelButtons(m_openLevelsCount);
     }

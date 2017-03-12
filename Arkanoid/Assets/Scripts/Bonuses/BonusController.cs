@@ -28,9 +28,9 @@ public class BonusController : MonoBehaviour
         m_newBonuses = new List<Bonus>();
         m_bonuses = new ArrayList();
 
+        m_newBonuses.Add(m_multyBallBonus);
         m_newBonuses.Add(m_bottomWallBonus);
         m_newBonuses.Add(m_lifeBonus);
-        m_newBonuses.Add(m_multyBallBonus);
         m_newBonuses.Add(m_timeScaleBonus);
         m_newBonuses.Add(m_multiplier);
         m_newBonuses.Add(m_fireball);

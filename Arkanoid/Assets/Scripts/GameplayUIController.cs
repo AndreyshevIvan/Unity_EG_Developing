@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UIController : MonoBehaviour
+public class GameplayUIController : MonoBehaviour
 {
+    public InfoController m_info;
 
     public Text m_pointsUI;
     public Text m_lifeUI;
@@ -75,9 +76,9 @@ public class UIController : MonoBehaviour
 
         m_timeScaleUI.text = "TimeScale" + message;
     }
-    public void UpdateMultiplitter(int multiplitter)
+    public void UpdateMultiplier(int multiplitter)
     {
-        m_multiplitterUI.text = "Multiplitter: x" + multiplitter.ToString();
+        m_multiplitterUI.text = "Multiplier: x" + multiplitter.ToString();
     }
     void AddPointsToText(int points)
     {

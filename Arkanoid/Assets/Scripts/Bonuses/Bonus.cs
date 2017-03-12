@@ -49,6 +49,10 @@ public class Bonus : MonoBehaviour
     {
         int lay = other.gameObject.layer;
 
+        Debug.Log(other.gameObject);
+        Debug.Log(gameObject);
+        Debug.Log(GetComponentInParent<Ball>());
+
         AddEffect();
         DestroyBonus();
     }

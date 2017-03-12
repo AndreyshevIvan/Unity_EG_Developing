@@ -124,6 +124,7 @@ public class BallsController : MonoBehaviour
     {
         if (m_ballsCount * 2 <= m_maxBallsCount)
         {
+            Debug.Log("Before double count = " + m_ballsOnMap.Count + " at " + Time.realtimeSinceStartup);
             List<Ball> toDouble = new List<Ball>();
 
             foreach (Ball ball in m_ballsOnMap)
@@ -138,6 +139,7 @@ public class BallsController : MonoBehaviour
 
             toDouble.Clear();
             m_ballsCount = 2 * m_ballsCount;
+            Debug.Log("Afret double count = " + m_ballsOnMap.Count + " at " + Time.realtimeSinceStartup);
         }
     }
 

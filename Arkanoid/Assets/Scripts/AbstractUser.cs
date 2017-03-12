@@ -7,10 +7,12 @@ public class AbstractUser : MonoBehaviour
 {
     public GameObject m_wall;
 
-    public UIController m_UIController;
+    public GameplayUIController m_UIController;
     public BallsController m_ballsController;
     public BlocksController m_blocksController;
     public Platform m_platform;
+
+    public InfoController m_info;
 
     bool m_isFireballMode = false;
     float m_fireballDuration = 0;
@@ -78,7 +80,7 @@ public class AbstractUser : MonoBehaviour
         m_UIController.UpdateLife(m_life);
         m_UIController.UpdateBalls(m_ballsCount);
         m_UIController.UpdateTimeScale(m_currScaleDuration, m_maxScaleDuration);
-        m_UIController.UpdateMultiplitter(m_multiplitter);
+        m_UIController.UpdateMultiplier(m_multiplitter);
     }
 
     void UpdateFireballMode()
@@ -251,7 +253,9 @@ public class AbstractUser : MonoBehaviour
 
     public void WinEvents()
     {
-        PlayerPrefs.SetInt("Points", m_points);
+        m_info.SetLevelPoints(m_points);
+        m_info.AddToTotal(m_points);
+        m_info.TrySetMaxPoints(m_points);
         SetTimeScale(false);
     }
 }
