@@ -22,8 +22,6 @@ public class AbstractUser : MonoBehaviour
     float m_attackDuration = 0;
     float m_maxAttackDuration = 4;
 
-    float m_multiplitterDuration = 4;
-    float m_maxMultiplitterDuration = 4;
     int m_multiplitter = 1;
 
     bool m_isTimeScale = false;
@@ -49,11 +47,13 @@ public class AbstractUser : MonoBehaviour
 
     public void Start()
     {
+        m_multiplitter = 1;
         m_life = 3;
         SetWallActive(false);
     }
     public void ResetToNextLife()
     {
+        m_multiplitter = 1;
         SetWallActive(false);
     }
 
@@ -63,7 +63,6 @@ public class AbstractUser : MonoBehaviour
 
         UpdateWall();
         UpdateTimeScale();
-        UpdateMultiplier();
         UpdateFireballMode();
         UpdateAttackMode();
 
@@ -131,19 +130,7 @@ public class AbstractUser : MonoBehaviour
 
     public void AddMultiplier()
     {
-        m_multiplitterDuration = 0;
         m_multiplitter++;
-    }
-    void UpdateMultiplier()
-    {
-        if (m_multiplitterDuration < m_maxMultiplitterDuration)
-        {
-            m_multiplitterDuration += Time.deltaTime;
-        }
-        else
-        {
-            m_multiplitter = 1;
-        }
     }
 
     public void MuliplyBalls()
