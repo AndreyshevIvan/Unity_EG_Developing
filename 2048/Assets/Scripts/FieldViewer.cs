@@ -9,11 +9,9 @@ public class FieldViewer : MonoBehaviour
     public GameObject[] m_tiles;
 
     public Color[] m_tilesColor;
-
-    private void Awake()
-    {
-        Debug.Log(GetColorNum(256));
-    }
+    public Color m_darkColor;
+    public Color m_lightColor;
+    public ushort m_startLightColorNum;
 
     public void MoveButtons(List<IntPair> buttons)
     {
@@ -58,10 +56,14 @@ public class FieldViewer : MonoBehaviour
             for (int j = 0; j < collsCount; j++)
             {
                 int colorNum = GetColorNum(values[i,j]);
+                Color txtColor = GetTextColor(values[i, j]);
                 int valueNum = i * rowsCount + j;
 
                 Image bg = m_tiles[valueNum].GetComponentInChildren<Image>();
                 bg.color = m_tilesColor[colorNum];
+
+                Text txt = m_tiles[valueNum].GetComponentInChildren<Text>();
+                txt.color = txtColor;
             }
         }
     }
@@ -83,5 +85,11 @@ public class FieldViewer : MonoBehaviour
         }
 
         return degree;
+    }
+    Color GetTextColor(ushort value)
+    {
+        Color color = (value >= m_startLightColorNum) ? m_lightColor : m_darkColor;
+
+        return color;
     }
 }

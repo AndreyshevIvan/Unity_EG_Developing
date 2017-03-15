@@ -8,6 +8,7 @@ public class FieldController : MonoBehaviour
     const ushort m_fieldSize = 4;
     ushort[,] m_fieldValues;
     List<IntPair> m_movedButtons;
+    int m_points = 0;
 
     public float m_fourProbability;
 
@@ -16,14 +17,12 @@ public class FieldController : MonoBehaviour
         m_movedButtons = new List<IntPair>();
         m_fieldValues = new ushort[m_fieldSize, m_fieldSize];
     }
-
     public void Start()
     {
         ResetField();
         SetTurn(true);
         SetTurn(false);
     }
-
     void ResetField()
     {
         for (int i = 0; i < m_fieldSize; i++)
@@ -34,19 +33,76 @@ public class FieldController : MonoBehaviour
             }
         }
     }
-
-    public List<IntPair> GetMoveButtons()
-    {
-        return m_movedButtons;
-    }
     void ResetMovedButtons()
     {
         m_movedButtons.Clear();
+    }
+    void ResetPoints()
+    {
+        m_points = 0;
+    }
+
+    public List<IntPair> GetMovedButtonsAdresesFromLastTurn()
+    {
+        return m_movedButtons;
+    }
+    public int GetPointsFromLastTurn()
+    {
+        int points = m_points;
+        ResetPoints();
+
+        return points;
     }
 
     public ushort[,] GetCurrentValues()
     {
         return m_fieldValues;
+    }
+
+    public void SetTurn(bool isFourEnable)
+    {
+        int value = 2;
+
+        if (isFourEnable)
+        {
+            float random = Random.Range(0, 1.0f);
+
+            if (random < m_fourProbability)
+            {
+                value = value * 2;
+            }
+        }
+
+        List<int> freeTiles = new List<int>();
+
+        for (int i = 0; i < m_fieldSize; i++)
+        {
+            for (int j = 0; j < m_fieldSize; j++)
+            {
+                if (m_fieldValues[i, j] == 0)
+                {
+                    freeTiles.Add(i * m_fieldSize + j);
+                }
+            }
+        }
+
+        int randomTileNum = Random.Range(0, freeTiles.Count);
+
+        for (int i = 0; i < m_fieldSize; i++)
+        {
+            for (int j = 0; j < m_fieldSize; j++)
+            {
+                if (m_fieldValues[i, j] == 0)
+                {
+                    if (randomTileNum == 0)
+                    {
+                        m_fieldValues[i, j] = (ushort)value;
+                    }
+
+                    randomTileNum--;
+                }
+            }
+        }
     }
 
     public bool UpTurn()
@@ -189,27 +245,25 @@ public class FieldController : MonoBehaviour
         {
             ushort value = line[i];
             int position = i;
-            bool isPrevMore = false;
 
-            while (position > 0 && !isPrevMore)
+            while (position > 0)
             {
                 if (line[position - 1] != value && line[position - 1] != 0)
                 {
-                    isPrevMore = true;
+                    break;
                 }
                 else if (line[position - 1] == value)
                 {
                     line[position - 1] += value;
+                    m_points += line[position - 1];
                     line[position] = 0;
                     isLineMoved = true;
-                    movedAdreses.Add((ushort)position);
                 }
                 else if (line[position - 1] == 0)
                 {
                     line[position - 1] = value;
                     line[position] = 0;
                     isLineMoved = true;
-                    movedAdreses.Add((ushort)position);
                 }
 
                 position--;
@@ -219,57 +273,30 @@ public class FieldController : MonoBehaviour
         return isLineMoved;
     }
 
-    public void SetTurn(bool isFourEnable)
-    {
-        int value = 2;
-
-        if (isFourEnable)
-        {
-            float random = Random.Range(0, 1.0f);
-
-            if (random < m_fourProbability)
-            {
-                value = value * 2;
-            }
-        }
-
-        List<int> freeTiles = new List<int>();
-
-        for (int i = 0; i < m_fieldSize; i++)
-        {
-            for (int j = 0; j < m_fieldSize; j++)
-            {
-                if (m_fieldValues[i,j] == 0)
-                {
-                    freeTiles.Add(i * m_fieldSize + j);
-                }
-            }
-        }
-
-        int randomTileNum = Random.Range(0, freeTiles.Count);
-
-        for (int i = 0; i < m_fieldSize; i++)
-        {
-            for (int j = 0; j < m_fieldSize; j++)
-            {
-                if (m_fieldValues[i,j] == 0)
-                {
-                    if (randomTileNum == 0)
-                    {
-                        m_fieldValues[i, j] = (ushort)value;
-                    }
-
-                    randomTileNum--;
-                }
-            }
-        }
-    }
-
     public bool IsTurnPossible()
     {
-        IsAnyTileEmpty();
+        if (IsAnyTileEmpty())
+        {
+            return true;
+        }
 
-        return true;
+        bool isAnyPairValid = false;
+
+        for (int i = 0; i < m_fieldSize; i++)
+        {
+            for (int j = 1; j < m_fieldSize - 1; j++)
+            {
+                if (m_fieldValues[i,j - 1] == m_fieldValues[i, j] ||
+                    m_fieldValues[i, j] == m_fieldValues[i, j + 1] ||
+                    m_fieldValues[j - 1, i] == m_fieldValues[j, i] ||
+                    m_fieldValues[j, i] == m_fieldValues[j + 1, i])
+                {
+                    isAnyPairValid = true;
+                }
+            }
+        }
+
+        return isAnyPairValid;
     }
     bool IsAnyTileEmpty()
     {

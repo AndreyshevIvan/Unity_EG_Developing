@@ -8,6 +8,8 @@ public class GameController : MonoBehaviour
 
     public FieldController m_fieldController;
     public FieldViewer m_fieldViewer;
+    public User m_user;
+    public HandleTouch m_touchController;
 
     public GameObject m_gameoverPanel;
     public Button m_newGameButton;
@@ -17,15 +19,16 @@ public class GameController : MonoBehaviour
     bool m_isPlayerMadeTurn = false;
     bool m_isGameover = false;
 
-    private void Awake()
-    {
-
-    }
-
     private void Start()
     {
-        SetGameOver(m_isGameover);
+        StartGame();
+    }
+
+    public void StartGame()
+    {
+        SetGameOver(false);
         m_fieldController.Start();
+        m_user.Reset();
     }
 
     private void FixedUpdate()
@@ -45,8 +48,6 @@ public class GameController : MonoBehaviour
 
         if (m_isPlayerMadeTurn)
         {
-            m_buttonsToMove = m_fieldController.GetMoveButtons();
-            m_fieldViewer.MoveButtons(m_buttonsToMove);
 
             m_fieldController.SetTurn(true);
             m_isPlayerMadeTurn = false;
@@ -62,23 +63,59 @@ public class GameController : MonoBehaviour
 
     void HandleTurn()
     {
-        if (Input.GetKeyDown(KeyCode.UpArrow))
+        switch(m_touchController.GetSwipeType())
         {
-            m_isPlayerMadeTurn = m_fieldController.UpTurn();
+            case SwipeType.Up:
+                UpTurn();
+                break;
+            case SwipeType.Down:
+                DownTurn();
+                break;
+            case SwipeType.Left:
+                LeftTurn();
+                break;
+            case SwipeType.Right:
+                RightTurn();
+                break;
         }
-        else if (Input.GetKeyDown(KeyCode.RightArrow))
+        if (m_isPlayerMadeTurn)
         {
-            m_isPlayerMadeTurn = m_fieldController.RightTurn();
+            int addPoints = m_fieldController.GetPointsFromLastTurn();
+            m_user.AddPoints(addPoints);
         }
-        else if (Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            m_isPlayerMadeTurn = m_fieldController.DownTurn();
-        }
-        else if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            m_isPlayerMadeTurn = m_fieldController.LeftTurn();
-        }
+
+        m_touchController.Reset();
     }
+
+    void UpTurn()
+    {
+        m_isPlayerMadeTurn = m_fieldController.UpTurn();
+
+        m_buttonsToMove = m_fieldController.GetMovedButtonsAdresesFromLastTurn();
+        m_fieldViewer.MoveButtons(m_buttonsToMove);
+    }
+    void RightTurn()
+    {
+        m_isPlayerMadeTurn = m_fieldController.RightTurn();
+
+        m_buttonsToMove = m_fieldController.GetMovedButtonsAdresesFromLastTurn();
+        m_fieldViewer.MoveButtons(m_buttonsToMove);
+    }
+    void DownTurn()
+    {
+        m_isPlayerMadeTurn = m_fieldController.DownTurn();
+
+        m_buttonsToMove = m_fieldController.GetMovedButtonsAdresesFromLastTurn();
+        m_fieldViewer.MoveButtons(m_buttonsToMove);
+    }
+    void LeftTurn()
+    {
+        m_isPlayerMadeTurn = m_fieldController.LeftTurn();
+
+        m_buttonsToMove = m_fieldController.GetMovedButtonsAdresesFromLastTurn();
+        m_fieldViewer.MoveButtons(m_buttonsToMove);
+    }
+
     void UpdateView()
     {
         ushort[,] values = m_fieldController.GetCurrentValues();
@@ -88,13 +125,16 @@ public class GameController : MonoBehaviour
 
     void CheckGameStatus()
     {
-
+        if (!m_fieldController.IsTurnPossible())
+        {
+            SetGameOver(true);
+        }
     }
 
     void SetGameOver(bool isGameover)
     {
         m_isGameover = isGameover;
         m_gameoverPanel.SetActive(m_isGameover);
-        m_newGameButton.interactable = m_isGameover;
+        m_newGameButton.interactable = !m_isGameover;
     }
 }
