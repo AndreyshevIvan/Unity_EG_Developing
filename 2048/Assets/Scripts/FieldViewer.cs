@@ -10,7 +10,12 @@ public class FieldViewer : MonoBehaviour
 
     public Color[] m_tilesColor;
 
-    public void MoveButtons(IntPair[] buttons)
+    private void Awake()
+    {
+        Debug.Log(GetColorNum(256));
+    }
+
+    public void MoveButtons(List<IntPair> buttons)
     {
 
     }
@@ -63,8 +68,20 @@ public class FieldViewer : MonoBehaviour
 
     int GetColorNum(ushort value)
     {
-        int num = (int)Mathf.Sqrt(value);
+        if (value < 2)
+        {
+            return 0;
+        }
 
-        return num;
+        int degree = 1;
+        int num = 2;
+
+        while (num != value)
+        {
+            num *= 2;
+            degree++;
+        }
+
+        return degree;
     }
 }

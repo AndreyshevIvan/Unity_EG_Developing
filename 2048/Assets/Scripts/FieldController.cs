@@ -7,13 +7,13 @@ public class FieldController : MonoBehaviour
 {
     const ushort m_fieldSize = 4;
     ushort[,] m_fieldValues;
+    List<IntPair> m_movedButtons;
 
-    StreamWriter m_log;
-
+    public float m_fourProbability;
 
     private void Awake()
     {
-        m_log = new StreamWriter("Assets/Debug/log.txt");
+        m_movedButtons = new List<IntPair>();
         m_fieldValues = new ushort[m_fieldSize, m_fieldSize];
     }
 
@@ -35,12 +35,13 @@ public class FieldController : MonoBehaviour
         }
     }
 
-    public IntPair[] GetMoveButtons()
+    public List<IntPair> GetMoveButtons()
     {
-        int i = 3;
-        IntPair[] buttonsAdreses = new IntPair[i];
-
-        return buttonsAdreses;
+        return m_movedButtons;
+    }
+    void ResetMovedButtons()
+    {
+        m_movedButtons.Clear();
     }
 
     public ushort[,] GetCurrentValues()
@@ -48,38 +49,142 @@ public class FieldController : MonoBehaviour
         return m_fieldValues;
     }
 
-    public void UpTurn()
+    public bool UpTurn()
     {
-    }
-    public void DownTurn()
-    {
-
-    }
-    public void LeftTurn()
-    {
+        ResetMovedButtons();
+        bool isMoveWasDone = false;
         ushort[] line = new ushort[m_fieldSize];
 
         for (int i = 0; i < m_fieldSize; i++)
         {
+            List<ushort> movedAdreses = new List<ushort>();
+
+            for (int j = 0; j < m_fieldSize; j++)
+            {
+                line[j] = m_fieldValues[j, i];
+            }
+
+            if (MoveLine(ref line, ref movedAdreses) && !isMoveWasDone)
+            {
+                isMoveWasDone = true;
+            }
+
+            for (int j = 0; j < m_fieldSize; j++)
+            {
+                m_fieldValues[j, i] = line[j];
+            }
+
+            for (int k = 0; k < movedAdreses.Count; k++)
+            {
+                m_movedButtons.Add(new IntPair(movedAdreses[k], i));
+            }
+        }
+
+        return isMoveWasDone;
+    }
+    public bool DownTurn()
+    {
+        ResetMovedButtons();
+        bool isMoveWasDone = false;
+        ushort[] line = new ushort[m_fieldSize];
+
+        for (int i = 0; i < m_fieldSize; i++)
+        {
+            List<ushort> movedAdreses = new List<ushort>();
+
+            for (int j = m_fieldSize; j > 0; j--)
+            {
+                line[m_fieldSize - j] = m_fieldValues[j - 1, i];
+            }
+
+            if (MoveLine(ref line, ref movedAdreses) && !isMoveWasDone)
+            {
+                isMoveWasDone = true;
+            }
+
+            for (int j = m_fieldSize; j > 0; j--)
+            {
+                m_fieldValues[j - 1, i] = line[m_fieldSize - j];
+            }
+
+            for (int k = 0; k < movedAdreses.Count; k++)
+            {
+                m_movedButtons.Add(new IntPair(movedAdreses[k], i));
+            }
+        }
+
+        return isMoveWasDone;
+    }
+    public bool LeftTurn()
+    {
+        ResetMovedButtons();
+        bool isMoveWasDone = false;
+        ushort[] line = new ushort[m_fieldSize];
+
+        for (int i = 0; i < m_fieldSize; i++)
+        {
+            List<ushort> movedAdreses = new List<ushort>();
+
             for (int j = 0; j < m_fieldSize; j++)
             {
                 line[j] = m_fieldValues[i, j];
             }
 
-            line = ConvertLine(line);
+            if (MoveLine(ref line, ref movedAdreses) && !isMoveWasDone)
+            {
+                isMoveWasDone = true;
+            }
 
             for (int j = 0; j < m_fieldSize; j++)
             {
                 m_fieldValues[i, j] = line[j];
             }
-        }
-    }
-    public void RightTurn()
-    {
 
+            for (int k = 0; k < movedAdreses.Count; k++)
+            {
+                m_movedButtons.Add(new IntPair(i, movedAdreses[k]));
+            }
+        }
+
+        return isMoveWasDone;
     }
-    ushort[] ConvertLine(ushort[] line)
+    public bool RightTurn()
     {
+        ResetMovedButtons();
+        bool isMoveWasDone = false;
+        ushort[] line = new ushort[m_fieldSize];
+
+        for (int i = 0; i < m_fieldSize; i++)
+        {
+            List<ushort> movedAdreses = new List<ushort>();
+
+            for (int j = m_fieldSize; j > 0; j--)
+            {
+                line[m_fieldSize - j] = m_fieldValues[i, j - 1];
+            }
+
+            if (MoveLine(ref line, ref movedAdreses) && !isMoveWasDone)
+            {
+                isMoveWasDone = true;
+            }
+
+            for (int j = m_fieldSize; j > 0; j--)
+            {
+                m_fieldValues[i, j - 1] = line[m_fieldSize - j];
+            }
+
+            for (int k = 0; k < movedAdreses.Count; k++)
+            {
+                m_movedButtons.Add(new IntPair(i, movedAdreses[k]));
+            }
+        }
+
+        return isMoveWasDone;
+    }
+    bool MoveLine(ref ushort[] line, ref List<ushort> movedAdreses)
+    {
+        bool isLineMoved = false;
+
         for (int i = 1; i < line.Length; i++)
         {
             ushort value = line[i];
@@ -96,27 +201,36 @@ public class FieldController : MonoBehaviour
                 {
                     line[position - 1] += value;
                     line[position] = 0;
+                    isLineMoved = true;
+                    movedAdreses.Add((ushort)position);
                 }
                 else if (line[position - 1] == 0)
                 {
                     line[position - 1] = value;
                     line[position] = 0;
+                    isLineMoved = true;
+                    movedAdreses.Add((ushort)position);
                 }
 
                 position--;
             }
         }
 
-        return line;
+        return isLineMoved;
     }
 
     public void SetTurn(bool isFourEnable)
     {
         int value = 2;
 
-        if (isFourEnable && Random.Range(0, 12) == 0)
+        if (isFourEnable)
         {
-            value *= value;
+            float random = Random.Range(0, 1.0f);
+
+            if (random < m_fourProbability)
+            {
+                value = value * 2;
+            }
         }
 
         List<int> freeTiles = new List<int>();
@@ -131,11 +245,8 @@ public class FieldController : MonoBehaviour
                 }
             }
         }
-        Debug.Log("COUNT " + freeTiles.Count);
 
         int randomTileNum = Random.Range(0, freeTiles.Count);
-
-        Debug.Log("RANDOM " + randomTileNum);
 
         for (int i = 0; i < m_fieldSize; i++)
         {
@@ -146,9 +257,6 @@ public class FieldController : MonoBehaviour
                     if (randomTileNum == 0)
                     {
                         m_fieldValues[i, j] = (ushort)value;
-                        Debug.Log("randomTileNum = " + randomTileNum);
-                        Debug.Log("Random adress [" + i + ", " + j + "]");
-
                     }
 
                     randomTileNum--;
@@ -179,27 +287,5 @@ public class FieldController : MonoBehaviour
         }
 
         return isAnyEmpty;
-    }
-
-    void WriteArrayToLog(ushort[] line)
-    {
-        string str = "";
-
-        for (int i = 0; i < line.Length; i++)
-        {
-            str += line[i].ToString();
-
-            if (i != line.Length - 1)
-            {
-                str += ", ";
-            }
-        }
-
-        m_log.WriteLine(str);
-    }
-
-    private void OnDestroy()
-    {
-        m_log.Close();
     }
 }
