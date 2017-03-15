@@ -20,7 +20,6 @@ public class GameController : MonoBehaviour
     private void Start()
     {
         m_fieldController.Start();
-        UpdateView();
     }
 
     private void FixedUpdate()
@@ -31,12 +30,14 @@ public class GameController : MonoBehaviour
         {
             m_buttonsToMove = m_fieldController.GetMoveButtons();
             m_fieldViewer.MoveButtons(m_buttonsToMove);
-            UpdateView();
 
             CheckGameStatus();
 
+            m_fieldController.SetTurn(true);
             m_isPlayerMadeTurn = false;
         }
+
+        UpdateView();
     }
 
     void HandleTurn()
@@ -56,7 +57,7 @@ public class GameController : MonoBehaviour
             m_fieldController.DownTurn();
             m_isPlayerMadeTurn = true;
         }
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        if (Input.GetKey(KeyCode.LeftArrow))
         {
             m_fieldController.LeftTurn();
             m_isPlayerMadeTurn = true;
