@@ -12,6 +12,7 @@ public class User : MonoBehaviour
     public void Reset()
     {
         m_points = 0;
+        m_UIController.SetPoints(0);
     }
 
     private void FixedUpdate()

@@ -3,19 +3,37 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public class FieldViewer : MonoBehaviour
 {
 
-    public GameObject[] m_tiles;
+    FieldController m_fieldController;
 
+    public GameObject[] m_tiles;
     public Color[] m_tilesColor;
+
     public Color m_darkColor;
     public Color m_lightColor;
     public ushort m_startLightColorNum;
 
-    public void MoveButtons(List<IntPair> buttons)
-    {
+    float m_animColdown = 0.1f;
+    float m_currAnimColdown = 0;
 
+    private void Awake()
+    {
+        m_fieldController = GetComponent<FieldController>();
+    }
+
+    private void FixedUpdate()
+    {
+        if (!IsAnimationsEnded())
+        {
+            {
+                // Animate turn
+            }
+
+            m_animColdown += Time.deltaTime;
+        }
     }
 
     public void UpdateView(ushort[,] values)
@@ -36,8 +54,9 @@ public class FieldViewer : MonoBehaviour
                 {
                     valueText.text = "";
                 }
-                else
+                else if (valueText.text != value.ToString())
                 {
+                    CreateSumAnimation(valueText, value, valueNum);
                     valueText.text = value.ToString();
                 }
             }
@@ -45,7 +64,6 @@ public class FieldViewer : MonoBehaviour
 
         UpdateTilesColor(values);
     }
-
     void UpdateTilesColor(ushort[,] values)
     {
         int rowsCount = values.GetLength(0);
@@ -65,6 +83,20 @@ public class FieldViewer : MonoBehaviour
                 Text txt = m_tiles[valueNum].GetComponentInChildren<Text>();
                 txt.color = txtColor;
             }
+        }
+    }
+    void CreateSumAnimation(Text valueText, int value, int valueNum)
+    {
+        int currValue = 0;
+
+        if (valueText.text != "")
+        {
+            currValue = int.Parse(valueText.text);
+        }
+
+        if (currValue * 2 == value)
+        {
+            m_tiles[valueNum].GetComponent<Animation>().Play();
         }
     }
 
@@ -91,5 +123,10 @@ public class FieldViewer : MonoBehaviour
         Color color = (value >= m_startLightColorNum) ? m_lightColor : m_darkColor;
 
         return color;
+    }
+
+    public bool IsAnimationsEnded()
+    {
+        return (m_currAnimColdown > m_animColdown);
     }
 }

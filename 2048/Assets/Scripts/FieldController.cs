@@ -7,14 +7,17 @@ public class FieldController : MonoBehaviour
 {
     const ushort m_fieldSize = 4;
     ushort[,] m_fieldValues;
-    List<IntPair> m_movedButtons;
+    ushort[,] m_moveMap;
+
     int m_points = 0;
 
     public float m_fourProbability;
 
+    bool m_isPlayerMadeTurn = false;
+
     private void Awake()
     {
-        m_movedButtons = new List<IntPair>();
+        m_moveMap = new ushort[m_fieldSize, m_fieldSize];
         m_fieldValues = new ushort[m_fieldSize, m_fieldSize];
     }
     public void Start()
@@ -33,18 +36,24 @@ public class FieldController : MonoBehaviour
             }
         }
     }
-    void ResetMovedButtons()
-    {
-        m_movedButtons.Clear();
-    }
     void ResetPoints()
     {
         m_points = 0;
     }
 
-    public List<IntPair> GetMovedButtonsAdresesFromLastTurn()
+    public ushort[,] GetMoveMap()
     {
-        return m_movedButtons;
+        return m_moveMap;
+    }
+    void ResetMoveMap()
+    {
+        for (int i = 0; i < m_fieldSize; i++)
+        {
+            for (int j = 0; j < m_fieldSize; j++)
+            {
+                m_moveMap[i, j] = 0;
+            }
+        }
     }
     public int GetPointsFromLastTurn()
     {
@@ -61,6 +70,8 @@ public class FieldController : MonoBehaviour
 
     public void SetTurn(bool isFourEnable)
     {
+        m_isPlayerMadeTurn = false;
+
         int value = 2;
 
         if (isFourEnable)
@@ -105,139 +116,107 @@ public class FieldController : MonoBehaviour
         }
     }
 
-    public bool UpTurn()
+    public void UpTurn()
     {
-        ResetMovedButtons();
-        bool isMoveWasDone = false;
+        ResetMoveMap();
         ushort[] line = new ushort[m_fieldSize];
+        ushort[] moveCount = new ushort[m_fieldSize];
 
         for (int i = 0; i < m_fieldSize; i++)
         {
-            List<ushort> movedAdreses = new List<ushort>();
-
             for (int j = 0; j < m_fieldSize; j++)
             {
                 line[j] = m_fieldValues[j, i];
             }
 
-            if (MoveLine(ref line, ref movedAdreses) && !isMoveWasDone)
+            if (MoveLine(ref line, ref moveCount))
             {
-                isMoveWasDone = true;
+                m_isPlayerMadeTurn = true;
             }
 
             for (int j = 0; j < m_fieldSize; j++)
             {
                 m_fieldValues[j, i] = line[j];
-            }
-
-            for (int k = 0; k < movedAdreses.Count; k++)
-            {
-                m_movedButtons.Add(new IntPair(movedAdreses[k], i));
+                m_moveMap[j, i] = moveCount[j];
             }
         }
-
-        return isMoveWasDone;
     }
-    public bool DownTurn()
+    public void DownTurn()
     {
-        ResetMovedButtons();
-        bool isMoveWasDone = false;
+        ResetMoveMap();
         ushort[] line = new ushort[m_fieldSize];
+        ushort[] moveCount = new ushort[m_fieldSize];
 
         for (int i = 0; i < m_fieldSize; i++)
         {
-            List<ushort> movedAdreses = new List<ushort>();
-
             for (int j = m_fieldSize; j > 0; j--)
             {
                 line[m_fieldSize - j] = m_fieldValues[j - 1, i];
             }
 
-            if (MoveLine(ref line, ref movedAdreses) && !isMoveWasDone)
+            if (MoveLine(ref line, ref moveCount))
             {
-                isMoveWasDone = true;
+                m_isPlayerMadeTurn = true;
             }
 
             for (int j = m_fieldSize; j > 0; j--)
             {
                 m_fieldValues[j - 1, i] = line[m_fieldSize - j];
-            }
-
-            for (int k = 0; k < movedAdreses.Count; k++)
-            {
-                m_movedButtons.Add(new IntPair(movedAdreses[k], i));
+                m_moveMap[j - 1, i] = moveCount[m_fieldSize - j];
             }
         }
-
-        return isMoveWasDone;
     }
-    public bool LeftTurn()
+    public void LeftTurn()
     {
-        ResetMovedButtons();
-        bool isMoveWasDone = false;
+        ResetMoveMap();
         ushort[] line = new ushort[m_fieldSize];
+        ushort[] moveCount = new ushort[m_fieldSize];
 
         for (int i = 0; i < m_fieldSize; i++)
         {
-            List<ushort> movedAdreses = new List<ushort>();
-
             for (int j = 0; j < m_fieldSize; j++)
             {
                 line[j] = m_fieldValues[i, j];
             }
 
-            if (MoveLine(ref line, ref movedAdreses) && !isMoveWasDone)
+            if (MoveLine(ref line, ref moveCount))
             {
-                isMoveWasDone = true;
+                m_isPlayerMadeTurn = true;
             }
 
             for (int j = 0; j < m_fieldSize; j++)
             {
                 m_fieldValues[i, j] = line[j];
-            }
-
-            for (int k = 0; k < movedAdreses.Count; k++)
-            {
-                m_movedButtons.Add(new IntPair(i, movedAdreses[k]));
+                m_moveMap[i, j] = moveCount[j];
             }
         }
-
-        return isMoveWasDone;
     }
-    public bool RightTurn()
+    public void RightTurn()
     {
-        ResetMovedButtons();
-        bool isMoveWasDone = false;
+        ResetMoveMap();
         ushort[] line = new ushort[m_fieldSize];
+        ushort[] moveCount = new ushort[m_fieldSize];
 
         for (int i = 0; i < m_fieldSize; i++)
         {
-            List<ushort> movedAdreses = new List<ushort>();
-
             for (int j = m_fieldSize; j > 0; j--)
             {
                 line[m_fieldSize - j] = m_fieldValues[i, j - 1];
             }
 
-            if (MoveLine(ref line, ref movedAdreses) && !isMoveWasDone)
+            if (MoveLine(ref line, ref moveCount))
             {
-                isMoveWasDone = true;
+                m_isPlayerMadeTurn = true;
             }
 
             for (int j = m_fieldSize; j > 0; j--)
             {
                 m_fieldValues[i, j - 1] = line[m_fieldSize - j];
-            }
-
-            for (int k = 0; k < movedAdreses.Count; k++)
-            {
-                m_movedButtons.Add(new IntPair(i, movedAdreses[k]));
+                m_moveMap[i, j - 1] = moveCount[m_fieldSize - j];
             }
         }
-
-        return isMoveWasDone;
     }
-    bool MoveLine(ref ushort[] line, ref List<ushort> movedAdreses)
+    bool MoveLine(ref ushort[] line, ref ushort[] moveCount)
     {
         bool isLineMoved = false;
 
@@ -258,12 +237,14 @@ public class FieldController : MonoBehaviour
                     m_points += line[position - 1];
                     line[position] = 0;
                     isLineMoved = true;
+                    moveCount[i]++;
                 }
                 else if (line[position - 1] == 0)
                 {
                     line[position - 1] = value;
                     line[position] = 0;
                     isLineMoved = true;
+                    moveCount[i]++;
                 }
 
                 position--;
@@ -314,5 +295,9 @@ public class FieldController : MonoBehaviour
         }
 
         return isAnyEmpty;
+    }
+    public bool IsPlayerMadeTurn()
+    {
+        return m_isPlayerMadeTurn;
     }
 }

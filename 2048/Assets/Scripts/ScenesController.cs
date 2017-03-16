@@ -6,13 +6,16 @@ using UnityEngine.SceneManagement;
 public class ScenesController : MonoBehaviour
 {
 
+    float m_coldown = 0.25f;
+
     public void SetMenuScene()
     {
         SceneManager.LoadScene("Scenes/Menu");
     }
 
-    public void SetGameplayScene()
+    public IEnumerator SetGameplayScene()
     {
+        yield return new WaitForSeconds(m_coldown);
         SceneManager.LoadScene("Scenes/Gameplay");
     }
 

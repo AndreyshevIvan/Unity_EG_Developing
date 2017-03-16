@@ -15,7 +15,7 @@ public class UIController : MonoBehaviour
     {
 
     }
-
+ 
     public void SetPoints(int points)
     {
         m_points.text = points.ToString();
@@ -27,7 +27,7 @@ public class UIController : MonoBehaviour
 
         Vector3 initPosition = m_announcementsParent.transform.position;
         m_currAnnouncement = Instantiate(m_announcement, initPosition, Quaternion.identity);
-        m_currAnnouncement.transform.parent = m_announcementsParent.transform;
         m_currAnnouncement.GetComponentInChildren<PointsAnnouncement>().SetPoints(addPoints);
+        m_currAnnouncement.transform.SetParent(m_announcementsParent.transform);
     }
 }

@@ -3,16 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-public class IntPair
+public class TileAnimData
 {
-    public IntPair(int first, int second)
+    public TileAnimData(int first, int second, int third)
     {
         m_first = first;
         m_second = second;
+        m_third = third;
     }
 
     int m_first;
     int m_second;
+    int m_third;
 
     public int first
     {
@@ -37,6 +39,19 @@ public class IntPair
         set
         {
             m_second = value;
+        }
+    }
+
+    public int third
+    {
+        get
+        {
+            return m_third;
+        }
+
+        set
+        {
+            m_third = value;
         }
     }
 }
