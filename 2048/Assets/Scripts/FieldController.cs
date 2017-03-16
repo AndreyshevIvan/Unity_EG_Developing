@@ -1,13 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.IO;
 
 public class FieldController : MonoBehaviour
 {
     const ushort m_fieldSize = 4;
     ushort[,] m_fieldValues;
+    ushort[,] m_fieldCopy;
     ushort[,] m_moveMap;
+    bool[,] m_sumMap;
+    bool[,] m_changeMask;
 
     int m_points = 0;
 
@@ -19,12 +21,16 @@ public class FieldController : MonoBehaviour
     {
         m_moveMap = new ushort[m_fieldSize, m_fieldSize];
         m_fieldValues = new ushort[m_fieldSize, m_fieldSize];
+        m_fieldCopy = new ushort[m_fieldSize, m_fieldSize];
+        m_changeMask = new bool[m_fieldSize, m_fieldSize];
+        m_sumMap = new bool[m_fieldSize, m_fieldSize];
     }
-    public void Start()
+
+    public void StartEvent()
     {
         ResetField();
-        SetTurn(true);
-        SetTurn(false);
+        SetAutoTurn(true);
+        SetAutoTurn(false);
     }
     void ResetField()
     {
@@ -40,20 +46,21 @@ public class FieldController : MonoBehaviour
     {
         m_points = 0;
     }
-
-    public ushort[,] GetMoveMap()
-    {
-        return m_moveMap;
-    }
-    void ResetMoveMap()
+    void ResetMaps()
     {
         for (int i = 0; i < m_fieldSize; i++)
         {
             for (int j = 0; j < m_fieldSize; j++)
             {
                 m_moveMap[i, j] = 0;
+                m_sumMap[i, j] = false;
             }
         }
+    }
+
+    public ushort[,] GetCurrentAnimMap()
+    {
+        return m_moveMap;
     }
     public int GetPointsFromLastTurn()
     {
@@ -62,16 +69,16 @@ public class FieldController : MonoBehaviour
 
         return points;
     }
-
+    public int GetFieldSize()
+    {
+        return m_fieldSize;
+    }
     public ushort[,] GetCurrentValues()
     {
         return m_fieldValues;
     }
-
-    public void SetTurn(bool isFourEnable)
+    int GetRandomValue(bool isFourEnable)
     {
-        m_isPlayerMadeTurn = false;
-
         int value = 2;
 
         if (isFourEnable)
@@ -84,6 +91,10 @@ public class FieldController : MonoBehaviour
             }
         }
 
+        return value;
+    }
+    List<int> GetFreeTiles()
+    {
         List<int> freeTiles = new List<int>();
 
         for (int i = 0; i < m_fieldSize; i++)
@@ -96,6 +107,24 @@ public class FieldController : MonoBehaviour
                 }
             }
         }
+
+        return freeTiles;
+    }
+    public bool[,] GetChangeMask()
+    {
+        return m_changeMask;
+    }
+    public bool[,] GetSumMap()
+    {
+        return m_sumMap;
+    }
+
+    public void SetAutoTurn(bool isFourEnable)
+    {
+        CreateFieldCopy();
+        m_isPlayerMadeTurn = false;
+        int value = GetRandomValue(isFourEnable);
+        List<int> freeTiles = GetFreeTiles();
 
         int randomTileNum = Random.Range(0, freeTiles.Count);
 
@@ -114,112 +143,140 @@ public class FieldController : MonoBehaviour
                 }
             }
         }
+
+        IsFieldChanged();
     }
 
     public void UpTurn()
     {
-        ResetMoveMap();
+        ResetMaps();
+        CreateFieldCopy();
         ushort[] line = new ushort[m_fieldSize];
-        ushort[] moveCount = new ushort[m_fieldSize];
 
         for (int i = 0; i < m_fieldSize; i++)
         {
+            ushort[] moveCount = new ushort[m_fieldSize];
+            bool[] lineSumMap = new bool[m_fieldSize];
+
+            for (int j = 0; j < m_fieldSize; j++)
+            {
+                lineSumMap[j] = false;
+            }
+
             for (int j = 0; j < m_fieldSize; j++)
             {
                 line[j] = m_fieldValues[j, i];
             }
 
-            if (MoveLine(ref line, ref moveCount))
-            {
-                m_isPlayerMadeTurn = true;
-            }
+            MoveLine(ref line, ref moveCount, ref lineSumMap);
 
             for (int j = 0; j < m_fieldSize; j++)
             {
                 m_fieldValues[j, i] = line[j];
                 m_moveMap[j, i] = moveCount[j];
+                m_sumMap[j, i] = lineSumMap[j];
             }
         }
+        m_isPlayerMadeTurn = IsFieldChanged();
     }
     public void DownTurn()
     {
-        ResetMoveMap();
+        ResetMaps();
+        CreateFieldCopy();
         ushort[] line = new ushort[m_fieldSize];
-        ushort[] moveCount = new ushort[m_fieldSize];
 
         for (int i = 0; i < m_fieldSize; i++)
         {
+            ushort[] moveCount = new ushort[m_fieldSize];
+            bool[] lineSumMap = new bool[m_fieldSize];
+
+            for (int j = 0; j < m_fieldSize; j++)
+            {
+                lineSumMap[j] = false;
+            }
+
             for (int j = m_fieldSize; j > 0; j--)
             {
                 line[m_fieldSize - j] = m_fieldValues[j - 1, i];
             }
 
-            if (MoveLine(ref line, ref moveCount))
-            {
-                m_isPlayerMadeTurn = true;
-            }
+            MoveLine(ref line, ref moveCount, ref lineSumMap);
 
             for (int j = m_fieldSize; j > 0; j--)
             {
                 m_fieldValues[j - 1, i] = line[m_fieldSize - j];
                 m_moveMap[j - 1, i] = moveCount[m_fieldSize - j];
+                m_sumMap[j - 1, i] = lineSumMap[m_fieldSize - j];
             }
         }
+        m_isPlayerMadeTurn = IsFieldChanged();
     }
     public void LeftTurn()
     {
-        ResetMoveMap();
+        ResetMaps();
+        CreateFieldCopy();
         ushort[] line = new ushort[m_fieldSize];
-        ushort[] moveCount = new ushort[m_fieldSize];
+        bool[] lineSumMap = new bool[m_fieldSize];
 
         for (int i = 0; i < m_fieldSize; i++)
         {
+            ushort[] moveCount = new ushort[m_fieldSize];
+
+            for (int j = 0; j < m_fieldSize; j++)
+            {
+                lineSumMap[j] = false;
+            }
+
             for (int j = 0; j < m_fieldSize; j++)
             {
                 line[j] = m_fieldValues[i, j];
             }
 
-            if (MoveLine(ref line, ref moveCount))
-            {
-                m_isPlayerMadeTurn = true;
-            }
+            MoveLine(ref line, ref moveCount, ref lineSumMap);
 
             for (int j = 0; j < m_fieldSize; j++)
             {
                 m_fieldValues[i, j] = line[j];
                 m_moveMap[i, j] = moveCount[j];
+                m_sumMap[i, j] = lineSumMap[j];
             }
         }
+        m_isPlayerMadeTurn = IsFieldChanged();
     }
     public void RightTurn()
     {
-        ResetMoveMap();
+        ResetMaps();
+        CreateFieldCopy();
         ushort[] line = new ushort[m_fieldSize];
-        ushort[] moveCount = new ushort[m_fieldSize];
+        bool[] lineSumMap = new bool[m_fieldSize];
 
         for (int i = 0; i < m_fieldSize; i++)
         {
+            ushort[] moveCount = new ushort[m_fieldSize];
+
+            for (int j = 0; j < m_fieldSize; j++)
+            {
+                lineSumMap[j] = false;
+            }
+
             for (int j = m_fieldSize; j > 0; j--)
             {
                 line[m_fieldSize - j] = m_fieldValues[i, j - 1];
             }
 
-            if (MoveLine(ref line, ref moveCount))
-            {
-                m_isPlayerMadeTurn = true;
-            }
+            MoveLine(ref line, ref moveCount, ref lineSumMap);
 
             for (int j = m_fieldSize; j > 0; j--)
             {
                 m_fieldValues[i, j - 1] = line[m_fieldSize - j];
                 m_moveMap[i, j - 1] = moveCount[m_fieldSize - j];
+                m_sumMap[i, j - 1] = lineSumMap[m_fieldSize - j];
             }
         }
+        m_isPlayerMadeTurn = IsFieldChanged();
     }
-    bool MoveLine(ref ushort[] line, ref ushort[] moveCount)
+    void MoveLine(ref ushort[] line, ref ushort[] moveCount, ref bool[] lineSumMap)
     {
-        bool isLineMoved = false;
-
         for (int i = 1; i < line.Length; i++)
         {
             ushort value = line[i];
@@ -231,27 +288,34 @@ public class FieldController : MonoBehaviour
                 {
                     break;
                 }
-                else if (line[position - 1] == value)
+                else if (line[position - 1] == value && value != 0)
                 {
                     line[position - 1] += value;
+                    lineSumMap[position - 1] = true;
                     m_points += line[position - 1];
                     line[position] = 0;
-                    isLineMoved = true;
                     moveCount[i]++;
                 }
                 else if (line[position - 1] == 0)
                 {
                     line[position - 1] = value;
                     line[position] = 0;
-                    isLineMoved = true;
                     moveCount[i]++;
                 }
 
                 position--;
             }
         }
-
-        return isLineMoved;
+    }
+    void CreateFieldCopy()
+    {
+        for (int i = 0; i < m_fieldSize; i++)
+        {
+            for (int j = 0; j < m_fieldSize; j++)
+            {
+                m_fieldCopy[i, j] = m_fieldValues[i, j];
+            }
+        }
     }
 
     public bool IsTurnPossible()
@@ -299,5 +363,25 @@ public class FieldController : MonoBehaviour
     public bool IsPlayerMadeTurn()
     {
         return m_isPlayerMadeTurn;
+    }
+    bool IsFieldChanged()
+    {
+        bool isFeldChange = false;
+
+        for (int i = 0; i < m_fieldSize; i++)
+        {
+            for (int j = 0; j < m_fieldSize; j++)
+            {
+                bool isTileChange = (m_fieldCopy[i, j] != m_fieldValues[i, j]);
+                m_changeMask[i, j] = isTileChange;
+
+                if (isTileChange)
+                {
+                    isFeldChange = true;
+                }
+            }
+        }
+
+        return isFeldChange;
     }
 }

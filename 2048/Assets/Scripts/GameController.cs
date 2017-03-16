@@ -15,7 +15,6 @@ public class GameController : MonoBehaviour
 
     ushort[,] m_buttonsToMove;
 
-    bool m_isPlayerMadeTurn = false;
     bool m_isGameover = false;
 
     private void Start()
@@ -26,9 +25,9 @@ public class GameController : MonoBehaviour
     public void StartGame()
     {
         SetGameOver(false);
-        m_fieldController.Start();
+        m_fieldController.StartEvent();
         m_user.Reset();
-        UpdateView();
+        m_fieldViewer.UpdateView();
     }
 
     private void FixedUpdate()
@@ -44,27 +43,21 @@ public class GameController : MonoBehaviour
     }
     void GameplayUpdate()
     {
-        if (m_fieldController.IsPlayerMadeTurn())
+        if (m_fieldController.IsPlayerMadeTurn() && m_fieldViewer.IsAnimationsEnded())
         {
-            m_fieldController.SetTurn(true);
-            m_isPlayerMadeTurn = false;
+            m_fieldController.SetAutoTurn(true);
+            bool[,] changeMask = m_fieldController.GetChangeMask();
+
+            m_fieldViewer.UpdateView();
+            m_fieldViewer.CreateSumAnimationFromMask(changeMask);
+            m_user.AddPoints();
         }
 
-        UpdateView();
         CheckGameStatus();
     }
     void GameoverUpdate()
     {
 
-    }
-
-    void UpdateView()
-    {
-        int addPoints = m_fieldController.GetPointsFromLastTurn();
-        m_user.AddPoints(addPoints);
-
-        ushort[,] values = m_fieldController.GetCurrentValues();
-        m_fieldViewer.UpdateView(values);
     }
 
     void CheckGameStatus()

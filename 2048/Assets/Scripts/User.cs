@@ -5,6 +5,7 @@ using UnityEngine;
 public class User : MonoBehaviour
 {
 
+    public FieldController m_fieldController;
     public UIController m_UIController;
 
     int m_points = 0;
@@ -20,13 +21,15 @@ public class User : MonoBehaviour
 
     }
 
-    public void AddPoints(int addPoints)
+    public void AddPoints()
     {
-        if (addPoints != 0)
+        int points = m_fieldController.GetPointsFromLastTurn();
+
+        if (points != 0)
         {
-            m_points += addPoints;
+            m_points += points;
             m_UIController.SetPoints(m_points);
-            m_UIController.CreateAnnouncement(addPoints);
+            m_UIController.CreateAnnouncement(points);
         }
     }
 }

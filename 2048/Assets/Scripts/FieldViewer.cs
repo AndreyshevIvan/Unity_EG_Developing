@@ -11,33 +11,103 @@ public class FieldViewer : MonoBehaviour
 
     public GameObject[] m_tiles;
     public Color[] m_tilesColor;
+    int m_fieldSize;
 
     public Color m_darkColor;
     public Color m_lightColor;
     public ushort m_startLightColorNum;
 
-    float m_animColdown = 0.1f;
+    Vector2[,] m_startTilesPositions;
+    const float m_animColdown = 0.1f;
     float m_currAnimColdown = 0;
+    Vector2 m_animDirection;
+    ushort[,] m_animnMap;
+    const float m_animOneOffset = 120;
 
     private void Awake()
     {
         m_fieldController = GetComponent<FieldController>();
+        m_fieldSize = m_fieldController.GetFieldSize();
+        m_currAnimColdown = 2 * m_animColdown;
+
+        SaveStartTilesPositions();
     }
 
     private void FixedUpdate()
     {
         if (!IsAnimationsEnded())
         {
-            {
-                // Animate turn
-            }
+            MoveTiles();
 
-            m_animColdown += Time.deltaTime;
+            m_currAnimColdown += Time.deltaTime;
         }
     }
 
-    public void UpdateView(ushort[,] values)
+    void MoveTiles()
     {
+        for (int i = 0; i < m_fieldSize; i++)
+        {
+            for (int j = 0; j < m_fieldSize; j++)
+            {
+                if (m_animnMap[i, j] != 0)
+                {
+                    int tileNum = i * m_fieldSize + j;
+                    int offsetCount = m_animnMap[i, j];
+                    float time = Time.deltaTime / m_animColdown;
+                    Vector2 distance = m_animDirection * m_animOneOffset * offsetCount;
+
+                    m_tiles[tileNum].transform.Translate(distance * time);
+                }
+            }
+        }
+    }
+    public void AnimateRightTurn()
+    {
+        if (GetAnimInfo())
+        {
+            m_animDirection = Vector2.right;
+        }
+    }
+    public void AnimateLeftTurn()
+    {
+        if (GetAnimInfo())
+        {
+            m_animDirection = Vector2.left;
+        }
+    }
+    public void AnimateUpTurn()
+    {
+        if (GetAnimInfo())
+        {
+            m_animDirection = Vector2.up;
+        }
+    }
+    public void AnimateDownTurn()
+    {
+        if (GetAnimInfo())
+        {
+            m_animDirection = Vector2.down;
+        }
+    }
+    bool GetAnimInfo()
+    {
+        if (m_fieldController.IsPlayerMadeTurn())
+        {
+            m_animnMap = m_fieldController.GetCurrentAnimMap();
+            m_currAnimColdown = 0;
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public void UpdateView()
+    {
+        SetStartTilePositions();
+
+        ushort[,] values = m_fieldController.GetCurrentValues();
+
         int rowsCount = values.GetLength(0);
         int collsCount = values.GetLength(1);
 
@@ -56,9 +126,11 @@ public class FieldViewer : MonoBehaviour
                 }
                 else if (valueText.text != value.ToString())
                 {
-                    CreateSumAnimation(valueText, value, valueNum);
                     valueText.text = value.ToString();
                 }
+
+                bool[,] sumMap = m_fieldController.GetSumMap();
+                CreateSumAnimationFromMask(sumMap);
             }
         }
 
@@ -85,18 +157,30 @@ public class FieldViewer : MonoBehaviour
             }
         }
     }
-    void CreateSumAnimation(Text valueText, int value, int valueNum)
+    public void CreateSumAnimationFromMask(bool[,] mask)
     {
-        int currValue = 0;
-
-        if (valueText.text != "")
+        for (int i = 0; i < m_fieldSize; i++)
         {
-            currValue = int.Parse(valueText.text);
+            for (int j = 0; j < m_fieldSize; j++)
+            {
+                if (mask[i, j])
+                {
+                    int tile = i * m_fieldSize + j;
+                    m_tiles[tile].GetComponent<Animation>().Play();
+                }
+            }
         }
-
-        if (currValue * 2 == value)
+    }
+    void SetStartTilePositions()
+    {
+        for (int i = 0; i < m_fieldSize; i++)
         {
-            m_tiles[valueNum].GetComponent<Animation>().Play();
+            for (int j = 0; j < m_fieldSize; j++)
+            {
+                int tile = i * m_fieldSize + j;
+
+                m_tiles[tile].transform.position = m_startTilesPositions[i, j];
+            }
         }
     }
 
@@ -125,8 +209,23 @@ public class FieldViewer : MonoBehaviour
         return color;
     }
 
+    void SaveStartTilesPositions()
+    {
+        m_startTilesPositions = new Vector2[m_fieldSize, m_fieldSize];
+        int tile = 0;
+
+        for (int i = 0; i < m_fieldSize; i++)
+        {
+            for (int j = 0; j < m_fieldSize; j++)
+            {
+                m_startTilesPositions[i, j] = m_tiles[tile].transform.position;
+                tile++;
+            }
+        }
+    }
+
     public bool IsAnimationsEnded()
     {
-        return (m_currAnimColdown > m_animColdown);
+        return (m_currAnimColdown >= m_animColdown);
     }
 }
