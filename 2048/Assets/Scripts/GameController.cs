@@ -9,16 +9,21 @@ public class GameController : MonoBehaviour
     public FieldController m_fieldController;
     public FieldViewer m_fieldViewer;
     public User m_user;
+    public UIController m_UIController;
+    DataController m_data;
+
+    int m_mapIndex;
 
     public GameObject m_gameoverPanel;
     public Button m_newGameButton;
-
-    ushort[,] m_buttonsToMove;
 
     bool m_isGameover = false;
 
     private void Start()
     {
+        m_data = new DataController();
+        m_mapIndex = m_data.GetMapIndex();
+
         StartGame();
     }
 
@@ -28,6 +33,9 @@ public class GameController : MonoBehaviour
         m_fieldController.StartEvent();
         m_user.Reset();
         m_fieldViewer.UpdateView();
+
+        int bestScore = m_data.GetBestScore(m_mapIndex);
+        m_UIController.SetBestScore(bestScore);
     }
 
     private void FixedUpdate()
@@ -50,7 +58,7 @@ public class GameController : MonoBehaviour
 
             m_fieldViewer.UpdateView();
             m_fieldViewer.CreateSumAnimationFromMask(changeMask);
-            m_user.AddPoints();
+            m_user.UpdateInfo();
         }
 
         CheckGameStatus();
@@ -74,5 +82,15 @@ public class GameController : MonoBehaviour
         m_gameoverPanel.SetActive(m_isGameover);
         m_gameoverPanel.GetComponent<Animation>().Play();
         m_newGameButton.interactable = !m_isGameover;
+
+        if (isGameover)
+        {
+            GameoverEvents();
+        }
+    }
+    void GameoverEvents()
+    {
+        int userPoints = m_user.GetPoints();
+        m_data.SetBestScore(m_mapIndex, userPoints);
     }
 }

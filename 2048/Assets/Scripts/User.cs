@@ -9,19 +9,16 @@ public class User : MonoBehaviour
     public UIController m_UIController;
 
     int m_points = 0;
+    string m_name = "@username";
 
     public void Reset()
     {
         m_points = 0;
+
         m_UIController.SetPoints(0);
     }
 
-    private void FixedUpdate()
-    {
-
-    }
-
-    public void AddPoints()
+    public void UpdateInfo()
     {
         int points = m_fieldController.GetPointsFromLastTurn();
 
@@ -31,5 +28,19 @@ public class User : MonoBehaviour
             m_UIController.SetPoints(m_points);
             m_UIController.CreateAnnouncement(points);
         }
+    }
+
+    public int GetPoints()
+    {
+        return m_points;
+    }
+    public string GetName()
+    {
+        return m_name;
+    }
+
+    public void SetName(string name)
+    {
+        m_name = name;
     }
 }

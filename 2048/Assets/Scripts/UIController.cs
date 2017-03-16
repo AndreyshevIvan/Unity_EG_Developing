@@ -7,6 +7,8 @@ public class UIController : MonoBehaviour
 {
 
     public Text m_points;
+    public Text m_bestScore;
+
     public GameObject m_announcement;
     public GameObject m_announcementsParent;
     GameObject m_currAnnouncement;
@@ -19,6 +21,10 @@ public class UIController : MonoBehaviour
     public void SetPoints(int points)
     {
         m_points.text = points.ToString();
+    }
+    public void SetBestScore(int points)
+    {
+        m_bestScore.text = points.ToString();
     }
 
     public void CreateAnnouncement(int addPoints)
