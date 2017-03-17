@@ -5,19 +5,28 @@ using UnityEngine;
 public class MenuController : MonoBehaviour
 {
 
-    public GameObject m_menuButtons;
+    public GameObject m_sceneCurtain;
 
     ScenesController m_sceneController;
 
     private void Awake()
     {
         m_sceneController = new ScenesController();
+        m_sceneCurtain.SetActive(false);
     }
 
     public void SetReadNameScene()
     {
-        m_menuButtons.GetComponent<Animation>().Play();
+        m_sceneCurtain.SetActive(true);
+        m_sceneCurtain.GetComponent<Animation>().Play();
         StartCoroutine(m_sceneController.SetReadnameScene());
+    }
+
+    public void SetStatsScene()
+    {
+        m_sceneCurtain.SetActive(true);
+        m_sceneCurtain.GetComponent<Animation>().Play();
+        StartCoroutine(m_sceneController.SetScoresScene());
     }
 
 }

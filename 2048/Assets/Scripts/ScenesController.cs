@@ -8,8 +8,9 @@ public class ScenesController : MonoBehaviour
 
     float m_coldown = 0.25f;
 
-    public void SetMenuScene()
+    public IEnumerator SetMenuScene()
     {
+        yield return new WaitForSeconds(m_coldown);
         SceneManager.LoadScene("Scenes/Menu");
     }
 
@@ -19,8 +20,9 @@ public class ScenesController : MonoBehaviour
         SceneManager.LoadScene("Scenes/Gameplay");
     }
 
-    public void SetScoresScene()
+    public IEnumerator SetScoresScene()
     {
+        yield return new WaitForSeconds(m_coldown);
         SceneManager.LoadScene("Scenes/Scores");
     }
 

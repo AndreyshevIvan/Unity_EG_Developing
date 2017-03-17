@@ -379,6 +379,8 @@ public class FieldController : MonoBehaviour
                 if (m_fieldValues[i,j] == 0)
                 {
                     isAnyEmpty = true;
+                    i = m_fieldSize;
+                    j = m_fieldSize;
                 }
             }
         }

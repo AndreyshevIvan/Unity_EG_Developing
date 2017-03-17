@@ -7,24 +7,30 @@ public class Field : MonoBehaviour
 
     FieldController m_fieldController;
     FieldViewer m_fieldViewer;
-    FieldEventsHandler m_fieldEventsHandler;
 
+    public GameObject m_backgroundsParent;
     public GameObject m_tile;
+    public GameObject m_tileBackground;
 
     byte m_fieldSize;
     Vector2 m_tileSize;
     Vector2 m_fieldRectSize;
+    Vector2 m_backTileSize;
     public int m_offset;
+    int m_tilesCount;
 
     private void Awake()
     {
         m_fieldController = GetComponent<FieldController>();
         m_fieldViewer = GetComponent<FieldViewer>();
-        m_fieldEventsHandler = GetComponent<FieldEventsHandler>();
+
+        m_backgroundsParent = Instantiate(m_backgroundsParent);
+        m_backgroundsParent.transform.SetParent(transform);
     }
     public void Create(byte size)
     {
         m_fieldSize = size;
+        m_tilesCount = m_fieldSize * m_fieldSize;
         m_fieldRectSize = GetComponent<RectTransform>().rect.size;
 
         SpawnTiles();
@@ -35,15 +41,16 @@ public class Field : MonoBehaviour
     {
         SetTileSize();
 
-        GameObject[] tiles = new GameObject[m_fieldSize * m_fieldSize];
-        int tilesCount = m_fieldSize * m_fieldSize;
+        GameObject[] tiles = new GameObject[m_tilesCount];
         Vector2 startPos = transform.position + (new Vector3(m_offset, -m_offset, 0));
         Vector2 spawnPos = startPos;
         int tileInRowNum = m_fieldSize;
         Vector3 pivotOffset = new Vector3(m_tileSize.x / 2, -m_tileSize.y / 2, 0);
 
-        for (int i = 0; i < tilesCount; i++)
+        for (int i = 0; i < m_tilesCount; i++)
         {
+            SpawnTileBackground(spawnPos);
+
             tileInRowNum--;
             tiles[i] = Instantiate(m_tile);
             tiles[i].transform.SetParent(transform);
@@ -61,8 +68,17 @@ public class Field : MonoBehaviour
             }
         }
 
-
         m_fieldViewer.Init(ref tiles, m_fieldSize);
+    }
+    void SpawnTileBackground(Vector2 position)
+    {
+        GameObject back = Instantiate(m_tileBackground, position, Quaternion.identity);
+        back.transform.SetParent(m_backgroundsParent.transform);
+
+        RectTransform backTransform = back.GetComponent<RectTransform>();
+
+        backTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, m_backTileSize.x);
+        backTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, m_backTileSize.y);
     }
     public void StartEvents()
     {
@@ -113,6 +129,7 @@ public class Field : MonoBehaviour
         tileTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, tileSize);
 
         m_tileSize = tileTransform.rect.size;
+        m_backTileSize = tileTransform.rect.size;
     }
 
     public bool IsAutoTurnAllowed()
