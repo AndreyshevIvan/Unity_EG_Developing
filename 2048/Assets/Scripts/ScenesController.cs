@@ -24,8 +24,9 @@ public class ScenesController : MonoBehaviour
         SceneManager.LoadScene("Scenes/Scores");
     }
 
-    public void SetReadnameScene()
+    public IEnumerator SetReadnameScene()
     {
+        yield return new WaitForSeconds(m_coldown);
         SceneManager.LoadScene("Scenes/ReadName");
     }
 

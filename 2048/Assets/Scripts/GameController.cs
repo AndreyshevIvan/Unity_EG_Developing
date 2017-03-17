@@ -6,9 +6,7 @@ using UnityEngine.UI;
 public class GameController : MonoBehaviour
 {
     public MapLoader m_mapLoader;
-
-    FieldController m_fieldController;
-    FieldViewer m_fieldViewer;
+    Field m_field;
 
     public User m_user;
     public UIController m_UIController;
@@ -21,13 +19,14 @@ public class GameController : MonoBehaviour
 
     bool m_isGameover = false;
 
-    private void Start()
+    private void Awake()
     {
         m_mapIndex = m_data.GetMapIndex();
+        m_field = m_mapLoader.GetField(m_mapIndex);
+    }
 
-        m_mapLoader.Init(0);
-        m_fieldController = m_mapLoader.GetFieldController();
-        m_fieldViewer = m_mapLoader.GetFieldViewer();
+    private void Start()
+    {
 
         string userName = m_data.GetUsername();
         m_user.SetName(userName);
@@ -38,9 +37,8 @@ public class GameController : MonoBehaviour
     public void StartGame()
     {
         SetGameOver(false);
-        m_fieldController.StartEvent();
         m_user.Reset();
-        m_fieldViewer.UpdateView();
+        m_field.StartEvents();
 
         uint bestScore = m_data.GetBestScore(m_mapIndex);
         m_UIController.SetBestScore(bestScore);
@@ -59,15 +57,11 @@ public class GameController : MonoBehaviour
     }
     void GameplayUpdate()
     {
-        if (m_fieldController.IsPlayerMadeTurn() && m_fieldViewer.IsAnimationsEnded())
+        if (m_field.IsTurnAllowed())
         {
-            m_fieldController.SetAutoTurn(true);
-            bool[,] changeMask = m_fieldController.GetChangeMask();
+            m_field.SetAutoTurn(true);
 
-            m_fieldViewer.UpdateView();
-            m_fieldViewer.CreateSumAnimationFromMask(changeMask);
-
-            uint pointsToAdd = m_fieldController.GetPointsFromLastTurn();
+            uint pointsToAdd = m_field.GetPointsFromLastTurn();
             m_user.AddPoints(pointsToAdd);
         }
 
@@ -80,7 +74,7 @@ public class GameController : MonoBehaviour
 
     void CheckGameStatus()
     {
-        if (!m_fieldController.IsTurnPossible())
+        if (!m_field.IsTurnPossible())
         {
             SetGameOver(true);
         }

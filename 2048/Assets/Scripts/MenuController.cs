@@ -14,10 +14,10 @@ public class MenuController : MonoBehaviour
         m_sceneController = new ScenesController();
     }
 
-    public void SetGameplayScene()
+    public void SetReadNameScene()
     {
         m_menuButtons.GetComponent<Animation>().Play();
-        StartCoroutine(m_sceneController.SetGameplayScene());
+        StartCoroutine(m_sceneController.SetReadnameScene());
     }
 
 }

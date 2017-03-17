@@ -9,7 +9,14 @@ public class ReadNameController : MonoBehaviour
 
     public InputField m_nameField;
 
-    void SetInfo(byte mapIndex)
+    ScenesController m_sceneController;
+
+    private void Awake()
+    {
+        m_sceneController = new ScenesController();
+    }
+
+    public void SetInfo(int mapIndex)
     {
         m_data.SetMapIndex(mapIndex);
 
@@ -19,5 +26,9 @@ public class ReadNameController : MonoBehaviour
     {
         string playerName = m_nameField.text;
         m_data.SetUsername(playerName);
+    }
+    public void SetGameplayScene()
+    {
+        StartCoroutine(m_sceneController.SetGameplayScene());
     }
 }

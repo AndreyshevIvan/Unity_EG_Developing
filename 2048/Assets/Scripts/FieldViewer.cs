@@ -6,12 +6,11 @@ using UnityEngine.UI;
 
 public class FieldViewer : MonoBehaviour
 {
-
     FieldController m_fieldController;
 
-    public GameObject[] m_tiles;
+    GameObject[] m_tiles;
     public Color[] m_tilesColor;
-    int m_fieldSize;
+    byte m_fieldSize;
 
     public Color m_darkColor;
     public Color m_lightColor;
@@ -23,14 +22,20 @@ public class FieldViewer : MonoBehaviour
     float m_currAnimColdown = 0;
     Vector2 m_animDirection;
     byte[,] m_animnMap;
-    public float m_oneTileOffset = 120;
+    float m_oneMoveOffset = 0;
     const float m_animOffsetFactor = 0.8f;
 
     private void Awake()
     {
         m_fieldController = GetComponent<FieldController>();
-        m_fieldSize = m_fieldController.GetFieldSize();
+    }
+    public void Init(ref GameObject[] tiles, byte fieldSize)
+    {
+        m_tiles = tiles;
+
+        m_fieldSize = fieldSize;
         m_currAnimColdown = 2 * m_animColdown;
+        m_oneMoveOffset = tiles[0].GetComponent<RectTransform>().rect.size.x;
 
         SaveStartTilesPositions();
     }
@@ -56,7 +61,7 @@ public class FieldViewer : MonoBehaviour
                     int tileNum = i * m_fieldSize + j;
                     int offsetCount = m_animnMap[i, j];
                     float time = Time.deltaTime / m_animColdown;
-                    Vector2 distance = m_animDirection * m_oneTileOffset * offsetCount;
+                    Vector2 distance = m_animDirection * m_oneMoveOffset * offsetCount;
 
                     m_tiles[tileNum].transform.Translate(distance * time * m_animOffsetFactor);
                 }

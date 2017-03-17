@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FieldController : MonoBehaviour
 {
-    public byte m_fieldSize = 4;
+    byte m_fieldSize = 4;
     const byte m_power = 2;
     byte[,] m_fieldValues;
     byte[,] m_fieldCopy;
@@ -18,20 +18,23 @@ public class FieldController : MonoBehaviour
 
     bool m_isPlayerMadeTurn = false;
 
-    private void Awake()
+    public void Init(byte size)
     {
+        m_fieldSize = size;
+
         m_moveMap = new byte[m_fieldSize, m_fieldSize];
         m_fieldValues = new byte[m_fieldSize, m_fieldSize];
         m_fieldCopy = new byte[m_fieldSize, m_fieldSize];
         m_changeMask = new bool[m_fieldSize, m_fieldSize];
         m_sumMap = new bool[m_fieldSize, m_fieldSize];
     }
-
-    public void StartEvent()
+    public void StartEvents()
     {
         ResetField();
         SetAutoTurn(true);
         SetAutoTurn(false);
+
+        Debug.Log(m_fieldSize);
     }
     void ResetField()
     {
