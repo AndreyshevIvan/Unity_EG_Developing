@@ -7,20 +7,23 @@ public class User : MonoBehaviour
 
     public FieldController m_fieldController;
     public UIController m_UIController;
+    public DataController m_data;
 
-    int m_points = 0;
+    uint m_points = 0;
     string m_name = "@username";
 
     public void Reset()
     {
-        m_points = 0;
+        int m_mapIndex = m_data.GetMapIndex();
+        m_data.SetBestScore(m_mapIndex, m_points, m_name);
 
+        m_points = 0;
         m_UIController.SetPoints(0);
     }
 
     public void UpdateInfo()
     {
-        int points = m_fieldController.GetPointsFromLastTurn();
+        uint points = m_fieldController.GetPointsFromLastTurn();
 
         if (points != 0)
         {
@@ -30,7 +33,7 @@ public class User : MonoBehaviour
         }
     }
 
-    public int GetPoints()
+    public uint GetPoints()
     {
         return m_points;
     }
@@ -42,5 +45,11 @@ public class User : MonoBehaviour
     public void SetName(string name)
     {
         m_name = name;
+    }
+
+    private void OnDestroy()
+    {
+        int m_mapIndex = m_data.GetMapIndex();
+        m_data.SetBestScore(m_mapIndex, m_points, m_name);
     }
 }

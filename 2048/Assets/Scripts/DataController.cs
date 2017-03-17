@@ -7,7 +7,7 @@ public class DataController : MonoBehaviour
 
     string m_mapIndexKey = "MapIndex";
     string m_usernameKey = "Username";
-    string m_bestScoreEasy = "BestScore";
+    string m_bestScore = "BestScore";
 
     public void ResetData()
     {
@@ -22,16 +22,16 @@ public class DataController : MonoBehaviour
     }
     public string GetUsername()
     {
-        string username = PlayerPrefs.GetString(m_usernameKey);
+        string username = PlayerPrefs.GetString(m_usernameKey, "@username");
 
         return username;
     }
-    public int GetBestScore(int mapIndex)
+    public uint GetBestScore(int mapIndex)
     {
         string mapKey = IndexToKey(mapIndex);
-        int score = PlayerPrefs.GetInt(m_bestScoreEasy + mapKey, 0);
+        int score = PlayerPrefs.GetInt(m_bestScore + mapKey, 0);
 
-        return score;
+        return (uint)score;
     }
 
     public void SetMapIndex(int mapIndex)
@@ -42,14 +42,14 @@ public class DataController : MonoBehaviour
     {
         PlayerPrefs.SetString(m_usernameKey, username);
     }
-    public void SetBestScore(int mapIndex, int score)
+    public void SetBestScore(int mapIndex, uint score, string playerName)
     {
-        int currBest = GetBestScore(mapIndex);
+        uint currBest = GetBestScore(mapIndex);
 
         if (currBest < score)
         {
             string mapKey = IndexToKey(mapIndex);
-            PlayerPrefs.SetInt(m_bestScoreEasy + mapKey, score);
+            PlayerPrefs.SetInt(m_bestScore + mapKey, (int)score);
         }
     }
 

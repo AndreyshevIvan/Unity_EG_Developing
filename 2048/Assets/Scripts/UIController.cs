@@ -18,16 +18,16 @@ public class UIController : MonoBehaviour
 
     }
  
-    public void SetPoints(int points)
+    public void SetPoints(uint points)
     {
         m_points.text = points.ToString();
     }
-    public void SetBestScore(int points)
+    public void SetBestScore(uint points)
     {
         m_bestScore.text = points.ToString();
     }
 
-    public void CreateAnnouncement(int addPoints)
+    public void CreateAnnouncement(uint addPoints)
     {
         Destroy(m_currAnnouncement);
 

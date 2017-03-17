@@ -26,7 +26,7 @@ public class PointsAnnouncement : MonoBehaviour
         }
     }
 
-    public void SetPoints(int points)
+    public void SetPoints(uint points)
     {
         m_message.text = "+" + points.ToString();
     }

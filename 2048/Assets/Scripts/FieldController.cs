@@ -4,14 +4,15 @@ using UnityEngine;
 
 public class FieldController : MonoBehaviour
 {
-    const ushort m_fieldSize = 4;
-    ushort[,] m_fieldValues;
-    ushort[,] m_fieldCopy;
-    ushort[,] m_moveMap;
+    const byte m_fieldSize = 4;
+    const byte m_power = 2;
+    byte[,] m_fieldValues;
+    byte[,] m_fieldCopy;
+    byte[,] m_moveMap;
     bool[,] m_sumMap;
     bool[,] m_changeMask;
 
-    int m_points = 0;
+    uint m_points = 0;
 
     public float m_fourProbability;
 
@@ -19,9 +20,9 @@ public class FieldController : MonoBehaviour
 
     private void Awake()
     {
-        m_moveMap = new ushort[m_fieldSize, m_fieldSize];
-        m_fieldValues = new ushort[m_fieldSize, m_fieldSize];
-        m_fieldCopy = new ushort[m_fieldSize, m_fieldSize];
+        m_moveMap = new byte[m_fieldSize, m_fieldSize];
+        m_fieldValues = new byte[m_fieldSize, m_fieldSize];
+        m_fieldCopy = new byte[m_fieldSize, m_fieldSize];
         m_changeMask = new bool[m_fieldSize, m_fieldSize];
         m_sumMap = new bool[m_fieldSize, m_fieldSize];
     }
@@ -58,13 +59,13 @@ public class FieldController : MonoBehaviour
         }
     }
 
-    public ushort[,] GetCurrentAnimMap()
+    public byte[,] GetCurrentAnimMap()
     {
         return m_moveMap;
     }
-    public int GetPointsFromLastTurn()
+    public uint GetPointsFromLastTurn()
     {
-        int points = m_points;
+        uint points = m_points;
         ResetPoints();
 
         return points;
@@ -73,13 +74,13 @@ public class FieldController : MonoBehaviour
     {
         return m_fieldSize;
     }
-    public ushort[,] GetCurrentValues()
+    public byte[,] GetCurrentValues()
     {
         return m_fieldValues;
     }
-    int GetRandomValue(bool isFourEnable)
+    byte GetRandomValue(bool isFourEnable)
     {
-        int value = 2;
+        byte value = 1;
 
         if (isFourEnable)
         {
@@ -87,7 +88,7 @@ public class FieldController : MonoBehaviour
 
             if (random < m_fourProbability)
             {
-                value = value * 2;
+                value = (byte)(value << 1);
             }
         }
 
@@ -136,7 +137,7 @@ public class FieldController : MonoBehaviour
                 {
                     if (randomTileNum == 0)
                     {
-                        m_fieldValues[i, j] = (ushort)value;
+                        m_fieldValues[i, j] = (byte)value;
                     }
 
                     randomTileNum--;
@@ -151,11 +152,11 @@ public class FieldController : MonoBehaviour
     {
         ResetMaps();
         CreateFieldCopy();
-        ushort[] line = new ushort[m_fieldSize];
+        byte[] line = new byte[m_fieldSize];
 
         for (int i = 0; i < m_fieldSize; i++)
         {
-            ushort[] moveCount = new ushort[m_fieldSize];
+            byte[] moveCount = new byte[m_fieldSize];
             bool[] lineSumMap = new bool[m_fieldSize];
 
             for (int j = 0; j < m_fieldSize; j++)
@@ -183,11 +184,11 @@ public class FieldController : MonoBehaviour
     {
         ResetMaps();
         CreateFieldCopy();
-        ushort[] line = new ushort[m_fieldSize];
+        byte[] line = new byte[m_fieldSize];
 
         for (int i = 0; i < m_fieldSize; i++)
         {
-            ushort[] moveCount = new ushort[m_fieldSize];
+            byte[] moveCount = new byte[m_fieldSize];
             bool[] lineSumMap = new bool[m_fieldSize];
 
             for (int j = 0; j < m_fieldSize; j++)
@@ -215,12 +216,12 @@ public class FieldController : MonoBehaviour
     {
         ResetMaps();
         CreateFieldCopy();
-        ushort[] line = new ushort[m_fieldSize];
+        byte[] line = new byte[m_fieldSize];
         bool[] lineSumMap = new bool[m_fieldSize];
 
         for (int i = 0; i < m_fieldSize; i++)
         {
-            ushort[] moveCount = new ushort[m_fieldSize];
+            byte[] moveCount = new byte[m_fieldSize];
 
             for (int j = 0; j < m_fieldSize; j++)
             {
@@ -247,12 +248,12 @@ public class FieldController : MonoBehaviour
     {
         ResetMaps();
         CreateFieldCopy();
-        ushort[] line = new ushort[m_fieldSize];
+        byte[] line = new byte[m_fieldSize];
         bool[] lineSumMap = new bool[m_fieldSize];
 
         for (int i = 0; i < m_fieldSize; i++)
         {
-            ushort[] moveCount = new ushort[m_fieldSize];
+            byte[] moveCount = new byte[m_fieldSize];
 
             for (int j = 0; j < m_fieldSize; j++)
             {
@@ -275,11 +276,11 @@ public class FieldController : MonoBehaviour
         }
         m_isPlayerMadeTurn = IsFieldChanged();
     }
-    void MoveLine(ref ushort[] line, ref ushort[] moveCount, ref bool[] lineSumMap)
+    void MoveLine(ref byte[] line, ref byte[] moveCount, ref bool[] lineSumMap)
     {
         for (int i = 1; i < line.Length; i++)
         {
-            ushort value = line[i];
+            byte value = line[i];
             int position = i;
 
             while (position > 0)
@@ -290,9 +291,9 @@ public class FieldController : MonoBehaviour
                 }
                 else if (line[position - 1] == value && value != 0)
                 {
-                    line[position - 1] += value;
+                    line[position - 1] += 1;
                     lineSumMap[position - 1] = true;
-                    m_points += line[position - 1];
+                    AddPoints(line[position - 1]);
                     line[position] = 0;
                     moveCount[i]++;
                 }
@@ -316,6 +317,18 @@ public class FieldController : MonoBehaviour
                 m_fieldCopy[i, j] = m_fieldValues[i, j];
             }
         }
+    }
+    void AddPoints(byte value)
+    {
+        uint addPoints = 1;
+
+        while (value > 0)
+        {
+            addPoints *= m_power;
+            value--;
+        }
+
+        m_points += addPoints;
     }
 
     public bool IsTurnPossible()

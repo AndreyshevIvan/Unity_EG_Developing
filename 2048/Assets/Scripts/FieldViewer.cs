@@ -15,13 +15,14 @@ public class FieldViewer : MonoBehaviour
 
     public Color m_darkColor;
     public Color m_lightColor;
-    public ushort m_startLightColorNum;
+    const byte m_startLightColorNum = 3;
+    const byte m_power = 2;
 
     Vector2[,] m_startTilesPositions;
     const float m_animColdown = 0.1f;
     float m_currAnimColdown = 0;
     Vector2 m_animDirection;
-    ushort[,] m_animnMap;
+    byte[,] m_animnMap;
     const float m_animOneOffset = 120;
 
     private void Awake()
@@ -106,28 +107,17 @@ public class FieldViewer : MonoBehaviour
     {
         SetStartTilePositions();
 
-        ushort[,] values = m_fieldController.GetCurrentValues();
+        byte[,] values = m_fieldController.GetCurrentValues();
 
-        int rowsCount = values.GetLength(0);
-        int collsCount = values.GetLength(1);
-
-        for (int i = 0; i < rowsCount; i++)
+        for (int i = 0; i < m_fieldSize; i++)
         {
-            for (int j = 0; j < collsCount; j++)
+            for (int j = 0; j < m_fieldSize; j++)
             {
-                int valueNum = i * rowsCount + j;
-                int value = values[i, j];
+                int valueNum = i * m_fieldSize + j;
+                byte value = values[i, j];
 
                 Text valueText = m_tiles[valueNum].GetComponentInChildren<Text>();
-
-                if (value < 2)
-                {
-                    valueText.text = "";
-                }
-                else if (valueText.text != value.ToString())
-                {
-                    valueText.text = value.ToString();
-                }
+                valueText.text = ConvertValueToStr(value);
 
                 bool[,] sumMap = m_fieldController.GetSumMap();
                 CreateSumAnimationFromMask(sumMap);
@@ -136,21 +126,18 @@ public class FieldViewer : MonoBehaviour
 
         UpdateTilesColor(values);
     }
-    void UpdateTilesColor(ushort[,] values)
+    void UpdateTilesColor(byte[,] values)
     {
-        int rowsCount = values.GetLength(0);
-        int collsCount = values.GetLength(1);
-
-        for (int i = 0; i < rowsCount; i++)
+        for (int i = 0; i < m_fieldSize; i++)
         {
-            for (int j = 0; j < collsCount; j++)
+            for (int j = 0; j < m_fieldSize; j++)
             {
-                int colorNum = GetColorNum(values[i,j]);
+                Color tileColor = GetTileColor(values[i,j]);
                 Color txtColor = GetTextColor(values[i, j]);
-                int valueNum = i * rowsCount + j;
+                int valueNum = i * m_fieldSize + j;
 
                 Image bg = m_tiles[valueNum].GetComponentInChildren<Image>();
-                bg.color = m_tilesColor[colorNum];
+                bg.color = tileColor;
 
                 Text txt = m_tiles[valueNum].GetComponentInChildren<Text>();
                 txt.color = txtColor;
@@ -184,29 +171,42 @@ public class FieldViewer : MonoBehaviour
         }
     }
 
-    int GetColorNum(ushort value)
-    {
-        if (value < 2)
-        {
-            return 0;
-        }
-
-        int degree = 1;
-        int num = 2;
-
-        while (num != value)
-        {
-            num *= 2;
-            degree++;
-        }
-
-        return degree;
-    }
     Color GetTextColor(ushort value)
     {
         Color color = (value >= m_startLightColorNum) ? m_lightColor : m_darkColor;
 
         return color;
+    }
+    Color GetTileColor(byte value)
+    {
+        int colorsCount = m_tilesColor.Length;
+        Color color = m_tilesColor[colorsCount - 1];
+
+        if (value < colorsCount)
+        {
+            color = m_tilesColor[value];
+        }
+
+        return color;
+    }
+    string ConvertValueToStr(byte value)
+    {
+        string str = "";
+
+        if (value > 0)
+        {
+            ulong valueInNormalFormat = 1;
+
+            while (value > 0)
+            {
+                valueInNormalFormat *= m_power;
+                value--;
+            }
+
+            str = valueInNormalFormat.ToString();
+        }
+
+        return str;
     }
 
     void SaveStartTilesPositions()
