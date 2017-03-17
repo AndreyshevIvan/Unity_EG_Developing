@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FieldController : MonoBehaviour
 {
-    const byte m_fieldSize = 4;
+    public byte m_fieldSize = 4;
     const byte m_power = 2;
     byte[,] m_fieldValues;
     byte[,] m_fieldCopy;

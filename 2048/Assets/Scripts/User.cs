@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class User : MonoBehaviour
 {
-
-    public FieldController m_fieldController;
     public UIController m_UIController;
     public DataController m_data;
 
@@ -21,10 +19,8 @@ public class User : MonoBehaviour
         m_UIController.SetPoints(0);
     }
 
-    public void UpdateInfo()
+    public void AddPoints(uint points)
     {
-        uint points = m_fieldController.GetPointsFromLastTurn();
-
         if (points != 0)
         {
             m_points += points;

@@ -5,9 +5,11 @@ using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
+    public MapLoader m_mapLoader;
 
-    public FieldController m_fieldController;
-    public FieldViewer m_fieldViewer;
+    FieldController m_fieldController;
+    FieldViewer m_fieldViewer;
+
     public User m_user;
     public UIController m_UIController;
     public DataController m_data;
@@ -22,6 +24,10 @@ public class GameController : MonoBehaviour
     private void Start()
     {
         m_mapIndex = m_data.GetMapIndex();
+
+        m_mapLoader.Init(0);
+        m_fieldController = m_mapLoader.GetFieldController();
+        m_fieldViewer = m_mapLoader.GetFieldViewer();
 
         string userName = m_data.GetUsername();
         m_user.SetName(userName);
@@ -60,7 +66,9 @@ public class GameController : MonoBehaviour
 
             m_fieldViewer.UpdateView();
             m_fieldViewer.CreateSumAnimationFromMask(changeMask);
-            m_user.UpdateInfo();
+
+            uint pointsToAdd = m_fieldController.GetPointsFromLastTurn();
+            m_user.AddPoints(pointsToAdd);
         }
 
         CheckGameStatus();

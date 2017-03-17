@@ -23,7 +23,8 @@ public class FieldViewer : MonoBehaviour
     float m_currAnimColdown = 0;
     Vector2 m_animDirection;
     byte[,] m_animnMap;
-    const float m_animOneOffset = 120;
+    public float m_oneTileOffset = 120;
+    const float m_animOffsetFactor = 0.8f;
 
     private void Awake()
     {
@@ -55,9 +56,9 @@ public class FieldViewer : MonoBehaviour
                     int tileNum = i * m_fieldSize + j;
                     int offsetCount = m_animnMap[i, j];
                     float time = Time.deltaTime / m_animColdown;
-                    Vector2 distance = m_animDirection * m_animOneOffset * offsetCount;
+                    Vector2 distance = m_animDirection * m_oneTileOffset * offsetCount;
 
-                    m_tiles[tileNum].transform.Translate(distance * time);
+                    m_tiles[tileNum].transform.Translate(distance * time * m_animOffsetFactor);
                 }
             }
         }
