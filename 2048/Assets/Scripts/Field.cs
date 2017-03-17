@@ -67,7 +67,24 @@ public class Field : MonoBehaviour
     public void StartEvents()
     {
         m_fieldController.StartEvents();
-        m_fieldViewer.UpdateView();
+        UpdateValuesInView();
+        AnimateAutoTurnTiles();
+    }
+
+    void UpdateValuesInView()
+    {
+        byte[,] newValues = m_fieldController.GetCurrentValues();
+        m_fieldViewer.UpdateView(newValues);
+    }
+    void AnimateSumTiles()
+    {
+        bool[,] sumMask = m_fieldController.GetSumMap();
+        m_fieldViewer.CreateTileAnimationFromMask(sumMask);
+    }
+    void AnimateAutoTurnTiles()
+    {
+        bool[,] changeMask = m_fieldController.GetChangeMask();
+        m_fieldViewer.CreateTileAnimationFromMask(changeMask);
     }
 
     public uint GetPointsFromLastTurn()
@@ -77,14 +94,13 @@ public class Field : MonoBehaviour
         return lastPoints;
     }
 
-    public void SetAutoTurn(bool isFourAllowed)
+    public void SetAutoTurn(ushort turnsCount, bool isFourAllowed)
     {
-        m_fieldController.SetAutoTurn(isFourAllowed);
+        m_fieldController.SetAutoTurn(turnsCount, isFourAllowed);
+        UpdateValuesInView();
 
-        bool[,] changeMask = m_fieldController.GetChangeMask();
-
-        m_fieldViewer.UpdateView();
-        m_fieldViewer.CreateSumAnimationFromMask(changeMask);
+        AnimateSumTiles();
+        AnimateAutoTurnTiles();
     }
     void SetTileSize()
     {
@@ -99,9 +115,9 @@ public class Field : MonoBehaviour
         m_tileSize = tileTransform.rect.size;
     }
 
-    public bool IsTurnAllowed()
+    public bool IsAutoTurnAllowed()
     {
-        return (m_fieldController.IsPlayerMadeTurn() && m_fieldViewer.IsAnimationsEnded());
+        return (m_fieldController.IsPlayerMadeTurn() && !m_fieldViewer.IsMoveAnimationWork());
     }
     public bool IsTurnPossible()
     {

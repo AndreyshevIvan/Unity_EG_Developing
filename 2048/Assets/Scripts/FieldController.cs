@@ -31,10 +31,7 @@ public class FieldController : MonoBehaviour
     public void StartEvents()
     {
         ResetField();
-        SetAutoTurn(true);
-        SetAutoTurn(false);
-
-        Debug.Log(m_fieldSize);
+        SetAutoTurn(2, true);
     }
     void ResetField()
     {
@@ -123,27 +120,31 @@ public class FieldController : MonoBehaviour
         return m_sumMap;
     }
 
-    public void SetAutoTurn(bool isFourEnable)
+    public void SetAutoTurn(ushort turnsCount, bool isFourEnable)
     {
         CreateFieldCopy();
-        m_isPlayerMadeTurn = false;
-        int value = GetRandomValue(isFourEnable);
-        List<int> freeTiles = GetFreeTiles();
 
-        int randomTileNum = Random.Range(0, freeTiles.Count);
-
-        for (int i = 0; i < m_fieldSize; i++)
+        for (int turnNum = 0; turnNum < turnsCount; turnNum++)
         {
-            for (int j = 0; j < m_fieldSize; j++)
-            {
-                if (m_fieldValues[i, j] == 0)
-                {
-                    if (randomTileNum == 0)
-                    {
-                        m_fieldValues[i, j] = (byte)value;
-                    }
+            m_isPlayerMadeTurn = false;
+            int value = GetRandomValue(isFourEnable);
+            List<int> freeTiles = GetFreeTiles();
 
-                    randomTileNum--;
+            int randomTileNum = Random.Range(0, freeTiles.Count);
+
+            for (int i = 0; i < m_fieldSize; i++)
+            {
+                for (int j = 0; j < m_fieldSize; j++)
+                {
+                    if (m_fieldValues[i, j] == 0)
+                    {
+                        if (randomTileNum == 0)
+                        {
+                            m_fieldValues[i, j] = (byte)value;
+                        }
+
+                        randomTileNum--;
+                    }
                 }
             }
         }
@@ -151,7 +152,7 @@ public class FieldController : MonoBehaviour
         IsFieldChanged();
     }
 
-    public void UpTurn()
+    public bool UpTurn()
     {
         ResetMaps();
         CreateFieldCopy();
@@ -182,8 +183,10 @@ public class FieldController : MonoBehaviour
             }
         }
         m_isPlayerMadeTurn = IsFieldChanged();
+
+        return m_isPlayerMadeTurn;
     }
-    public void DownTurn()
+    public bool DownTurn()
     {
         ResetMaps();
         CreateFieldCopy();
@@ -214,8 +217,10 @@ public class FieldController : MonoBehaviour
             }
         }
         m_isPlayerMadeTurn = IsFieldChanged();
+
+        return m_isPlayerMadeTurn;
     }
-    public void LeftTurn()
+    public bool LeftTurn()
     {
         ResetMaps();
         CreateFieldCopy();
@@ -246,8 +251,10 @@ public class FieldController : MonoBehaviour
             }
         }
         m_isPlayerMadeTurn = IsFieldChanged();
+
+        return m_isPlayerMadeTurn;
     }
-    public void RightTurn()
+    public bool RightTurn()
     {
         ResetMaps();
         CreateFieldCopy();
@@ -278,6 +285,8 @@ public class FieldController : MonoBehaviour
             }
         }
         m_isPlayerMadeTurn = IsFieldChanged();
+
+        return m_isPlayerMadeTurn;
     }
     void MoveLine(ref byte[] line, ref byte[] moveCount, ref bool[] lineSumMap)
     {

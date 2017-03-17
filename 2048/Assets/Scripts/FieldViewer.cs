@@ -6,8 +6,6 @@ using UnityEngine.UI;
 
 public class FieldViewer : MonoBehaviour
 {
-    FieldController m_fieldController;
-
     GameObject[] m_tiles;
     public Color[] m_tilesColor;
     byte m_fieldSize;
@@ -23,12 +21,7 @@ public class FieldViewer : MonoBehaviour
     Vector2 m_animDirection;
     byte[,] m_animnMap;
     float m_oneMoveOffset = 0;
-    const float m_animOffsetFactor = 0.8f;
 
-    private void Awake()
-    {
-        m_fieldController = GetComponent<FieldController>();
-    }
     public void Init(ref GameObject[] tiles, byte fieldSize)
     {
         m_tiles = tiles;
@@ -42,7 +35,7 @@ public class FieldViewer : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!IsAnimationsEnded())
+        if (IsMoveAnimationWork())
         {
             MoveTiles();
 
@@ -63,74 +56,53 @@ public class FieldViewer : MonoBehaviour
                     float time = Time.deltaTime / m_animColdown;
                     Vector2 distance = m_animDirection * m_oneMoveOffset * offsetCount;
 
-                    m_tiles[tileNum].transform.Translate(distance * time * m_animOffsetFactor);
+                    m_tiles[tileNum].transform.Translate(distance * time);
                 }
             }
         }
     }
-    public void AnimateRightTurn()
+    public void AnimateRightTurn(byte[,] animMap)
     {
-        if (GetAnimInfo())
-        {
-            m_animDirection = Vector2.right;
-        }
+        m_animDirection = Vector2.right;
+        m_animnMap = animMap;
+        m_currAnimColdown = 0;
     }
-    public void AnimateLeftTurn()
+    public void AnimateLeftTurn(byte[,] animMap)
     {
-        if (GetAnimInfo())
-        {
-            m_animDirection = Vector2.left;
-        }
+        m_animDirection = Vector2.left;
+        m_animnMap = animMap;
+        m_currAnimColdown = 0;
     }
-    public void AnimateUpTurn()
+    public void AnimateUpTurn(byte[,] animMap)
     {
-        if (GetAnimInfo())
-        {
-            m_animDirection = Vector2.up;
-        }
+        m_animDirection = Vector2.up;
+        m_animnMap = animMap;
+        m_currAnimColdown = 0;
     }
-    public void AnimateDownTurn()
+    public void AnimateDownTurn(byte[,] animMap)
     {
-        if (GetAnimInfo())
-        {
-            m_animDirection = Vector2.down;
-        }
-    }
-    bool GetAnimInfo()
-    {
-        if (m_fieldController.IsPlayerMadeTurn())
-        {
-            m_animnMap = m_fieldController.GetCurrentAnimMap();
-            m_currAnimColdown = 0;
-
-            return true;
-        }
-
-        return false;
+        m_animDirection = Vector2.down;
+        m_animnMap = animMap;
+        m_currAnimColdown = 0;
     }
 
-    public void UpdateView()
+    public void UpdateView(byte[,] newValues)
     {
         SetStartTilePositions();
-
-        byte[,] values = m_fieldController.GetCurrentValues();
 
         for (int i = 0; i < m_fieldSize; i++)
         {
             for (int j = 0; j < m_fieldSize; j++)
             {
                 int valueNum = i * m_fieldSize + j;
-                byte value = values[i, j];
+                byte value = newValues[i, j];
 
                 Text valueText = m_tiles[valueNum].GetComponentInChildren<Text>();
                 valueText.text = ConvertValueToStr(value);
-
-                bool[,] sumMap = m_fieldController.GetSumMap();
-                CreateSumAnimationFromMask(sumMap);
             }
         }
 
-        UpdateTilesColor(values);
+        UpdateTilesColor(newValues);
     }
     void UpdateTilesColor(byte[,] values)
     {
@@ -150,7 +122,7 @@ public class FieldViewer : MonoBehaviour
             }
         }
     }
-    public void CreateSumAnimationFromMask(bool[,] mask)
+    public void CreateTileAnimationFromMask(bool[,] mask)
     {
         for (int i = 0; i < m_fieldSize; i++)
         {
@@ -230,8 +202,8 @@ public class FieldViewer : MonoBehaviour
         }
     }
 
-    public bool IsAnimationsEnded()
+    public bool IsMoveAnimationWork()
     {
-        return (m_currAnimColdown >= m_animColdown);
+        return (m_currAnimColdown < m_animColdown);
     }
 }

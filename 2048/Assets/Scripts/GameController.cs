@@ -57,9 +57,9 @@ public class GameController : MonoBehaviour
     }
     void GameplayUpdate()
     {
-        if (m_field.IsTurnAllowed())
+        if (m_field.IsAutoTurnAllowed())
         {
-            m_field.SetAutoTurn(true);
+            m_field.SetAutoTurn(1, true);
 
             uint pointsToAdd = m_field.GetPointsFromLastTurn();
             m_user.AddPoints(pointsToAdd);

@@ -6,50 +6,68 @@ using UnityEngine.EventSystems;
 public class FieldEventsHandler : MonoBehaviour, IDragHandler, IBeginDragHandler
 {
 
-    FieldController m_field;
+    FieldController m_fieldController;
     FieldViewer m_fieldViewer;
 
     private void Awake()
     {
-        m_field = GetComponent<FieldController>();
+        m_fieldController = GetComponent<FieldController>();
         m_fieldViewer = GetComponent<FieldViewer>();
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (m_fieldViewer.IsAnimationsEnded())
+        if (!m_fieldViewer.IsMoveAnimationWork())
         {
             float verticalDelta = Mathf.Abs(eventData.delta.y);
             float horizontalDelta = Mathf.Abs(eventData.delta.x);
 
             if (horizontalDelta > verticalDelta)
             {
-                if (eventData.delta.x > 0)
-                {
-                    m_field.RightTurn();
-                    m_fieldViewer.AnimateRightTurn();
-                }
-                else
-                {
-                    m_field.LeftTurn();
-                    m_fieldViewer.AnimateLeftTurn();
-                }
+                if (eventData.delta.x > 0) RightTurn();
+                else if (eventData.delta.x < 0) LeftTurn();
             }
             else
             {
-                if (eventData.delta.y > 0)
-                {
-                    m_field.UpTurn();
-                    m_fieldViewer.AnimateUpTurn();
-                }
-                else
-                {
-                    m_field.DownTurn();
-                    m_fieldViewer.AnimateDownTurn();
-                }
+                if (eventData.delta.y > 0) UpTurn();
+                else if (eventData.delta.y < 0) DownTurn();
             }
         }
     }
+
+    void RightTurn()
+    {
+        if (m_fieldController.RightTurn())
+        {
+            byte[,] animMap = m_fieldController.GetCurrentAnimMap();
+            m_fieldViewer.AnimateRightTurn(animMap);
+        }
+    }
+    void LeftTurn()
+    {
+        if (m_fieldController.LeftTurn())
+        {
+            byte[,] animMap = m_fieldController.GetCurrentAnimMap();
+            m_fieldViewer.AnimateLeftTurn(animMap);
+        }
+    }
+    void UpTurn()
+    {
+        if (m_fieldController.UpTurn())
+        {
+            byte[,] animMap = m_fieldController.GetCurrentAnimMap();
+            m_fieldViewer.AnimateUpTurn(animMap);
+        }
+    }
+    void DownTurn()
+    {
+        if (m_fieldController.DownTurn())
+        {
+            byte[,] animMap = m_fieldController.GetCurrentAnimMap();
+            m_fieldViewer.AnimateDownTurn(animMap);
+        }
+    }
+
     public void OnDrag(PointerEventData eventData)
     {
 
