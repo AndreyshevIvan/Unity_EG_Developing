@@ -5,14 +5,15 @@ using UnityEngine.UI;
 
 public class ReadNameController : MonoBehaviour
 {
-    public DataController m_data;
     public GameObject m_sceneCurtain;
     public InputField m_nameField;
+    DataController m_data;
 
     ScenesController m_sceneController;
 
     private void Awake()
     {
+        m_data = new DataController();
         m_sceneController = new ScenesController();
         m_sceneCurtain.SetActive(false);
     }

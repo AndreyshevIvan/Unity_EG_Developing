@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class ScenesController : MonoBehaviour
+public class ScenesController
 {
 
     float m_coldown = 0.25f;

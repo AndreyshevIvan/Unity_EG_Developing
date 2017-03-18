@@ -10,7 +10,7 @@ public class GameController : MonoBehaviour
 
     public User m_user;
     public UIController m_UIController;
-    public DataController m_data;
+    DataController m_data;
     ScenesController m_scenesController;
 
     int m_mapIndex;
@@ -23,6 +23,7 @@ public class GameController : MonoBehaviour
 
     private void Awake()
     {
+        m_data = new DataController();
         m_scenesController = new ScenesController();
         m_mapIndex = m_data.GetMapIndex();
         m_field = m_mapLoader.GetField(m_mapIndex);
@@ -30,7 +31,6 @@ public class GameController : MonoBehaviour
     }
     private void Start()
     {
-
         string userName = m_data.GetUsername();
         m_user.SetName(userName);
 
@@ -42,8 +42,8 @@ public class GameController : MonoBehaviour
         m_user.Reset();
         m_field.StartEvents();
 
-        uint bestScore = m_data.GetBestScore(m_mapIndex);
-        m_UIController.SetBestScore(bestScore);
+        int mapBest = m_data.GetMapBestScore();
+        m_UIController.SetBestScore(mapBest);
     }
 
     private void FixedUpdate()
@@ -63,7 +63,7 @@ public class GameController : MonoBehaviour
         {
             m_field.SetAutoTurn(1, true);
 
-            uint pointsToAdd = m_field.GetPointsFromLastTurn();
+            int pointsToAdd = m_field.GetPointsFromLastTurn();
             m_user.AddPoints(pointsToAdd);
         }
 
@@ -98,14 +98,17 @@ public class GameController : MonoBehaviour
     {
         m_gameoverPanel.GetComponent<Animation>().Play();
 
-        uint userPoints = m_user.GetPoints();
+        int userPoints = m_user.GetPoints();
         string userName = m_user.GetName();
 
-        m_data.SetBestScore(m_mapIndex, userPoints, userName);
+        int mapIndex = m_data.GetMapIndex();
+        m_data.SetBestScore(mapIndex, userPoints, userName);
     }
 
     public void BackTomenu()
     {
+        m_user.Reset();
+
         StartCoroutine(m_scenesController.SetMenuScene());
         m_sceneCurtain.SetActive(true);
         m_sceneCurtain.GetComponent<Animation>().Play();

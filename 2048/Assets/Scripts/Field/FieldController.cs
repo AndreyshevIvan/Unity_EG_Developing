@@ -12,7 +12,7 @@ public class FieldController : MonoBehaviour
     bool[,] m_sumMap;
     bool[,] m_changeMask;
 
-    uint m_points = 0;
+    int m_points = 0;
 
     public float m_fourProbability;
 
@@ -63,9 +63,9 @@ public class FieldController : MonoBehaviour
     {
         return m_moveMap;
     }
-    public uint GetPointsFromLastTurn()
+    public int GetPointsFromLastTurn()
     {
-        uint points = m_points;
+        int points = m_points;
         ResetPoints();
 
         return points;
@@ -332,7 +332,7 @@ public class FieldController : MonoBehaviour
     }
     void AddPoints(byte value)
     {
-        uint addPoints = 1;
+        int addPoints = 1;
 
         while (value > 0)
         {

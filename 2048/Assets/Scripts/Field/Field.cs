@@ -103,9 +103,9 @@ public class Field : MonoBehaviour
         m_fieldViewer.CreateTileAnimationFromMask(changeMask);
     }
 
-    public uint GetPointsFromLastTurn()
+    public int GetPointsFromLastTurn()
     {
-        uint lastPoints = m_fieldController.GetPointsFromLastTurn();
+        int lastPoints = m_fieldController.GetPointsFromLastTurn();
 
         return lastPoints;
     }

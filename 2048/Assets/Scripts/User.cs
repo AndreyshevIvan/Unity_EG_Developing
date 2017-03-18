@@ -5,21 +5,26 @@ using UnityEngine;
 public class User : MonoBehaviour
 {
     public UIController m_UIController;
-    public DataController m_data;
+    DataController m_data;
 
-    uint m_points = 0;
+    int m_points = 0;
     string m_name = "@username";
+
+    private void Awake()
+    {
+        m_data = new DataController();
+    }
 
     public void Reset()
     {
-        int m_mapIndex = m_data.GetMapIndex();
-        m_data.SetBestScore(m_mapIndex, m_points, m_name);
+        int mapIndex = m_data.GetMapIndex();
+        m_data.SetBestScore(mapIndex, m_points, m_name);
 
         m_points = 0;
         m_UIController.SetPoints(0);
     }
 
-    public void AddPoints(uint points)
+    public void AddPoints(int points)
     {
         if (points != 0)
         {
@@ -29,7 +34,7 @@ public class User : MonoBehaviour
         }
     }
 
-    public uint GetPoints()
+    public int GetPoints()
     {
         return m_points;
     }
@@ -40,12 +45,14 @@ public class User : MonoBehaviour
 
     public void SetName(string name)
     {
-        m_name = name;
+        if (name != "")
+        {
+            m_name = name;
+        }
     }
 
     private void OnDestroy()
     {
-        int m_mapIndex = m_data.GetMapIndex();
-        m_data.SetBestScore(m_mapIndex, m_points, m_name);
+
     }
 }

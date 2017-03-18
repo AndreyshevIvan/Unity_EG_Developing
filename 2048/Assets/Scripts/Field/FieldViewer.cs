@@ -10,6 +10,8 @@ public class FieldViewer : MonoBehaviour
     public Color[] m_tilesColor;
     byte m_fieldSize;
 
+    readonly Color m_instantTileColor = Color.clear;
+    readonly Color m_instantValueColor = Color.black;
     public Color m_darkColor;
     public Color m_lightColor;
     const byte m_startLightColorNum = 3;
@@ -17,6 +19,7 @@ public class FieldViewer : MonoBehaviour
 
     Vector2[,] m_startTilesPositions;
     const float m_animColdown = 0.1f;
+    const float m_moveFactor = 0.95f;
     float m_currAnimColdown = 0;
     Vector2 m_animDirection;
     byte[,] m_animnMap;
@@ -27,7 +30,7 @@ public class FieldViewer : MonoBehaviour
         m_tiles = tiles;
 
         m_fieldSize = fieldSize;
-        m_currAnimColdown = 2 * m_animColdown;
+        m_currAnimColdown = m_animColdown;
         m_oneMoveOffset = tiles[0].GetComponent<RectTransform>().rect.size.x;
 
         SaveStartTilesPositions();
@@ -56,7 +59,7 @@ public class FieldViewer : MonoBehaviour
                     float time = Time.deltaTime / m_animColdown;
                     Vector2 distance = m_animDirection * m_oneMoveOffset * offsetCount;
 
-                    m_tiles[tileNum].transform.Translate(distance * time);
+                    m_tiles[tileNum].transform.Translate(distance * time * m_moveFactor);
                 }
             }
         }
@@ -153,16 +156,29 @@ public class FieldViewer : MonoBehaviour
     {
         Color color = (value >= m_startLightColorNum) ? m_lightColor : m_darkColor;
 
+        if (color.a == 0)
+        {
+            color = m_instantValueColor;
+        }
+
         return color;
     }
     Color GetTileColor(byte value)
     {
+        Color color = m_instantTileColor;
         int colorsCount = m_tilesColor.Length;
-        Color color = m_tilesColor[colorsCount - 1];
+        int maxColor = colorsCount - 1;
 
-        if (value < colorsCount)
+        if (colorsCount != 0 && value != 0)
         {
-            color = m_tilesColor[value];
+            if (value > maxColor)
+            {
+                color = m_tilesColor[maxColor];
+            }
+            else
+            {
+                color = m_tilesColor[value - 1];
+            }
         }
 
         return color;
