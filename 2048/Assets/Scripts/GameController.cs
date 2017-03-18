@@ -96,19 +96,16 @@ public class GameController : MonoBehaviour
     }
     void GameoverEvents()
     {
+        m_user.Save();
+
         m_gameoverPanel.GetComponent<Animation>().Play();
 
         int userPoints = m_user.GetPoints();
         string userName = m_user.GetName();
-
-        int mapIndex = m_data.GetMapIndex();
-        m_data.SetBestScore(mapIndex, userPoints, userName);
     }
 
     public void BackTomenu()
     {
-        m_user.Reset();
-
         StartCoroutine(m_scenesController.SetMenuScene());
         m_sceneCurtain.SetActive(true);
         m_sceneCurtain.GetComponent<Animation>().Play();

@@ -17,11 +17,13 @@ public class User : MonoBehaviour
 
     public void Reset()
     {
-        int mapIndex = m_data.GetMapIndex();
-        m_data.SetBestScore(mapIndex, m_points, m_name);
-
         m_points = 0;
         m_UIController.SetPoints(0);
+    }
+    public void Save()
+    {
+        int mapIndex = m_data.GetMapIndex();
+        m_data.SetBestScore(mapIndex, m_points, m_name);
     }
 
     public void AddPoints(int points)
