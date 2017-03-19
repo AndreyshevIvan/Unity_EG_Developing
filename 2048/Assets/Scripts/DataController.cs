@@ -12,6 +12,7 @@ public class DataController
     const string m_mapIndexKey = "MapIndex";
     const string m_usernameKey = "Username";
     const string m_bestScore = "BestScore";
+    const string m_sound = "Sound";
 
     const string m_playerStat = "_player";
     const string m_scoreStat = "_score";
@@ -63,6 +64,7 @@ public class DataController
     {
         PlayerPrefs.DeleteAll();
     }
+
     public int GetMapIndex()
     {
         int index = PlayerPrefs.GetInt(m_mapIndexKey, 0);
@@ -75,38 +77,6 @@ public class DataController
 
         return username;
     }
-    public void SetMapIndex(int mapIndex)
-    {
-        PlayerPrefs.SetInt(m_mapIndexKey, mapIndex);
-    }
-    public void SetUsername(string username)
-    {
-        PlayerPrefs.SetString(m_usernameKey, username);
-    }
-    string IndexToKey(int mapIndex)
-    {
-        string mapKey = m_normalMapKey;
-
-        switch (mapIndex)
-        {
-            case 0:
-                mapKey = m_normalMapKey;
-                break;
-            case 1:
-                mapKey = m_largeMapKey;
-                break;
-            case 2:
-                mapKey = m_extraLarge;
-                break;
-        }
-
-        return mapKey;
-    }
-    private void OnDestroy()
-    {
-        PlayerPrefs.Save();
-    }
-
     public int GetMapBestScore()
     {
         string mapKey = IndexToKey(GetMapIndex());
@@ -114,7 +84,6 @@ public class DataController
 
         return score;
     }
-
     public int[] GetBestScores(int mapIndex)
     {
         int[] scores = new int[m_statNodesCount];
@@ -137,7 +106,26 @@ public class DataController
 
         return players;
     }
+    public bool IsSoundActive()
+    {
+        bool isActive = false;
 
+        if (PlayerPrefs.GetInt(m_sound, 1) == 1)
+        {
+            isActive = true;
+        }
+
+        return isActive;
+    }
+
+    public void SetMapIndex(int mapIndex)
+    {
+        PlayerPrefs.SetInt(m_mapIndexKey, mapIndex);
+    }
+    public void SetUsername(string username)
+    {
+        PlayerPrefs.SetString(m_usernameKey, username);
+    }
     public void SetBestScore(int mapIndex, int newScore, string newPlayer)
     {
         if (newScore != 0)
@@ -170,5 +158,41 @@ public class DataController
             PlayerPrefs.SetString(secondStat + m_playerStat, newBestPlayers[1]);
             PlayerPrefs.SetString(thirdStat + m_playerStat, newBestPlayers[2]);
         }
+    }
+    public void SetSoundActive(bool isMusicActive)
+    {
+        int soundActive = 0;
+
+        if (isMusicActive)
+        {
+            soundActive = 1;
+        }
+
+        PlayerPrefs.SetInt(m_sound, soundActive);
+    }
+
+    string IndexToKey(int mapIndex)
+    {
+        string mapKey = m_normalMapKey;
+
+        switch (mapIndex)
+        {
+            case 0:
+                mapKey = m_normalMapKey;
+                break;
+            case 1:
+                mapKey = m_largeMapKey;
+                break;
+            case 2:
+                mapKey = m_extraLarge;
+                break;
+        }
+
+        return mapKey;
+    }
+
+    private void OnDestroy()
+    {
+        PlayerPrefs.Save();
     }
 }

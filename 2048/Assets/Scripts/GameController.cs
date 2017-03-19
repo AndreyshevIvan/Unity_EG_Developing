@@ -17,7 +17,6 @@ public class GameController : MonoBehaviour
 
     public GameObject m_sceneCurtain;
     public GameObject m_gameoverPanel;
-    public Button m_newGameButton;
 
     bool m_isGameover = false;
 
@@ -38,7 +37,7 @@ public class GameController : MonoBehaviour
     }
     public void StartGame()
     {
-        SetGameOver(false);
+        SetGameOver(false, "");
         m_user.Reset();
         m_field.StartEvents();
 
@@ -48,6 +47,11 @@ public class GameController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            SetGameOver(true, "Game Over");
+        }
+
         if (!m_isGameover)
         {
             GameplayUpdate();
@@ -78,16 +82,20 @@ public class GameController : MonoBehaviour
     {
         if (!m_field.IsTurnPossible())
         {
-            Debug.Log("GameOver");
-            SetGameOver(true);
+            SetGameOver(true, "Game Over");
         }
     }
 
-    void SetGameOver(bool isGameover)
+    public void FinishGame()
+    {
+        SetGameOver(true, "Game Finished");
+    }
+
+    void SetGameOver(bool isGameover, string title)
     {
         m_isGameover = isGameover;
         m_gameoverPanel.SetActive(m_isGameover);
-        m_newGameButton.interactable = !m_isGameover;
+        m_UIController.SetGameOver(isGameover, title);
 
         if (isGameover)
         {
@@ -98,10 +106,11 @@ public class GameController : MonoBehaviour
     {
         m_user.Save();
 
-        m_gameoverPanel.GetComponent<Animation>().Play();
-
-        int userPoints = m_user.GetPoints();
-        string userName = m_user.GetName();
+        Animation gameOverAnim = m_gameoverPanel.GetComponent<Animation>();
+        if (gameOverAnim != null)
+        {
+            gameOverAnim.Play();
+        }
     }
 
     public void BackTomenu()

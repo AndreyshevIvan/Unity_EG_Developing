@@ -27,7 +27,7 @@ public class StatsController : MonoBehaviour
     {
         m_sceneCurtain.SetActive(true);
         m_sceneCurtain.GetComponent<Animation>().Play();
-        StartCoroutine(m_sceneController.SetScoresScene());
+        StartCoroutine(m_sceneController.SetMenuScene());
 
         m_data.ResetData();
     }
