@@ -13,6 +13,7 @@ public class FieldController : MonoBehaviour
     bool[,] m_changeMask;
 
     int m_points = 0;
+    byte m_addStep = 1;
 
     public float m_fourProbability;
 
@@ -303,7 +304,7 @@ public class FieldController : MonoBehaviour
                 }
                 else if (line[position - 1] == value && value != 0)
                 {
-                    line[position - 1] += 1;
+                    line[position - 1] += m_addStep;
                     lineSumMap[position - 1] = true;
                     AddPoints(line[position - 1]);
                     line[position] = 0;

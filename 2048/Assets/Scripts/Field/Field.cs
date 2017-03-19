@@ -13,10 +13,11 @@ public class Field : MonoBehaviour
     public GameObject m_tileBackground;
 
     byte m_fieldSize;
+    const float m_tileOffsetPercents = 0.03125f;
     Vector2 m_tileSize;
-    Vector2 m_fieldRectSize;
+    float m_fieldWidth;
     Vector2 m_backTileSize;
-    public int m_offset;
+    float m_offset;
     int m_tilesCount;
 
     private void Awake()
@@ -27,12 +28,13 @@ public class Field : MonoBehaviour
         m_backgroundsParent = Instantiate(m_backgroundsParent);
         m_backgroundsParent.transform.SetParent(transform);
     }
-    public void Create(byte size)
+    public void Create(byte size, float width)
     {
         m_fieldSize = size;
         m_tilesCount = m_fieldSize * m_fieldSize;
-        m_fieldRectSize = GetComponent<RectTransform>().rect.size;
+        m_offset = width * m_tileOffsetPercents;
 
+        SetFieldSize(width);
         SpawnTiles();
 
         m_fieldController.Init(m_fieldSize);
@@ -43,6 +45,7 @@ public class Field : MonoBehaviour
 
         GameObject[] tiles = new GameObject[m_tilesCount];
         Vector2 startPos = transform.position + (new Vector3(m_offset, -m_offset, 0));
+        startPos.x -= m_fieldWidth / 2.0f;
         Vector2 spawnPos = startPos;
         int tileInRowNum = m_fieldSize;
         Vector3 pivotOffset = new Vector3(m_tileSize.x / 2, -m_tileSize.y / 2, 0);
@@ -109,6 +112,10 @@ public class Field : MonoBehaviour
 
         return lastPoints;
     }
+    public float GetWidth()
+    {
+        return m_fieldWidth;
+    }
 
     public void SetAutoTurn(ushort turnsCount, bool isFourAllowed)
     {
@@ -120,7 +127,7 @@ public class Field : MonoBehaviour
     }
     void SetTileSize()
     {
-        float spaceForTile = m_fieldRectSize.x - (m_fieldSize + 1) * m_offset;
+        float spaceForTile = m_fieldWidth - (m_fieldSize + 1) * m_offset;
         float tileSize = spaceForTile / m_fieldSize;
 
         RectTransform tileTransform = m_tile.GetComponent<RectTransform>();
@@ -130,6 +137,15 @@ public class Field : MonoBehaviour
 
         m_tileSize = tileTransform.rect.size;
         m_backTileSize = tileTransform.rect.size;
+    }
+    void SetFieldSize(float width)
+    {
+        m_fieldWidth = width;
+
+        RectTransform transform = GetComponent<RectTransform>();
+
+        transform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, m_fieldWidth);
+        transform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, m_fieldWidth);
     }
 
     public bool IsAutoTurnAllowed()

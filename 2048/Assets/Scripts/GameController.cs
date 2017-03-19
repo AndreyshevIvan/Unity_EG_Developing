@@ -13,6 +13,7 @@ public class GameController : MonoBehaviour
     public GameAudio m_audio;
     DataController m_data;
     ScenesController m_scenesController;
+    SoundButton m_soundButton;
 
     int m_mapIndex;
 
@@ -28,6 +29,8 @@ public class GameController : MonoBehaviour
         m_mapIndex = m_data.GetMapIndex();
         m_field = m_mapLoader.GetField(m_mapIndex);
         m_sceneCurtain.SetActive(false);
+
+        SetGameOverPanelSize();
     }
     private void Start()
     {
@@ -45,6 +48,16 @@ public class GameController : MonoBehaviour
 
         int mapBest = m_data.GetMapBestScore();
         m_UIController.SetBestScore(mapBest);
+    }
+    void SetGameOverPanelSize()
+    {
+        RectTransform transform = m_gameoverPanel.GetComponent<RectTransform>();
+        float width = m_field.GetWidth();
+
+        transform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
+        transform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, width);
+
+        transform.position = m_mapLoader.transform.position;
     }
 
     private void FixedUpdate()

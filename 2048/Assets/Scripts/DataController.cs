@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class DataController
 {
-    string m_savePath;
     const int m_statNodesCount = 3;
 
     const string m_mapIndexKey = "MapIndex";
@@ -158,12 +157,7 @@ public class DataController
     }
     public void SetSoundActive(bool isMusicActive)
     {
-        int soundActive = 0;
-
-        if (isMusicActive)
-        {
-            soundActive = 1;
-        }
+        int soundActive = (isMusicActive) ? 1 : 0;
 
         PlayerPrefs.SetInt(m_sound, soundActive);
     }

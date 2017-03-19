@@ -12,17 +12,19 @@ public class UIController : MonoBehaviour
     public Text m_gameOverTitle;
 
     public GameObject m_announcement;
-    public GameObject m_announcementsParent;
-    GameObject m_currAnnouncement;
+    public GameObject m_announceParent;
+    GameObject m_lastAnnounce;
 
     public Button m_newGameButton;
     public Button m_finishButton;
 
     public User m_user;
+    Vector2 m_parentSize;
 
     private void Awake()
     {
-
+        RectTransform parentTransform = m_announceParent.GetComponent<RectTransform>();
+        m_parentSize = parentTransform.rect.size;
     }
  
     public void SetPoints(int points)
@@ -36,12 +38,20 @@ public class UIController : MonoBehaviour
 
     public void CreateAnnouncement(int addPoints)
     {
-        Destroy(m_currAnnouncement);
+        Destroy(m_lastAnnounce);
 
-        Vector3 initPosition = m_announcementsParent.transform.position;
-        m_currAnnouncement = Instantiate(m_announcement, initPosition, Quaternion.identity);
-        m_currAnnouncement.GetComponentInChildren<PointsAnnouncement>().SetPoints(addPoints);
-        m_currAnnouncement.transform.SetParent(m_announcementsParent.transform);
+        Vector3 initPosition = m_announceParent.transform.position;
+        m_lastAnnounce = Instantiate(m_announcement, initPosition, Quaternion.identity);
+        m_lastAnnounce.GetComponentInChildren<PointsAnnouncement>().SetPoints(addPoints);
+        m_lastAnnounce.transform.SetParent(m_announceParent.transform);
+
+        SetAnnouncementSize();
+    }
+    void SetAnnouncementSize()
+    {
+        RectTransform transform = m_lastAnnounce.GetComponent<RectTransform>();
+        transform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, m_parentSize.x);
+        transform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, m_parentSize.y);
     }
 
     public void SetGameOver(bool isGameOver, string title = "")
