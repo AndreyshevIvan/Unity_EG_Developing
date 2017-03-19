@@ -10,6 +10,7 @@ public class GameController : MonoBehaviour
 
     public User m_user;
     public UIController m_UIController;
+    public GameAudio m_audio;
     DataController m_data;
     ScenesController m_scenesController;
 
@@ -40,6 +41,7 @@ public class GameController : MonoBehaviour
         SetGameOver(false, "");
         m_user.Reset();
         m_field.StartEvents();
+        m_audio.StartBackgroundMusic();
 
         int mapBest = m_data.GetMapBestScore();
         m_UIController.SetBestScore(mapBest);
@@ -47,11 +49,6 @@ public class GameController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (Input.GetKeyDown(KeyCode.G))
-        {
-            SetGameOver(true, "Game Over");
-        }
-
         if (!m_isGameover)
         {
             GameplayUpdate();
@@ -105,6 +102,8 @@ public class GameController : MonoBehaviour
     void GameoverEvents()
     {
         m_user.Save();
+        m_audio.GameOver();
+        m_audio.StopBackGroundMusic();
 
         Animation gameOverAnim = m_gameoverPanel.GetComponent<Animation>();
         if (gameOverAnim != null)

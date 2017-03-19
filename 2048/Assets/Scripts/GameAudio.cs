@@ -48,9 +48,9 @@ public class GameAudio : MonoBehaviour
             StopBackGroundMusic();
         }
     }
-    void StartBackgroundMusic()
+    public void StartBackgroundMusic()
     {
-        if (m_isSoundOn)
+        if (m_isSoundOn && !m_backSource.isPlaying)
         {
             StopBackGroundMusic();
             m_backSource.clip = GetRandomBackgroundMusic();
@@ -61,7 +61,7 @@ public class GameAudio : MonoBehaviour
             }
         }
     }
-    void StopBackGroundMusic()
+    public void StopBackGroundMusic()
     {
         m_backSource.Stop();
     }

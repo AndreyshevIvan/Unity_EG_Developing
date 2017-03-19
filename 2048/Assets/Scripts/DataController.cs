@@ -1,8 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Xml.Linq;
-using System.IO;
 
 public class DataController
 {
@@ -79,7 +77,6 @@ public class DataController
     }
     public int GetMapBestScore()
     {
-        string mapKey = IndexToKey(GetMapIndex());
         int score = PlayerPrefs.GetInt(firstStat + m_scoreStat, 0);
 
         return score;

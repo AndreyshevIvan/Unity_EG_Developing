@@ -8,12 +8,10 @@ public class MenuController : MonoBehaviour
     public GameObject m_sceneCurtain;
 
     ScenesController m_sceneController;
-    DataController m_data;
 
     private void Awake()
     {
         m_sceneController = new ScenesController();
-        m_data = new DataController();
         m_sceneCurtain.SetActive(false);
     }
 
