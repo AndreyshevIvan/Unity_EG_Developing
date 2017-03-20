@@ -7,8 +7,6 @@ public class SoundButton : MonoBehaviour
 {
     public GameObject m_soundOnImg;
     public GameObject m_soundOffImg;
-    public GameAudio m_audio;
-    public AudioListener m_lisseter;
 
     DataController m_data;
 
@@ -22,29 +20,14 @@ public class SoundButton : MonoBehaviour
         m_soundOnImg.SetActive(m_isSoundOn);
         m_soundOffImg.SetActive(!m_isSoundOn);
 
-        if (m_lisseter != null)
-        {
-            m_lisseter.enabled = m_isSoundOn;
-        }
-
-        if (m_audio != null)
-        {
-            m_audio.SetSoundActive(m_isSoundOn);
-        }
+        AudioListener.pause = !m_isSoundOn;
     }
 
     public void SitchSound()
     {
         m_isSoundOn = !m_isSoundOn;
-        if (m_audio != null)
-        {
-            m_audio.SetSoundActive(m_isSoundOn);
-        }
 
-        if (m_lisseter != null)
-        {
-            m_lisseter.enabled = m_isSoundOn;
-        }
+        AudioListener.pause = !m_isSoundOn;
 
         m_soundOnImg.SetActive(m_isSoundOn);
         m_soundOffImg.SetActive(!m_isSoundOn);
