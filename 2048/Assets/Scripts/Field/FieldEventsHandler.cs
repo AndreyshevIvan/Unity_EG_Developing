@@ -8,11 +8,13 @@ public class FieldEventsHandler : MonoBehaviour, IDragHandler, IBeginDragHandler
 
     FieldController m_fieldController;
     FieldViewer m_fieldViewer;
+    FieldAudio m_audio;
 
     private void Awake()
     {
         m_fieldController = GetComponent<FieldController>();
         m_fieldViewer = GetComponent<FieldViewer>();
+        m_audio = GetComponent<FieldAudio>();
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -39,6 +41,7 @@ public class FieldEventsHandler : MonoBehaviour, IDragHandler, IBeginDragHandler
     {
         if (m_fieldController.RightTurn())
         {
+            m_audio.Swipe();
             byte[,] animMap = m_fieldController.GetCurrentAnimMap();
             m_fieldViewer.AnimateRightTurn(animMap);
         }
@@ -47,6 +50,7 @@ public class FieldEventsHandler : MonoBehaviour, IDragHandler, IBeginDragHandler
     {
         if (m_fieldController.LeftTurn())
         {
+            m_audio.Swipe();
             byte[,] animMap = m_fieldController.GetCurrentAnimMap();
             m_fieldViewer.AnimateLeftTurn(animMap);
         }
@@ -55,6 +59,7 @@ public class FieldEventsHandler : MonoBehaviour, IDragHandler, IBeginDragHandler
     {
         if (m_fieldController.UpTurn())
         {
+            m_audio.Swipe();
             byte[,] animMap = m_fieldController.GetCurrentAnimMap();
             m_fieldViewer.AnimateUpTurn(animMap);
         }
@@ -63,6 +68,7 @@ public class FieldEventsHandler : MonoBehaviour, IDragHandler, IBeginDragHandler
     {
         if (m_fieldController.DownTurn())
         {
+            m_audio.Swipe();
             byte[,] animMap = m_fieldController.GetCurrentAnimMap();
             m_fieldViewer.AnimateDownTurn(animMap);
         }
