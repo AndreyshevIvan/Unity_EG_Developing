@@ -14,7 +14,7 @@ public class FieldViewer : MonoBehaviour
     public Color m_darkColor;
     public Color m_lightColor;
     const byte m_startLightColorNum = 3;
-    const byte m_power = 2;
+    const byte m_power = 8;
 
     Vector2[,] m_startTilesPositions;
     const float m_animColdown = 0.1f;

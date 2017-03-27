@@ -15,7 +15,7 @@ public class FieldController : MonoBehaviour
     int m_points = 0;
     byte m_addStep = 1;
 
-    public float m_fourProbability;
+    const float m_fourProbability = 0.1f;
 
     bool m_isPlayerMadeTurn = false;
 
@@ -89,7 +89,7 @@ public class FieldController : MonoBehaviour
 
             if (random < m_fourProbability)
             {
-                value = (byte)(value << 1);
+                value = 2;
             }
         }
 
