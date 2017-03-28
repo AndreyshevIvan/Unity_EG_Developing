@@ -138,14 +138,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.15686275, g: 0, b: 0.11764706, a: 1}
+  m_Color: {r: 0.6655173, g: 0.6655173, b: 0.6655173, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: c1c14cde044b3e44595acd31501d90e5, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -189,8 +189,8 @@ RectTransform:
   m_Father: {fileID: 823200853}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.6}
-  m_AnchorMax: {x: 1, y: 0.72}
+  m_AnchorMin: {x: 0.05, y: 0.7}
+  m_AnchorMax: {x: 0.95, y: 0.85}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -206,7 +206,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.105882354, g: 0.9254902, b: 0.9647059, a: 1}
+  m_Color: {r: 0.8509804, g: 0.8509804, b: 0.8509804, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -214,7 +214,7 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 434aa0e91aa61cc48bb088ad168655e3, type: 3}
+    m_Font: {fileID: 12800000, guid: 7b20fcd8c7e8cd540a52598c93883e17, type: 3}
     m_FontSize: 80
     m_FontStyle: 0
     m_BestFit: 1
@@ -404,22 +404,22 @@ Prefab:
     - target: {fileID: 224698985975503622, guid: 6af9711e1b6797b4a8759f1d5d1f1ecb,
         type: 2}
       propertyPath: m_AnchorMin.x
-      value: 0.38
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224698985975503622, guid: 6af9711e1b6797b4a8759f1d5d1f1ecb,
         type: 2}
       propertyPath: m_AnchorMin.y
-      value: 0.47
+      value: 0.49
       objectReference: {fileID: 0}
     - target: {fileID: 224698985975503622, guid: 6af9711e1b6797b4a8759f1d5d1f1ecb,
         type: 2}
       propertyPath: m_AnchorMax.x
-      value: 0.62
+      value: 0.48
       objectReference: {fileID: 0}
     - target: {fileID: 224698985975503622, guid: 6af9711e1b6797b4a8759f1d5d1f1ecb,
         type: 2}
       propertyPath: m_AnchorMax.y
-      value: 0.54
+      value: 0.59
       objectReference: {fileID: 0}
     - target: {fileID: 224698985975503622, guid: 6af9711e1b6797b4a8759f1d5d1f1ecb,
         type: 2}
@@ -438,13 +438,13 @@ Prefab:
     - target: {fileID: 114325183791494068, guid: 6af9711e1b6797b4a8759f1d5d1f1ecb,
         type: 2}
       propertyPath: m_Text
-      value: Restart
+      value: Try Again
       objectReference: {fileID: 0}
     - target: {fileID: 114325183791494068, guid: 6af9711e1b6797b4a8759f1d5d1f1ecb,
         type: 2}
       propertyPath: m_FontData.m_Font
       value: 
-      objectReference: {fileID: 12800000, guid: 434aa0e91aa61cc48bb088ad168655e3,
+      objectReference: {fileID: 12800000, guid: 7b20fcd8c7e8cd540a52598c93883e17,
         type: 3}
     - target: {fileID: 114325183791494068, guid: 6af9711e1b6797b4a8759f1d5d1f1ecb,
         type: 2}
@@ -495,6 +495,31 @@ Prefab:
         type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: SetGameplayScene
+      objectReference: {fileID: 0}
+    - target: {fileID: 114325183791494068, guid: 6af9711e1b6797b4a8759f1d5d1f1ecb,
+        type: 2}
+      propertyPath: m_FontData.m_Alignment
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114049384655248192, guid: 6af9711e1b6797b4a8759f1d5d1f1ecb,
+        type: 2}
+      propertyPath: m_Colors.m_NormalColor.r
+      value: 0.8509804
+      objectReference: {fileID: 0}
+    - target: {fileID: 114049384655248192, guid: 6af9711e1b6797b4a8759f1d5d1f1ecb,
+        type: 2}
+      propertyPath: m_Colors.m_NormalColor.g
+      value: 0.8509804
+      objectReference: {fileID: 0}
+    - target: {fileID: 114049384655248192, guid: 6af9711e1b6797b4a8759f1d5d1f1ecb,
+        type: 2}
+      propertyPath: m_Colors.m_NormalColor.b
+      value: 0.8509804
+      objectReference: {fileID: 0}
+    - target: {fileID: 114049384655248192, guid: 6af9711e1b6797b4a8759f1d5d1f1ecb,
+        type: 2}
+      propertyPath: m_Colors.m_NormalColor.a
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6af9711e1b6797b4a8759f1d5d1f1ecb, type: 2}
@@ -729,22 +754,22 @@ Prefab:
     - target: {fileID: 224698985975503622, guid: 6af9711e1b6797b4a8759f1d5d1f1ecb,
         type: 2}
       propertyPath: m_AnchorMin.x
-      value: 0.4
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224698985975503622, guid: 6af9711e1b6797b4a8759f1d5d1f1ecb,
         type: 2}
       propertyPath: m_AnchorMin.y
-      value: 0.36
+      value: 0.37
       objectReference: {fileID: 0}
     - target: {fileID: 224698985975503622, guid: 6af9711e1b6797b4a8759f1d5d1f1ecb,
         type: 2}
       propertyPath: m_AnchorMax.x
-      value: 0.6
+      value: 0.48
       objectReference: {fileID: 0}
     - target: {fileID: 224698985975503622, guid: 6af9711e1b6797b4a8759f1d5d1f1ecb,
         type: 2}
       propertyPath: m_AnchorMax.y
-      value: 0.42
+      value: 0.47
       objectReference: {fileID: 0}
     - target: {fileID: 224698985975503622, guid: 6af9711e1b6797b4a8759f1d5d1f1ecb,
         type: 2}
@@ -769,7 +794,7 @@ Prefab:
         type: 2}
       propertyPath: m_FontData.m_Font
       value: 
-      objectReference: {fileID: 12800000, guid: 434aa0e91aa61cc48bb088ad168655e3,
+      objectReference: {fileID: 12800000, guid: 7b20fcd8c7e8cd540a52598c93883e17,
         type: 3}
     - target: {fileID: 114325183791494068, guid: 6af9711e1b6797b4a8759f1d5d1f1ecb,
         type: 2}
@@ -790,6 +815,31 @@ Prefab:
         type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: SetMenuScene
+      objectReference: {fileID: 0}
+    - target: {fileID: 114325183791494068, guid: 6af9711e1b6797b4a8759f1d5d1f1ecb,
+        type: 2}
+      propertyPath: m_FontData.m_Alignment
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114049384655248192, guid: 6af9711e1b6797b4a8759f1d5d1f1ecb,
+        type: 2}
+      propertyPath: m_Colors.m_NormalColor.r
+      value: 0.8509804
+      objectReference: {fileID: 0}
+    - target: {fileID: 114049384655248192, guid: 6af9711e1b6797b4a8759f1d5d1f1ecb,
+        type: 2}
+      propertyPath: m_Colors.m_NormalColor.g
+      value: 0.8509804
+      objectReference: {fileID: 0}
+    - target: {fileID: 114049384655248192, guid: 6af9711e1b6797b4a8759f1d5d1f1ecb,
+        type: 2}
+      propertyPath: m_Colors.m_NormalColor.b
+      value: 0.8509804
+      objectReference: {fileID: 0}
+    - target: {fileID: 114049384655248192, guid: 6af9711e1b6797b4a8759f1d5d1f1ecb,
+        type: 2}
+      propertyPath: m_Colors.m_NormalColor.a
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6af9711e1b6797b4a8759f1d5d1f1ecb, type: 2}
