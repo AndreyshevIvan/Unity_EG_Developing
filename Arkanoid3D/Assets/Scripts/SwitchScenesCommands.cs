@@ -23,13 +23,9 @@ public class SwitchScenesCommands : MonoBehaviour
     {
         SceneManager.LoadScene("Scenes/ChangeLevel");
     }
-    public void SetExitScene()
-    {
-        SceneManager.LoadScene("Scenes/Exit");
-    }
     public void SetWinScene()
     {
-        SceneManager.LoadScene("Scenes/WinScene");
+        SceneManager.LoadScene("Scenes/Win");
     }
 
     public void ExitGame()

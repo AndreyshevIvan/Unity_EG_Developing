@@ -7,20 +7,27 @@ public class GameplayUIController : MonoBehaviour
 {
     public InfoController m_info;
 
-    public Text m_pointsUI;
-    public Text m_lifeUI;
-    public Text m_wallUI;
-    public Text m_ballsUI;
-    public Text m_timeScaleUI;
-    public Text m_multiplitterUI;
+    public Text m_pointsField;
+    public Text m_lifeField;
+    public Text m_wallField;
+    public Text m_ballsField;
+    public Text m_multiplitterField;
 
     float m_addingPointsSpeed = 0.01f;
     float m_addingTime = 0;
     int m_pointsPerOneAdd = 10;
 
+    private void Awake()
+    {
+        m_pointsField.text = "0";
+        m_lifeField.text = "0";
+        m_wallField.text = "0";
+        m_ballsField.text = "0";
+        m_multiplitterField.text = "0";
+    }
     public void UpdateBalls(int ballsCount)
     {
-        m_ballsUI.text = "Balls: " + ballsCount.ToString();
+        m_ballsField.text = "Balls: " + ballsCount.ToString();
     }
     public void UpdateWall(float duration, float maxDuration)
     {
@@ -28,20 +35,20 @@ public class GameplayUIController : MonoBehaviour
 
         if (duration != 0)
         {
-            m_wallUI.text = "Wall time: " + seconds.ToString();
+            m_wallField.text = "Wall time: " + seconds.ToString();
         }
         else
         {
-            m_wallUI.text = "Wall is off";
+            m_wallField.text = "Wall is off";
         }
     }
     public void UpdateLife(int lifeCount)
     {
-        m_lifeUI.text = "Life: " + lifeCount.ToString();
+        m_lifeField.text = "Life: " + lifeCount.ToString();
     }
     public void UpdatePoints(int points)
     {
-        int currPoints = int.Parse(m_pointsUI.text);
+        int currPoints = int.Parse(m_pointsField.text);
         int pointsToAdd = points - currPoints;
 
         m_addingTime += Time.deltaTime;
@@ -60,31 +67,15 @@ public class GameplayUIController : MonoBehaviour
             m_addingTime = 0;
         }
     }
-    public void UpdateTimeScale(float duration, float maxDuration)
-    {
-        float time = maxDuration - duration;
-        string message;
-
-        if (time >= maxDuration)
-        {
-            message = " Off";
-        }
-        else
-        {
-            message = ": " + ((int)time).ToString();
-        }
-
-        m_timeScaleUI.text = "TimeScale" + message;
-    }
     public void UpdateMultiplier(int multiplitter)
     {
-        m_multiplitterUI.text = "Multiplier: x" + multiplitter.ToString();
+        m_multiplitterField.text = "Multiplier: x" + multiplitter.ToString();
     }
     void AddPointsToText(int points)
     {
-        int currPoints = int.Parse(m_pointsUI.text);
+        int currPoints = int.Parse(m_pointsField.text);
         int newPoints = currPoints + points;
 
-        m_pointsUI.text = newPoints.ToString();
+        m_pointsField.text = newPoints.ToString();
     }
 }

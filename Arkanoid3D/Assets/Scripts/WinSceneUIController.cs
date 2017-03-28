@@ -8,16 +8,18 @@ public class WinSceneUIController : MonoBehaviour
 {
 
     public InfoController m_info;
-    public Text m_pointsUI;
+    public Text m_scoreField;
 
     int m_points = 0;
-    float m_addingPointsSpeed = 0.02f;
-    int m_speedInPersents = 70;
     float m_addingTime = 0;
-    int m_pointsPerOneAdd = 1;
+    int m_pointsPerAdd = 1;
+
+    const float ADDING_POINTS_SPEED = 0.02f;
+    const int SPEED_IN_PERCENTS = 70;
 
     private void Awake()
     {
+        m_scoreField.text = "0";
         m_points = m_info.GetLastLevelPoints();
         SetPointsPerAdd();
     }
@@ -29,16 +31,16 @@ public class WinSceneUIController : MonoBehaviour
 
     public void UpdatePoints(int points)
     {
-        int currPoints = int.Parse(m_pointsUI.text);
+        int currPoints = int.Parse(m_scoreField.text);
         int pointsToAdd = points - currPoints;
 
         m_addingTime += Time.deltaTime;
 
-        if (m_addingTime >= m_addingPointsSpeed && pointsToAdd != 0)
+        if (m_addingTime >= ADDING_POINTS_SPEED && pointsToAdd != 0)
         {
-            if (pointsToAdd >= m_pointsPerOneAdd)
+            if (pointsToAdd >= m_pointsPerAdd)
             {
-                AddPointsToText(m_pointsPerOneAdd);
+                AddPointsToText(m_pointsPerAdd);
             }
             else
             {
@@ -50,13 +52,13 @@ public class WinSceneUIController : MonoBehaviour
     }
     void AddPointsToText(int points)
     {
-        int currPoints = int.Parse(m_pointsUI.text);
+        int currPoints = int.Parse(m_scoreField.text);
         int newPoints = currPoints + points;
 
-        m_pointsUI.text = newPoints.ToString();
+        m_scoreField.text = newPoints.ToString();
     }
     void SetPointsPerAdd()
     {
-        m_pointsPerOneAdd = m_points / m_speedInPersents;
+        m_pointsPerAdd = m_points / SPEED_IN_PERCENTS;
     }
 }

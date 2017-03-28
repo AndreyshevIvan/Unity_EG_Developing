@@ -5,18 +5,16 @@ using System.IO;
 
 public class InfoController : MonoBehaviour
 {
-
     public string[] m_levels;
-
     int m_levelsCount;
 
-    string m_openLevelsCountKey = "OpenLevelsCount";
-    string m_spawnLevelKey = "SpawnLevel";
-    string m_maxPointsKey = "MaxPointsPer";
-    string m_totalPointsKey = "TotalPoints";
-    string m_levelPointsKey = "LevelPoints";
+    const string OPEN_LEVELS_COUNT_KEY = "OpenLevelsCount";
+    const string SPAWN_LEVEL_KEY = "SpawnLevel";
+    const string MAX_POINTS_KEY = "MaxPointsPer";
+    const string TOTAL_POINTS_KEY = "TotalPoints";
+    const string LEVEL_POINTS_KEY = "LevelPoints";
 
-    const string m_levelsRoot = "Assets/Maps/";
+    const string LEVELS_PATH = "Assets/Maps/";
 
     public void ResetSaves()
     {
@@ -31,20 +29,20 @@ public class InfoController : MonoBehaviour
         {
             int newLevel = currLevel + 1;
 
-            PlayerPrefs.SetInt(m_openLevelsCountKey, newLevel);
+            PlayerPrefs.SetInt(OPEN_LEVELS_COUNT_KEY, newLevel);
             SaveInfo();
         }
     }
     public void SetSpawnLevel(int levelNumber)
     {
-        PlayerPrefs.SetInt(m_spawnLevelKey, levelNumber);
+        PlayerPrefs.SetInt(SPAWN_LEVEL_KEY, levelNumber);
         SaveInfo();
     }
     public void TrySetMaxPoints(int newMaxPoints)
     {
         if (GetMaxPoints() < newMaxPoints)
         {
-            PlayerPrefs.SetInt(m_maxPointsKey, newMaxPoints);
+            PlayerPrefs.SetInt(MAX_POINTS_KEY, newMaxPoints);
             SaveInfo();
         }
     }
@@ -60,17 +58,17 @@ public class InfoController : MonoBehaviour
             total = int.MaxValue;
         }
 
-        PlayerPrefs.SetInt(m_totalPointsKey, total);
+        PlayerPrefs.SetInt(TOTAL_POINTS_KEY, total);
         SaveInfo();
     }
     public void SetLevelPoints(int points)
     {
-        PlayerPrefs.SetInt(m_levelPointsKey, points);
+        PlayerPrefs.SetInt(LEVEL_POINTS_KEY, points);
     }
 
     public int GetOpenLevelsCount()
     {
-        return PlayerPrefs.GetInt(m_openLevelsCountKey, 1);
+        return PlayerPrefs.GetInt(OPEN_LEVELS_COUNT_KEY, 1);
     }
     public int GetMaxLevelsCount()
     {
@@ -79,27 +77,27 @@ public class InfoController : MonoBehaviour
     }
     public int GetSpawnLevel()
     {
-        return PlayerPrefs.GetInt(m_spawnLevelKey, 1);
+        return PlayerPrefs.GetInt(SPAWN_LEVEL_KEY, 1);
     }
     public StreamReader GetSpawnLevelReader()
     {
         int level = GetSpawnLevel();
         string levelName = m_levels[level - 1];
 
-        return (new StreamReader(m_levelsRoot + levelName));
+        return (new StreamReader(LEVELS_PATH + levelName));
 
     }
     public int GetMaxPoints()
     {
-        return PlayerPrefs.GetInt(m_maxPointsKey, 0);
+        return PlayerPrefs.GetInt(MAX_POINTS_KEY, 0);
     }
     public int GetTotal()
     {
-        return PlayerPrefs.GetInt(m_totalPointsKey, 0);
+        return PlayerPrefs.GetInt(TOTAL_POINTS_KEY, 0);
     }
     public int GetLastLevelPoints()
     {
-        return PlayerPrefs.GetInt(m_levelPointsKey, 0);
+        return PlayerPrefs.GetInt(LEVEL_POINTS_KEY, 0);
     }
 
     void SaveInfo()
