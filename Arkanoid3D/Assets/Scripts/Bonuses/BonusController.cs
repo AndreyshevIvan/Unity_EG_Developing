@@ -13,15 +13,15 @@ public class BonusController : MonoBehaviour
     public BottomWall m_bottomWallBonus;
     public Life m_lifeBonus;
     public MultyBall m_multyBallBonus;
-    public TimeScale m_timeScaleBonus;
     public PointsMultiplier m_multiplier;
     public Fireball m_fireball;
     public AttackMode m_attackMode;
 
-    int m_blocksPerDrop = 5;
     int m_currDropNumber = 0;
     float m_dropTimer = 0;
-    float m_oneDropTime = 4;
+
+    const int BLOCKS_PER_DROP = 5;
+    const float ONE_DROP_TIME = 4;
 
     private void Awake()
     {
@@ -31,7 +31,6 @@ public class BonusController : MonoBehaviour
         m_newBonuses.Add(m_multyBallBonus);
         m_newBonuses.Add(m_bottomWallBonus);
         m_newBonuses.Add(m_lifeBonus);
-        m_newBonuses.Add(m_timeScaleBonus);
         m_newBonuses.Add(m_multiplier);
         m_newBonuses.Add(m_fireball);
         m_newBonuses.Add(m_attackMode);
@@ -44,7 +43,7 @@ public class BonusController : MonoBehaviour
     }
     void UpdateDropTimer()
     {
-        if (m_dropTimer <= m_oneDropTime)
+        if (m_dropTimer <= ONE_DROP_TIME)
         {
             m_dropTimer += Time.deltaTime;
         }
@@ -107,13 +106,14 @@ public class BonusController : MonoBehaviour
     void CreateBonus(Bonus m_newBonus, Vector3 position)
     {
         Bonus newBonus = Instantiate(m_newBonus, position, Quaternion.identity);
+        newBonus.transform.SetParent(transform);
         newBonus.Init(m_player);
         m_bonuses.Add(newBonus);
     }
     bool IsDropAllowed()
     {
-        bool isTimeValid = (m_dropTimer > m_oneDropTime);
-        bool isDropNumberValid = (m_currDropNumber > m_blocksPerDrop);
+        bool isTimeValid = (m_dropTimer > ONE_DROP_TIME);
+        bool isDropNumberValid = (m_currDropNumber > BLOCKS_PER_DROP);
 
         return isTimeValid && isDropNumberValid;
     }

@@ -5,9 +5,10 @@ using UnityEngine;
 public class Bonus : MonoBehaviour
 {
     protected AbstractUser m_player;
-    public float m_criticalPosition = 18.5f;
-    public float m_fallingSpeed = 3;
     bool m_isFreeze = false;
+
+    const float CRITICAL_POSITION = 18.5f;
+    const float FALLING_SPEED = 3;
 
     private void Awake()
     {
@@ -31,7 +32,7 @@ public class Bonus : MonoBehaviour
         if (!m_isFreeze)
         {
             Vector3 currPos = transform.position;
-            float movement = Time.deltaTime * m_fallingSpeed;
+            float movement = Time.deltaTime * FALLING_SPEED;
             Vector3 newPos = new Vector3(currPos.x, currPos.y, currPos.z - movement);
 
             transform.position = newPos;
@@ -42,7 +43,7 @@ public class Bonus : MonoBehaviour
     {
         Vector3 currPos = transform.position;
 
-        return (currPos.z >= m_criticalPosition);
+        return (currPos.z >= CRITICAL_POSITION);
     }
 
     private void OnTriggerEnter(Collider other)

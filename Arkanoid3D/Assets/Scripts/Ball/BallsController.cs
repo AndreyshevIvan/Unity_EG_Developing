@@ -9,21 +9,19 @@ public class BallsController : MonoBehaviour
 
     public GameObject platform;
 
-    public float m_startForce = 6500;
-    public float m_onPlatformOffset;
-
     bool m_isGameStart = false;
-
-    const int m_maxBallsCount = 64;
     int m_ballsCount;
+
+    const int MAX_BALLS_COUNT = 64;
+    const float START_FORCE = 6500;
+    public Vector3 ON_PLATFORM_POS = new Vector3(0, 0, 0.6f);
 
     void Awake()
     {
-
+        m_ballsOnMap = new List<Ball>();
     }
     public void Reset()
     {
-        m_ballsOnMap = new List<Ball>();
         CreateOnlyOneBall();
         m_isGameStart = false;
     }
@@ -32,6 +30,7 @@ public class BallsController : MonoBehaviour
     {
         ClearBalls();
         Ball newBall = Instantiate(m_ball, Vector3.zero, Quaternion.identity);
+        newBall.transform.SetParent(transform);
         m_ballsOnMap.Add(newBall);
         m_ballsCount = GetBallsCount();
     }
@@ -49,7 +48,7 @@ public class BallsController : MonoBehaviour
 
             foreach (Ball ball in m_ballsOnMap)
             {
-                ball.SetForce(new Vector3(0, 0, m_startForce));
+                ball.SetForce(new Vector3(0, 0, START_FORCE));
             }
         }
     }
@@ -58,7 +57,7 @@ public class BallsController : MonoBehaviour
         if (!m_isGameStart)
         {
             Vector3 platformPosition = platform.transform.position;
-            Vector3 posOnPlatform = new Vector3(platformPosition.x, platformPosition.y, platformPosition.z + m_onPlatformOffset);
+            Vector3 posOnPlatform = platformPosition + ON_PLATFORM_POS;
 
             SetPosition(posOnPlatform);
         }
@@ -114,24 +113,29 @@ public class BallsController : MonoBehaviour
 
     public void PauseBalls(bool isFreeze)
     {
-        foreach (Ball ball in m_ballsOnMap)
+        if (m_ballsOnMap != null)
         {
-            ball.Pause(isFreeze);
+            foreach (Ball ball in m_ballsOnMap)
+            {
+                ball.Pause(isFreeze);
+            }
         }
     }
     public void DoubleAll()
     {
-        if (m_ballsCount * 2 <= m_maxBallsCount)
+        if (m_ballsCount * 2 <= MAX_BALLS_COUNT)
         {
             List<Ball> toDouble = new List<Ball>();
 
             foreach (Ball ball in m_ballsOnMap)
             {
-                toDouble.Add(ball.CreateDublicate());
+                Ball newBall = ball.CreateDublicate();
+                toDouble.Add(newBall);
             }
 
             foreach (Ball dublicateBall in toDouble)
             {
+                dublicateBall.transform.SetParent(transform);
                 m_ballsOnMap.Add(dublicateBall);
             }
 
@@ -139,7 +143,6 @@ public class BallsController : MonoBehaviour
             m_ballsCount = 2 * m_ballsCount;
         }
     }
-
     public void ClearBalls()
     {
         if (m_ballsOnMap != null && m_ballsOnMap.Capacity != 0)

@@ -15,40 +15,27 @@ public class AbstractUser : MonoBehaviour
     public InfoController m_info;
 
     bool m_isFireballMode = false;
-    float m_fireballDuration = 0;
-    float m_maxFireballDuration = 4;
-
     bool m_isAttackMode = false;
-    float m_attackDuration = 0;
-    float m_maxAttackDuration = 4;
-
-    int m_multiplitter = 1;
-
-    bool m_isTimeScale = false;
-    float m_effectTimeScale = 0.4f;
-    float m_currScaleDuration = 0;
-    float m_maxScaleDuration = 5;
-
-    int m_maxHealth = 3;
-
     bool m_isWallActive = false;
-    float m_wallDuration = 8;
-    float m_currWallDuration = 0;
+
+    float m_fireballDuration = 0;
+    float m_attackDuration = 0;
+    float m_wallDuration = 0;
 
     int m_points = 0;
-    int m_ballsCount;
+    int m_ballsCount = 1;
+    int m_health = 1;
+    int m_multiplitter = 1;
 
-    int m_life;
-
-    private void Awake()
-    {
-
-    }
+    const float MAX_FIREBALL_DUR = 4;
+    const float MAX_ATTACK_DUR = 4;
+    const int MAX_HEALTH = 3;
+    const float MAX_WALL_DUR = 8;
 
     public void Start()
     {
         m_multiplitter = 1;
-        m_life = 3;
+        m_health = MAX_HEALTH;
         SetWallActive(false);
     }
     public void ResetToNextLife()
@@ -62,7 +49,6 @@ public class AbstractUser : MonoBehaviour
         UpdateData();
 
         UpdateWall();
-        UpdateTimeScale();
         UpdateFireballMode();
         UpdateAttackMode();
 
@@ -74,11 +60,10 @@ public class AbstractUser : MonoBehaviour
     }
     void UpdateUI()
     {
-        m_UIController.UpdateWall(m_currWallDuration, m_wallDuration);
+        m_UIController.UpdateWall(m_wallDuration, MAX_WALL_DUR);
         m_UIController.UpdatePoints(m_points);
-        m_UIController.UpdateLife(m_life);
+        m_UIController.UpdateLife(m_health);
         m_UIController.UpdateBalls(m_ballsCount);
-        m_UIController.UpdateTimeScale(m_currScaleDuration, m_maxScaleDuration);
         m_UIController.UpdateMultiplier(m_multiplitter);
     }
 
@@ -88,7 +73,7 @@ public class AbstractUser : MonoBehaviour
         {
             m_fireballDuration += Time.deltaTime;
 
-            if (m_fireballDuration >= m_maxFireballDuration)
+            if (m_fireballDuration >= MAX_FIREBALL_DUR)
             {
                 SetFireBallsMode(false);
             }
@@ -111,7 +96,7 @@ public class AbstractUser : MonoBehaviour
         {
             m_attackDuration += Time.deltaTime;
 
-            if (m_attackDuration >= m_maxAttackDuration)
+            if (m_attackDuration >= MAX_ATTACK_DUR)
             {
                 SetAttackMode(false);
             }
@@ -145,60 +130,36 @@ public class AbstractUser : MonoBehaviour
 
         if (!m_isWallActive)
         {
-            m_currWallDuration = 0;
+            m_wallDuration = 0;
         }
     }
     void UpdateWall()
     {
         if (m_isWallActive)
         {
-            m_currWallDuration += Time.deltaTime;
+            m_wallDuration += Time.deltaTime;
 
-            if (m_currWallDuration >= m_wallDuration)
+            if (m_wallDuration >= MAX_WALL_DUR)
             {
                 SetWallActive(false);
             }
         }
     }
 
-    public void SetTimeScale(bool isStart)
-    {
-        m_isTimeScale = isStart;
-
-        if (!m_isTimeScale)
-        {
-            Time.timeScale = 1;
-            m_currScaleDuration = 0;
-        }
-    }
-    void UpdateTimeScale()
-    {
-        if (m_isTimeScale)
-        {
-            Time.timeScale = m_effectTimeScale;
-            m_currScaleDuration += Time.deltaTime;
-
-            if (m_currScaleDuration >= m_maxScaleDuration)
-            {
-                SetTimeScale(false);
-            }
-        }
-    }
-
     public bool IsPlayerLive()
     {
-        return (m_life > 0);
+        return (m_health > 0);
     }
     public void AddLife()
     {
-        if (m_life < m_maxHealth)
+        if (m_health < MAX_HEALTH)
         {
-            m_life++;
+            m_health++;
         }
     }
     public void ReduceLife()
     {
-        m_life--;
+        m_health--;
     }
 
     public void AddPoints(int points)
@@ -215,10 +176,6 @@ public class AbstractUser : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             MuliplyBalls();
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            SetTimeScale(!m_isTimeScale);
         }
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
@@ -243,6 +200,5 @@ public class AbstractUser : MonoBehaviour
         m_info.SetLevelPoints(m_points);
         m_info.AddToTotal(m_points);
         m_info.TrySetMaxPoints(m_points);
-        SetTimeScale(false);
     }
 }

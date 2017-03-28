@@ -17,13 +17,11 @@ public class BlocksController : MonoBehaviour
 
     void Awake()
     {
-
+        m_blocksOnMap = new ArrayList();
+        m_toDelete = new ArrayList();
     }
     public void CreateLevel()
     {
-        m_blocksOnMap = new ArrayList();
-        m_toDelete = new ArrayList();
-
         ClearBlocks();
         m_blocksOnMap = m_spawner.SpawnLevel();
 

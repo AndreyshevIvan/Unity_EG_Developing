@@ -6,12 +6,12 @@ public class Bullet : MonoBehaviour
 {
     public Rigidbody body;
 
-    public int m_demage = 1;
-    public float m_startForce = 1500;
+    const int DEMAGE = 1;
+    const float START_FORCE = 1500;
 
     private void Awake()
     {
-        body.AddForce(new Vector3(0, 0, m_startForce));
+        body.AddForce(new Vector3(0, 0, START_FORCE));
     }
 
     private void OnTriggerEnter(Collider other)
@@ -20,7 +20,7 @@ public class Bullet : MonoBehaviour
 
         if (collideBody != null)
         {
-            collideBody.AddDemage(m_demage);
+            collideBody.AddDemage(DEMAGE);
         }
 
         Destroy(gameObject);

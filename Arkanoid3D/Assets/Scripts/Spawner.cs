@@ -10,11 +10,11 @@ public class Spawner : MonoBehaviour
 
     public InfoController m_info;
 
-    const char m_stopReadId = '-';
-    const char m_easyBlockId = 'E';
-    const char m_normalBlockId = 'N';
-    const char m_hardBlockId = 'H';
-    const char m_immortalBlockId = 'I';
+    const char STOP_READ_KEY = '-';
+    const char EASY_BLOCK_KEY = 'E';
+    const char NORMAL_BLOCK_KEY = 'N';
+    const char HARD_BLOCK_KEY = 'H';
+    const char IMMORTAL_BLOCK_KEY = 'I';
 
     public EasyBlock m_easyBlock;
     public NormalBlock m_normalBlock;
@@ -31,23 +31,22 @@ public class Spawner : MonoBehaviour
 
     void Awake()
     {
-
+        m_map = new ArrayList();
     }
 
     public ArrayList SpawnLevel()
     {
-        m_map = new ArrayList();
-
         Clear(m_map);
         SetStartPosition();
         InitReader();
 
         string line = m_reader.ReadLine();
-        while (line != null && line[0] != m_stopReadId)
+        while (line != null && line[0] != STOP_READ_KEY)
         {
             SpawnLine(line);
             line = m_reader.ReadLine();
         }
+        SetParentToBlocks();
         m_reader.Close();
 
         return m_map;
@@ -65,19 +64,19 @@ public class Spawner : MonoBehaviour
     {
         Block spawnBlock = null;
 
-        if (blockId == m_easyBlockId)
+        if (blockId == EASY_BLOCK_KEY)
         {
             spawnBlock = m_easyBlock;
         }
-        else if (blockId == m_normalBlockId)
+        else if (blockId == NORMAL_BLOCK_KEY)
         {
             spawnBlock = m_normalBlock;
         }
-        else if (blockId == m_hardBlockId)
+        else if (blockId == HARD_BLOCK_KEY)
         {
             spawnBlock = m_hardBlock;
         }
-        else if (blockId == m_immortalBlockId)
+        else if (blockId == IMMORTAL_BLOCK_KEY)
         {
             spawnBlock = m_immortalBlock;
         }
@@ -99,7 +98,6 @@ public class Spawner : MonoBehaviour
             m_map.Add(block);
         }
     }
-
     public void SetColliderWithOffset(Block block)
     {
         BoxCollider collider = block.GetComponent<BoxCollider>();
@@ -126,6 +124,13 @@ public class Spawner : MonoBehaviour
         float posZ = (floorPos.z + floorScale.z / 2.0f) * m_posZFactor;
 
         transform.position = new Vector3(posX, m_heightOnFloor, posZ);
+    }
+    void SetParentToBlocks()
+    {
+        foreach (Block block in m_map)
+        {
+            block.transform.SetParent(transform);
+        }
     }
     void MoveToNextPosition()
     {

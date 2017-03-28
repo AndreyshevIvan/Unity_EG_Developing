@@ -5,11 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class GameplayController : MonoBehaviour
 {
-
     public GameObject m_pauseItems;
     public GameObject m_gameplayItems;
-
-    bool m_isPause = false;
 
     public Platform m_platform;
     public BallsController m_ballsController;
@@ -17,12 +14,19 @@ public class GameplayController : MonoBehaviour
     public BonusController m_bonusController;
     public AbstractUser m_player;
     public SwitchScenesCommands m_sceneSwithcer;
-
     public InfoController m_info;
 
-    private void Awake()
+    bool m_isPause = false;
+
+    private void Start()
     {
         StartLevel();
+    }
+    public void StartLevel()
+    {
+        SetPause(false);
+        m_ballsController.Reset();
+        m_blocksController.CreateLevel();
     }
     public void StartNewLife()
     {
@@ -31,13 +35,6 @@ public class GameplayController : MonoBehaviour
         m_platform.Reset();
         m_bonusController.ClearBonuses();
     }
-    public void StartLevel()
-    {
-        SetPause(false);
-        m_ballsController.Reset();
-        m_blocksController.CreateLevel();
-    }
-
     void FixedUpdate()
     {
         if (m_isPause)
@@ -64,7 +61,7 @@ public class GameplayController : MonoBehaviour
         {
             SetPause(!m_isPause);
         }
-        m_platform.HandleEvents();
+        m_platform.UpdatePlatform();
         m_player.HandleCheats();
     }
     void PauseUpdate()
@@ -112,7 +109,7 @@ public class GameplayController : MonoBehaviour
     {
         m_isPause = isPause;
         m_pauseItems.SetActive(isPause);
-        //m_ballsController.PauseBalls(isPause);
+        m_ballsController.PauseBalls(isPause);
         m_gameplayItems.SetActive(!isPause);
         m_bonusController.SetFreeze(isPause);
     }
