@@ -18,6 +18,11 @@ public class GameplayController : MonoBehaviour
 
     bool m_isPause = false;
 
+    private void Awake()
+    {
+        m_info.ResetSaves();
+    }
+
     private void Start()
     {
         StartLevel();
