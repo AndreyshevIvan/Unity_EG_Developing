@@ -16,6 +16,8 @@ public class InfoController : MonoBehaviour
 
     const string LEVELS_PATH = "Assets/Maps/";
 
+    const string STOP_READ_KEY = "END.";
+
     public void ResetSaves()
     {
         PlayerPrefs.DeleteAll();
@@ -23,7 +25,7 @@ public class InfoController : MonoBehaviour
 
     public void TryOpenNewLevel()
     {
-        int currLevel = GetSpawnLevel();
+        int currLevel = GetSpawnLevelNumber();
 
         if (currLevel < m_levelsCount)
         {
@@ -75,17 +77,28 @@ public class InfoController : MonoBehaviour
         m_levelsCount = m_levels.Length;
         return m_levelsCount;
     }
-    public int GetSpawnLevel()
+    public int GetSpawnLevelNumber()
     {
         return PlayerPrefs.GetInt(SPAWN_LEVEL_KEY, 1);
     }
-    public StreamReader GetSpawnLevelReader()
+    public List<string> GetSpawnLevel()
     {
-        int level = GetSpawnLevel();
-        string levelName = m_levels[level - 1];
+        int levelNumber = GetSpawnLevelNumber();
+        string levelName = m_levels[levelNumber - 1];
+        StreamReader reader = new StreamReader(LEVELS_PATH + levelName);
+        List<string>level = new List<string>();
 
-        return (new StreamReader(LEVELS_PATH + levelName));
+        reader.ReadLine(); // skip name line
 
+        string line = reader.ReadLine();
+        while (line != null && line != STOP_READ_KEY)
+        {
+            level.Add(line);
+            line = reader.ReadLine();
+        }
+        reader.Close();
+
+        return level;
     }
     public int GetMaxPoints()
     {
@@ -98,6 +111,30 @@ public class InfoController : MonoBehaviour
     public int GetLastLevelPoints()
     {
         return PlayerPrefs.GetInt(LEVEL_POINTS_KEY, 0);
+    }
+    public string GetSpawnLevelName()
+    {
+        int levelNumber = GetSpawnLevelNumber();
+        string levelName = m_levels[levelNumber - 1];
+        StreamReader reader = new StreamReader(LEVELS_PATH + levelName);
+        string name = reader.ReadLine();
+        reader.Close();
+
+        return name;
+    }
+    public List<string> GetAllLevelsNames()
+    {
+        List<string> names = new List<string>();
+
+        foreach(string level in m_levels)
+        {
+            StreamReader reader = new StreamReader(LEVELS_PATH + level);
+            string levelName = reader.ReadLine();
+            names.Add(levelName);
+            reader.Close();
+        }
+
+        return names;
     }
 
     void SaveInfo()

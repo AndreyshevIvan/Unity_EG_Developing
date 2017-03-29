@@ -36,6 +36,8 @@ public class AbstractUser : MonoBehaviour
     {
         m_multiplitter = 1;
         m_health = MAX_HEALTH;
+        m_UIController.Init(m_health);
+
         SetWallActive(false);
     }
     public void ResetToNextLife()
@@ -159,7 +161,10 @@ public class AbstractUser : MonoBehaviour
     }
     public void ReduceLife()
     {
-        m_health--;
+        if (m_health > 0)
+        {
+            m_health--;
+        }
     }
 
     public void AddPoints(int points)

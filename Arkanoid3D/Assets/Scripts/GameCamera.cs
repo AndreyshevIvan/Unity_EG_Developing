@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class GameCamera : MonoBehaviour
 {
-
     public float m_speed = 90;
     public Vector3 m_anchor;
 
@@ -53,9 +52,7 @@ public class GameCamera : MonoBehaviour
 
     float GetCameraRotation()
     {
-        Vector3 rotation = transform.eulerAngles;
-
-        return rotation.x;
+        return transform.eulerAngles.x;
     }
 
     void RotateForward()

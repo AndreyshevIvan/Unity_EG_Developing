@@ -17,10 +17,13 @@ public class GameplayController : MonoBehaviour
     public InfoController m_info;
 
     bool m_isPause = false;
+    float m_gameOverColdown = 0;
+
+    const float GAME_OVER_DELAY = 1;
 
     private void Awake()
     {
-        m_info.ResetSaves();
+
     }
 
     private void Start()
@@ -39,6 +42,8 @@ public class GameplayController : MonoBehaviour
         m_ballsController.Reset();
         m_platform.Reset();
         m_bonusController.ClearBonuses();
+
+        //m_platform.GetComponent<MeshRenderer>().material.SetColor("_color", Color.red);
     }
     void FixedUpdate()
     {
@@ -91,7 +96,11 @@ public class GameplayController : MonoBehaviour
             }
             else
             {
-                SetGameoverScene();
+                if (m_gameOverColdown >= GAME_OVER_DELAY)
+                {
+                    SetGameoverScene();
+                }
+                m_gameOverColdown += Time.deltaTime;
             }
         }
     }

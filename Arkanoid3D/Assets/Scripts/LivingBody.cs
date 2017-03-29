@@ -18,6 +18,11 @@ public class LivingBody : MonoBehaviour
         if (!m_isImmortal)
         {
             m_health -= demage;
+
+            if (m_health < 0)
+            {
+                m_health = 0;
+            }
         }
     }
     public void AddHealth(int health, bool isAddToStartToo)

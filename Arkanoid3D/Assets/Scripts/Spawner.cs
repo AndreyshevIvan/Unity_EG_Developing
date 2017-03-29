@@ -5,12 +5,11 @@ using System.IO;
 
 public class Spawner : MonoBehaviour
 {
-    StreamReader m_reader;
-    ArrayList m_map;
+    ArrayList m_blocksOnMap;
+    List<string> m_levelCode;
 
     public InfoController m_info;
 
-    const char STOP_READ_KEY = '-';
     const char EASY_BLOCK_KEY = 'E';
     const char NORMAL_BLOCK_KEY = 'N';
     const char HARD_BLOCK_KEY = 'H';
@@ -31,25 +30,23 @@ public class Spawner : MonoBehaviour
 
     void Awake()
     {
-        m_map = new ArrayList();
+        m_blocksOnMap = new ArrayList();
+        m_levelCode = new List<string>();
     }
 
     public ArrayList SpawnLevel()
     {
-        Clear(m_map);
+        ClearBlocks(m_blocksOnMap);
         SetStartPosition();
-        InitReader();
+        m_levelCode = m_info.GetSpawnLevel();
 
-        string line = m_reader.ReadLine();
-        while (line != null && line[0] != STOP_READ_KEY)
+        foreach (string rowCode in m_levelCode)
         {
-            SpawnLine(line);
-            line = m_reader.ReadLine();
+            SpawnLine(rowCode);
         }
         SetParentToBlocks();
-        m_reader.Close();
 
-        return m_map;
+        return m_blocksOnMap;
     }
     void SpawnLine(string line)
     {
@@ -83,10 +80,6 @@ public class Spawner : MonoBehaviour
 
         AddBlockToList(spawnBlock);
     }
-    void InitReader()
-    {
-        m_reader = m_info.GetSpawnLevelReader();
-    }
     void AddBlockToList(Block spawnBlock)
     {
         if (spawnBlock != null)
@@ -95,7 +88,7 @@ public class Spawner : MonoBehaviour
             SetColliderWithOffset(spawnBlock);
             Block block = Instantiate(spawnBlock, spawnPosition, Quaternion.identity);
 
-            m_map.Add(block);
+            m_blocksOnMap.Add(block);
         }
     }
     public void SetColliderWithOffset(Block block)
@@ -127,7 +120,7 @@ public class Spawner : MonoBehaviour
     }
     void SetParentToBlocks()
     {
-        foreach (Block block in m_map)
+        foreach (Block block in m_blocksOnMap)
         {
             block.transform.SetParent(transform);
         }
@@ -143,7 +136,7 @@ public class Spawner : MonoBehaviour
         transform.position -= new Vector3(blockOffset * m_blocksInLine, 0, rowOffset);
     }
 
-    void Clear(ArrayList mapBlocks)
+    void ClearBlocks(ArrayList mapBlocks)
     {
         foreach (Block block in mapBlocks)
         {

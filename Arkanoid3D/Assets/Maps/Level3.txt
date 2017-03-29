@@ -1,3 +1,4 @@
+Square  love
 ..............
 ..NN......NN..
 .N..NN..NN..N.
