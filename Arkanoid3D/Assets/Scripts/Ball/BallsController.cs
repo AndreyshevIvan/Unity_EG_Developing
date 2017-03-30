@@ -25,6 +25,18 @@ public class BallsController : MonoBehaviour
         CreateOnlyOneBall();
         m_isGameStart = false;
     }
+    public void StartPlaying(bool isGameStart)
+    {
+        m_isGameStart = isGameStart;
+
+        if (m_isGameStart)
+        {
+            foreach (Ball ball in m_ballsOnMap)
+            {
+                ball.SetForce(new Vector3(0, 0, START_FORCE));
+            }
+        }
+    }
 
     void CreateOnlyOneBall()
     {
@@ -37,20 +49,7 @@ public class BallsController : MonoBehaviour
 
     void FixedUpdate()
     {
-        HandleEvents();
         UpdateBalls();
-    }
-    void HandleEvents()
-    {
-        if (!m_isGameStart && Input.GetMouseButtonDown(0))
-        {
-            m_isGameStart = true;
-
-            foreach (Ball ball in m_ballsOnMap)
-            {
-                ball.SetForce(new Vector3(0, 0, START_FORCE));
-            }
-        }
     }
     void UpdateBalls()
     {
@@ -121,7 +120,7 @@ public class BallsController : MonoBehaviour
             }
         }
     }
-    public void DoubleAll()
+    public bool DoubleAll()
     {
         if (m_ballsCount * 2 <= MAX_BALLS_COUNT)
         {
@@ -141,7 +140,11 @@ public class BallsController : MonoBehaviour
 
             toDouble.Clear();
             m_ballsCount = 2 * m_ballsCount;
+
+            return true;
         }
+
+        return false;
     }
     public void ClearBalls()
     {

@@ -13,6 +13,7 @@ public class InfoController : MonoBehaviour
     const string MAX_POINTS_KEY = "MaxPointsPer";
     const string TOTAL_POINTS_KEY = "TotalPoints";
     const string LEVEL_POINTS_KEY = "LevelPoints";
+    const string LEVEL_TIME_KEY = "LevelTime";
 
     const string LEVELS_PATH = "Assets/Maps/";
 
@@ -66,6 +67,10 @@ public class InfoController : MonoBehaviour
     public void SetLevelPoints(int points)
     {
         PlayerPrefs.SetInt(LEVEL_POINTS_KEY, points);
+    }
+    public void SetLevelTime(int seconds)
+    {
+        PlayerPrefs.SetInt(LEVEL_TIME_KEY, seconds);
     }
 
     public int GetOpenLevelsCount()
@@ -135,6 +140,10 @@ public class InfoController : MonoBehaviour
         }
 
         return names;
+    }
+    public int GetLastLevelTime()
+    {
+        return PlayerPrefs.GetInt(LEVEL_TIME_KEY, 0);
     }
 
     void SaveInfo()

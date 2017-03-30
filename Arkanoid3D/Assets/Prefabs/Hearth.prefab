@@ -41,7 +41,7 @@ Animator:
   m_GameObject: {fileID: 1808436633960620}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: f374baa0bde5a4242bb4ea09845ce222, type: 2}
+  m_Controller: {fileID: 9100000, guid: bc1151a52f088fb4da27a583d4b24fe5, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -60,6 +60,7 @@ Animation:
   m_Animation: {fileID: 7400000, guid: 9439d18bed8a80743897ce2f9e90b42b, type: 2}
   m_Animations:
   - {fileID: 7400000, guid: 9439d18bed8a80743897ce2f9e90b42b, type: 2}
+  - {fileID: 7400000, guid: 02970af407f82644b9ecd30033c037b0, type: 2}
   m_WrapMode: 0
   m_PlayAutomatically: 0
   m_AnimatePhysics: 0

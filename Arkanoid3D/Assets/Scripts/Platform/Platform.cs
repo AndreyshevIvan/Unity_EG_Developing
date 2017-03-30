@@ -59,12 +59,7 @@ public class Platform : MonoBehaviour
             m_fireColdown = 0;
         }
     }
-    public void UpdatePlatform()
-    {
-        UpdateColdowns();
-        HandleEvents();
-    }
-    private void UpdateColdowns()
+    void FixedUpdate()
     {
         if (m_fireColdown < FIRE_COLDOWN)
         {

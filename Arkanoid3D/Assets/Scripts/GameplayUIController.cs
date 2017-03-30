@@ -6,23 +6,30 @@ using UnityEngine.UI;
 public class GameplayUIController : MonoBehaviour
 {
     public InfoController m_info;
+    public BonusesPlateController m_plateController;
 
     public Text m_pointsField;
     public Text m_wallField;
     public Text m_ballsField;
     public Text m_multiplitterField;
     public Text m_levelName;
+    public Text m_timer;
+    public Text m_ultiplier;
 
     public GameObject m_heathBar;
     public GameObject m_hearth;
 
     List<GameObject> m_playerHeaths;
 
+    bool m_isGameStart = false;
     float m_addingTime = 0;
+    int m_pointsPerAdd = 1;
 
-    const float ADDING_POINTS_SPEED = 0.01f;
-    const int POINTS_PER_ONE_ADD = 10;
+    const float TIME_TO_ONE_ADD = 0.02f;
+    const float POINTS_TO_ONE_ADD_IN_PERSENTS = 1;
     const float HEARTH_POSITION_FACTOR = 1.1f;
+    const float MULTIBALL_PLATE_DURATION = 1.5f;
+    const float MULTIPLIER_PLATE_DURATION = 1.5f;
 
     private void Awake()
     {
@@ -31,7 +38,9 @@ public class GameplayUIController : MonoBehaviour
         m_wallField.text = "0";
         m_ballsField.text = "0";
         m_multiplitterField.text = "0";
+        m_timer.text = "0 0 : 0 0";
         m_levelName.text = m_info.GetSpawnLevelName();
+        m_isGameStart = false;
     }
     public void Init(int lifesCount)
     {
@@ -55,49 +64,71 @@ public class GameplayUIController : MonoBehaviour
             m_playerHeaths.Add(health);
         }
     }
-
-    public void UpdateBalls(int ballsCount)
+    public void StartPlaying(bool isGameStart)
     {
-        m_ballsField.text = "Balls: " + ballsCount.ToString();
+        m_isGameStart = isGameStart;
     }
-    public void UpdateWall(float duration, float maxDuration)
-    {
-        int seconds = (int)maxDuration - (int)duration;
 
-        if (duration != 0)
+    public void UpdateTime(float timeInSeconds)
+    {
+        if (m_isGameStart)
         {
-            m_wallField.text = "Wall time: " + seconds.ToString();
-        }
-        else
-        {
-            m_wallField.text = "Wall is off";
+            int seconds = (int)timeInSeconds;
+            int minutes = seconds / 60;
+            seconds = seconds - (minutes * 60);
+
+            string minutesStr = minutes.ToString();
+            string secondsStr = seconds.ToString();
+
+            if (minutes < 10)
+            {
+                minutesStr = "0" + minutesStr;
+            }
+            if (seconds < 10)
+            {
+                secondsStr = "0" + secondsStr;
+            }
+
+            m_timer.text = SetSpacesBetweenCh(minutesStr + ":" + secondsStr);
         }
     }
     public void UpdateLife(int lifeCount)
     {
-        int hearthsCount = m_playerHeaths.Count;
+        int hearthsCount = 0;
+        foreach(GameObject hearth in m_playerHeaths)
+        {
+            if (!hearth.GetComponent<PlayerHearth>().IsDead())
+            {
+                hearthsCount++;
+            }
+        }
 
         if (lifeCount < hearthsCount)
         {
             for (int i = lifeCount; i < hearthsCount; i++)
             {
                 m_playerHeaths[i].GetComponent<PlayerHearth>().Kill();
-                m_playerHeaths.Remove(m_playerHeaths[i]);
             }
+        }
+        else if (lifeCount > hearthsCount)
+        {
+            m_playerHeaths[hearthsCount].GetComponent<PlayerHearth>().Rise();
         }
     }
     public void UpdatePoints(int points)
     {
-        int currPoints = int.Parse(m_pointsField.text);
+        SetPointsPerAddToValue(points);
+
+        int currPoints = ConvertPointsToInt(m_pointsField.text);
         int pointsToAdd = points - currPoints;
 
         m_addingTime += Time.deltaTime;
 
-        if (m_addingTime >= ADDING_POINTS_SPEED && pointsToAdd != 0)
+        if (m_addingTime >= TIME_TO_ONE_ADD && pointsToAdd != 0)
         {
-            if (pointsToAdd >= POINTS_PER_ONE_ADD)
+            if (pointsToAdd >= m_pointsPerAdd)
             {
-                AddPointsToText(POINTS_PER_ONE_ADD);
+                AddPointsToText(m_pointsPerAdd);
             }
             else
             {
@@ -109,13 +140,85 @@ public class GameplayUIController : MonoBehaviour
     }
     public void UpdateMultiplier(int multiplitter)
     {
-        m_multiplitterField.text = "Multiplier: x" + multiplitter.ToString();
+        m_ultiplier.text = "x " + multiplitter.ToString();
     }
+
+    public void SetFireBallPlate(float duration)
+    {
+        m_plateController.AddFireBall(duration);
+    }
+    public void SetWallPlate(float duration)
+    {
+        m_plateController.AddWall(duration);
+    }
+    public void SetMultiplierPlate()
+    {
+        m_plateController.AddMultiplier(MULTIPLIER_PLATE_DURATION);
+    }
+    public void SetMultiBallsPlate()
+    {
+        m_plateController.AddMultyball(MULTIBALL_PLATE_DURATION);
+    }
+    public void SetAttackPlate(float duration)
+    {
+        m_plateController.AddAttack(duration);
+    }
+
     void AddPointsToText(int points)
     {
-        int currPoints = int.Parse(m_pointsField.text);
+        int currPoints = ConvertPointsToInt(m_pointsField.text);
         int newPoints = currPoints + points;
 
-        m_pointsField.text = newPoints.ToString();
+        m_pointsField.text = SetSpacesBetweenCh(newPoints.ToString());
+    }
+    int ConvertPointsToInt(string str)
+    {
+        string result = "";
+        char ch;
+
+        for (int i = 0; i < str.Length; i++)
+        {
+            ch = str[i];
+            if (ch >= '0' && ch <= '9')
+            {
+                result += ch;
+            }
+        }
+
+        return int.Parse(result);
+    }
+    void SetPointsPerAddToValue(int points)
+    {
+        m_pointsPerAdd = (int)(points * (POINTS_TO_ONE_ADD_IN_PERSENTS / 100));
+
+        if (m_pointsPerAdd < 1)
+        {
+            m_pointsPerAdd = 1;
+        }
+    }
+
+    string SetSpacesBetweenCh(string str, int spacesCount = 1)
+    {
+        string spaces = "";
+
+        while (spacesCount > 0)
+        {
+            spaces += " ";
+            spacesCount--;
+        }
+
+        string result = "";
+
+        for (int i = 0; i < str.Length; i++)
+        {
+            result += str[i];
+
+            if (i != str.Length - 1)
+            {
+                result += spaces;
+            }
+        }
+
+        return result;
     }
 }

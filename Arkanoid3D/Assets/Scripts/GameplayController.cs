@@ -17,14 +17,10 @@ public class GameplayController : MonoBehaviour
     public InfoController m_info;
 
     bool m_isPause = false;
+    bool m_isGameStart = false;
     float m_gameOverColdown = 0;
 
     const float GAME_OVER_DELAY = 1;
-
-    private void Awake()
-    {
-
-    }
 
     private void Start()
     {
@@ -38,12 +34,13 @@ public class GameplayController : MonoBehaviour
     }
     public void StartNewLife()
     {
+        m_isGameStart = false;
+        m_ballsController.StartPlaying(m_isGameStart);
+        m_player.StartPlaying(m_isGameStart);
         m_player.ResetToNextLife();
         m_ballsController.Reset();
         m_platform.Reset();
         m_bonusController.ClearBonuses();
-
-        //m_platform.GetComponent<MeshRenderer>().material.SetColor("_color", Color.red);
     }
     void FixedUpdate()
     {
@@ -67,11 +64,18 @@ public class GameplayController : MonoBehaviour
     }
     void HandleGameplayEvents()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetMouseButtonDown(0) && !m_isGameStart)
+        {
+            m_isGameStart = true;
+            m_ballsController.StartPlaying(m_isGameStart);
+            m_player.StartPlaying(m_isGameStart);
+        }
+        if (Input.GetKeyUp(KeyCode.Escape))
         {
             SetPause(!m_isPause);
         }
-        m_platform.UpdatePlatform();
+
+        m_platform.HandleEvents();
         m_player.HandleCheats();
     }
     void PauseUpdate()
@@ -96,11 +100,7 @@ public class GameplayController : MonoBehaviour
             }
             else
             {
-                if (m_gameOverColdown >= GAME_OVER_DELAY)
-                {
-                    SetGameoverScene();
-                }
-                m_gameOverColdown += Time.deltaTime;
+                SetGameoverScene();
             }
         }
     }
@@ -117,7 +117,12 @@ public class GameplayController : MonoBehaviour
 
     public void SetGameoverScene()
     {
-        m_sceneSwithcer.SetGameoverScene();
+        m_gameOverColdown += Time.deltaTime;
+
+        if (m_gameOverColdown >= GAME_OVER_DELAY)
+        {
+            m_sceneSwithcer.SetGameoverScene();
+        }
     }
     public void SetPause(bool isPause)
     {
@@ -126,5 +131,6 @@ public class GameplayController : MonoBehaviour
         m_ballsController.PauseBalls(isPause);
         m_gameplayItems.SetActive(!isPause);
         m_bonusController.SetFreeze(isPause);
+        m_player.SetPause(isPause);
     }
 }

@@ -66,31 +66,74 @@ public class EffectOff : Effect
 
 public class ButtonEffects : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
+    Button m_button;
+
     EffectOn m_strokeOn;
     EffectOff m_strokeOff;
     Effect m_strokeEffect;
 
-    public GameObject m_stroke;
+    public MenuPreview m_previewController;
+    public int m_iconIndex; // from 0
 
     private void Awake()
     {
+        m_button = GetComponent<Button>();
         m_strokeOn = new EffectOn(gameObject);
         m_strokeOff = new EffectOff(gameObject);
         m_strokeEffect = m_strokeOff;
     }
 
+    public void SetInteractable(bool isInteractable)
+    {
+        m_button.interactable = isInteractable;
+    }
+    public void SetArtificialActive(bool isArtificial)
+    {
+        if (isArtificial)
+        {
+            m_strokeEffect = m_strokeOn;
+        }
+        else
+        {
+            m_strokeEffect = m_strokeOff;
+        }
+    }
+
     private void FixedUpdate()
     {
         m_strokeEffect.Update(Time.deltaTime);
+        if (IsInteractable() && m_strokeEffect == m_strokeOn)
+        {
+            SetIcon();
+        }
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        m_strokeEffect = m_strokeOn;
+        if (IsInteractable())
+        {
+            m_strokeEffect = m_strokeOn;
+        }
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        m_strokeEffect = m_strokeOff;
+        if (IsInteractable())
+        {
+            m_strokeEffect = m_strokeOff;
+        }
+    }
+
+    void SetIcon()
+    {
+        if (m_previewController != null)
+        {
+            m_previewController.SetIcon(m_iconIndex);
+        }
+    }
+
+    bool IsInteractable()
+    {
+        return m_button.interactable;
     }
 }
