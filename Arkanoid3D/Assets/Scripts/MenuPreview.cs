@@ -8,8 +8,6 @@ public class MenuPreview : MonoBehaviour
     public PreviewIcon[] m_icons;
     PreviewIcon m_currIcon;
 
-    float m_switchTime = 0;
-
     const float SWITCH_DELAY = 1f;
 
     private void Awake()

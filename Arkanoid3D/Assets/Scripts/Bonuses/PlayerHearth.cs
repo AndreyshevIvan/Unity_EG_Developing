@@ -13,7 +13,7 @@ public class PlayerHearth : MonoBehaviour
     const string KILL_CLIP_NAME = "HearthKill";
     const string RISE_CLIP_NAME = "HearthRise";
 
-    void Start()
+    public void Start()
     {
         m_deadAnim = GetComponent<Animation>();
         m_startPosition = gameObject.transform.position;

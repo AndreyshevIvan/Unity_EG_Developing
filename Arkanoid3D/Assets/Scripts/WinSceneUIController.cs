@@ -16,7 +16,7 @@ public enum UIBehavior
 public class WinSceneUIController : MonoBehaviour
 {
     public InfoController m_info;
-    public Animator m_animator;
+    public Animation m_animator;
 
     public Text m_scoreField;
     public Text m_totalField;
@@ -45,6 +45,11 @@ public class WinSceneUIController : MonoBehaviour
     const int POINTS_TO_ONE_STAR = 5000;
     const float START_COLDOWN = 1;
 
+    const string LEVEL_ANIM_KEY = "WinSceneLevelAwake";
+    const string POINTS_ANIM_KEY = "PointsAdding";
+    const string TIME_ANIM_KEY = "TimeAdding";
+    const string TOTAL_ANIM_KEY = "TotalAdding";
+
     void Awake()
     {
         m_scoreField.text = "0";
@@ -64,33 +69,37 @@ public class WinSceneUIController : MonoBehaviour
     void Start()
     {
         m_continueButton.SetInteractable(false);
-        m_continueButton.SetArtificialActive(false);
 
         foreach (Star star in m_stars)
         {
             star.Lock(m_starLocked);
         }
+
+        PlayAnimate(LEVEL_ANIM_KEY);
     }
 
     void FixedUpdate()
     {
-        if (m_animator.GetTime() > START_COLDOWN)
+        if (m_colodown > START_COLDOWN)
         {
-            CheckBehavior();
+            ChangeBehavior();
 
             switch (m_behavior)
             {
                 case UIBehavior.LEVEL_POINTS:
                     AddPoints(ref m_scoreField, m_points);
+                    PlayAnimate(POINTS_ANIM_KEY);
                     break;
                 case UIBehavior.TIME:
                     AddTime();
+                    PlayAnimate(TIME_ANIM_KEY);
                     break;
                 case UIBehavior.STARS:
                     AddStars(m_starsToUnlockCount);
                     break;
                 case UIBehavior.TOTAL:
                     AddPoints(ref m_totalField, m_total);
+                    PlayAnimate(TOTAL_ANIM_KEY);
                     break;
             }
 
@@ -104,7 +113,7 @@ public class WinSceneUIController : MonoBehaviour
             m_colodown += Time.deltaTime;
         }
     }
-    void CheckBehavior()
+    void ChangeBehavior()
     {
         UIBehavior oldBehavior = m_behavior;
 
@@ -152,7 +161,6 @@ public class WinSceneUIController : MonoBehaviour
 
         if (oldBehavior != m_behavior)
         {
-            m_animator.SetInteger("CurrentAnimation", (int)m_behavior);
             m_addingTime = 0;
         }
     }
@@ -215,6 +223,13 @@ public class WinSceneUIController : MonoBehaviour
         {
             m_stars[unlockedStars].Unlock(m_starUnclocked);
             m_addingTime = 0;
+        }
+    }
+    void PlayAnimate(string key)
+    {
+        if (!m_animator.isPlaying)
+        {
+            m_animator.Play(key);
         }
     }
 

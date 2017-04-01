@@ -19,16 +19,19 @@ public class BonusPlate : MonoBehaviour
 
     const string EXIT_ANIM = "BonusPlateExit";
     const string ENTER_ANIM = "BonusPlateEnter";
+    const string NAME_KEY = "Name";
+    readonly Vector2 ANCHORS_WITHOUT_VALUE = new Vector2(0.95f, 0.8f);
     const float MIN_MOVEMENT = 0.3f;
     const float MOVEMENT_SPEED = 5;
 
     void Awake()
     {
         m_transform = GetComponent<RectTransform>();
-        gameObject.SetActive(false);
+        Diactivate();
     }
-    public void Init(string name, Vector2 size)
+    public void Init(Transform parent, string name, Vector2 size)
     {
+        transform.SetParent(parent);
         SetName(name);
         SetSize(size);
         SetPosition(new Vector3(0, 0, 0));
@@ -93,14 +96,27 @@ public class BonusPlate : MonoBehaviour
     public void Enter()
     {
         gameObject.SetActive(true);
+        if (m_anim.isPlaying)
+        {
+            m_anim.Stop();
+        }
+        m_anim.Play(ENTER_ANIM);
         m_moveing = 0;
     }
     public void Exit()
     {
-        gameObject.SetActive(false);
+        if (m_anim.isPlaying)
+        {
+            m_anim.Stop();
+        }
+        m_anim.Play(EXIT_ANIM);
         m_moveing = 0;
     }
 
+    public void Diactivate()
+    {
+        gameObject.SetActive(false);
+    }
     void SetSize(Vector2 size)
     {
         m_transform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, size.x);
@@ -119,9 +135,27 @@ public class BonusPlate : MonoBehaviour
     {
         m_value.text = value;
     }
+    public void SetDuration(float newDuration)
+    {
+        m_duration = newDuration;
+    }
     public void DurationInValue(bool isEnable)
     {
         m_isDurationInValue = isEnable;
+
+        RectTransform[] transforms = gameObject.GetComponentsInChildren<RectTransform>();
+
+        for (int i = 0; i < transforms.Length; i++)
+        {
+            if (transforms[i] != null && transforms[i].name == NAME_KEY)
+            {
+                if (transforms[i] != null)
+                {
+                    transforms[i].anchorMax = ANCHORS_WITHOUT_VALUE;
+                    break;
+                }
+            }
+        }
     }
 
     public int GetTimeInSeconds()

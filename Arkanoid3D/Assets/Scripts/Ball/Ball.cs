@@ -9,6 +9,8 @@ public class Ball : MonoBehaviour
     public Material m_fireMaterial;
     public Material m_basicMaterial;
 
+    public Event m_event;
+
     public int m_basicLayer;
     public int m_fireLayer;
 

@@ -19,8 +19,10 @@ public class GameplayController : MonoBehaviour
     bool m_isPause = false;
     bool m_isGameStart = false;
     float m_gameOverColdown = 0;
+    float m_buttonsColdown = 0;
 
     const float GAME_OVER_DELAY = 1;
+    const float BUTTONS_COLDOWN = 0.2f;
 
     private void Start()
     {
@@ -54,10 +56,15 @@ public class GameplayController : MonoBehaviour
             HandleGameplayEvents();
             GameUpdate();
         }
+
+        if (m_buttonsColdown < BUTTONS_COLDOWN)
+        {
+            m_buttonsColdown += Time.deltaTime;
+        }
     }
     void HandlePauseEvents()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (IsKeyPressed(KeyCode.Escape))
         {
             SetPause(!m_isPause);
         }
@@ -70,7 +77,7 @@ public class GameplayController : MonoBehaviour
             m_ballsController.StartPlaying(m_isGameStart);
             m_player.StartPlaying(m_isGameStart);
         }
-        if (Input.GetKeyUp(KeyCode.Escape))
+        if (IsKeyPressed(KeyCode.Escape))
         {
             SetPause(!m_isPause);
         }
@@ -132,5 +139,18 @@ public class GameplayController : MonoBehaviour
         m_gameplayItems.SetActive(!isPause);
         m_bonusController.SetFreeze(isPause);
         m_player.SetPause(isPause);
+    }
+
+    bool IsKeyPressed(KeyCode code)
+    {
+        if (m_buttonsColdown >= BUTTONS_COLDOWN)
+        {
+            if (Input.GetKeyDown(code))
+            {
+                m_buttonsColdown = 0;
+                return true;
+            }
+        }
+        return false;
     }
 }

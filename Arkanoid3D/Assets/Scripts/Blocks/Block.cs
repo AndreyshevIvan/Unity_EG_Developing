@@ -4,28 +4,28 @@ using UnityEngine;
 
 public class Block : LivingBody
 {
-
     public int m_points = 0;
-
-    public Material m_lowDemageMaterial;
-    public Material m_hardDemageMaterial;
+    public Material m_material;
 
     void Awake()
     {
-        m_startHealth = m_health;
         PersonalAwake();
     }
     protected virtual void PersonalAwake() { }
 
     void FixedUpdate()
     {
-        if (m_health < m_startHealth)
+        UpdateTexture();
+    }
+    void UpdateTexture()
+    {
+        if (m_health != m_startHealth && m_health > (float)m_startHealth / 3)
         {
-            gameObject.GetComponent<MeshRenderer>().material = m_hardDemageMaterial;
+            // low demaged
         }
         else
         {
-            gameObject.GetComponent<MeshRenderer>().material = m_lowDemageMaterial;
+            // large demaged
         }
     }
 

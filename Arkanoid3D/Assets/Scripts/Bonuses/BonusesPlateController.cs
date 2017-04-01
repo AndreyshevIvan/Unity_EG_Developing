@@ -13,10 +13,11 @@ public class BonusesPlateController : MonoBehaviour
     BonusPlate m_fireBall;
     BonusPlate m_multyBall;
     BonusPlate m_multiplier;
+    BonusPlate m_life;
 
     Vector3 m_plateInnerSize;
 
-    const int PLATES_COUNT = 5;
+    const int PLATES_COUNT = 6;
 
     private void Awake()
     {
@@ -39,23 +40,34 @@ public class BonusesPlateController : MonoBehaviour
         InitPlate(ref m_fireBall, "FireBall");
         InitPlate(ref m_multyBall, "MultyBall!");
         InitPlate(ref m_multiplier, "Multiplier Up+");
+        InitPlate(ref m_life, "Life Up+!");
 
         m_multiplier.DurationInValue(false);
         m_multyBall.DurationInValue(false);
+        m_life.DurationInValue(false);
+    }
+    public void Reset()
+    {
+        for (int i = 0; i < m_plates.Length; i++)
+        {
+            if (m_plates[i] != null)
+            {
+                m_plates[i].Exit();
+                m_plates[i] = null;
+            }
+        }
     }
     void InitPlate(ref BonusPlate plate, string name)
     {
         Vector2 plateSize = new Vector2(m_plateInnerSize.x, m_plateInnerSize.y / PLATES_COUNT);
         plate = Instantiate(m_basicPlate).GetComponent<BonusPlate>();
-        plate.transform.SetParent(transform);
-        plate.Init(name, plateSize);
+        plate.Init(transform, name, plateSize);
     }
 
     void FixedUpdate()
     {
         ClearPlates();
         MovePlates();
-        //MovePlates(m_moveMap);
     }
 
     void ClearPlates()
@@ -94,40 +106,7 @@ public class BonusesPlateController : MonoBehaviour
         }
     }
 
-    void AddPlate(ref BonusPlate plate, float duration)
-    {
-        plate.AddDuration(duration);
-        EnterPlateIf(ref plate);
-
-    }
-    public void AddAttack(float duration)
-    {
-        AddPlate(ref m_attack, duration);
-    }
-    public void AddWall(float duration)
-    {
-        AddPlate(ref m_wall, duration);
-    }
-    public void AddFireBall(float duration)
-    {
-        AddPlate(ref m_fireBall, duration);
-    }
-    public void AddMultyball(float duration)
-    {
-        AddPlate(ref m_multyBall, duration);
-    }
-    public void AddMultiplier(float duration)
-    {
-        AddPlate(ref m_multiplier, duration);
-    }
-
-    Vector3 GetNewPlatePosition(int order)
-    {
-        Vector3 position = new Vector3(0 , m_plateInnerSize.y / PLATES_COUNT * order, 0);
-
-        return (-1 * position);
-    }
-    void EnterPlateIf(ref BonusPlate plate)
+    void AddPlate(ref BonusPlate plate)
     {
         bool isInList = false;
 
@@ -155,6 +134,43 @@ public class BonusesPlateController : MonoBehaviour
                 }
             }
         }
+    }
+    public void AddAttack(float duration)
+    {
+        AddPlate(ref m_attack);
+        m_attack.SetDuration(duration);
+    }
+    public void AddWall(float duration)
+    {
+        AddPlate(ref m_wall);
+        m_wall.SetDuration(duration);
+    }
+    public void AddFireBall(float duration)
+    {
+        AddPlate(ref m_fireBall);
+        m_fireBall.SetDuration(duration);
+    }
+    public void AddMultyball(float duration)
+    {
+        AddPlate(ref m_multyBall);
+        m_multyBall.AddDuration(duration);
+    }
+    public void AddMultiplier(float duration)
+    {
+        AddPlate(ref m_multiplier);
+        m_multiplier.AddDuration(duration);
+    }
+    public void AddLife(float duration)
+    {
+        AddPlate(ref m_life);
+        m_life.AddDuration(duration);
+    }
+
+    Vector3 GetNewPlatePosition(int order)
+    {
+        Vector3 position = new Vector3(0 , m_plateInnerSize.y / PLATES_COUNT * order, 0);
+
+        return (-1 * position);
     }
 
     string GetNameIf(ref BonusPlate plate)

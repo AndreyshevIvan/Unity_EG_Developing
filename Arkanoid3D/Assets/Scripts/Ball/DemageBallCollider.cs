@@ -9,8 +9,6 @@ public class DemageBallCollider : MonoBehaviour
 
     bool m_isFireMode = false;
 
-    int m_collideNum = 0;
-
     public void SetFireMode(bool isFireModeOn)
     {
         m_isFireMode = isFireModeOn;
@@ -18,8 +16,6 @@ public class DemageBallCollider : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        m_collideNum++;
-
         LivingBody body = other.gameObject.GetComponent<LivingBody>();
 
         if (body != null)

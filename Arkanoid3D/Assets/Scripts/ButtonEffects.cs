@@ -8,21 +8,26 @@ public class Effect
 {
     public Effect(GameObject button)
     {
+        m_offset = TEXT_OFFSET * Screen.width;
         m_button = button;
         m_buttonText = button.GetComponentInChildren<Text>();
         m_textTransform = m_buttonText.GetComponent<RectTransform>();
-        m_startSize = m_textTransform.rect.size;
+        m_startPosition = m_textTransform.localPosition;
     }
 
     protected GameObject m_button;
     protected Text m_buttonText;
     protected RectTransform m_textTransform;
     protected float m_offset = 0;
-    protected Vector2 m_startSize;
+    protected Vector3 m_startPosition;
 
-    protected const float TEXT_OFFSET = 80;
-    protected const float OFFSET_SPEED = 500;
+    protected const float TEXT_OFFSET = 0.03f; // (offsetInPixels / Screen.width)
+    protected const float OFFSET_SPEED = 400;
 
+    public void Reset()
+    {
+        m_textTransform.localPosition = m_startPosition;
+    }
     public virtual void Update(float delta) { }
 }
 
@@ -35,12 +40,12 @@ public class EffectOn : Effect
 
     public override void Update(float delta)
     {
-        Vector2 size = m_textTransform.rect.size;
+        Vector3 position = m_textTransform.localPosition;
 
-        if (size.x < m_startSize.x + TEXT_OFFSET)
+        if (position.x < m_startPosition.x + m_offset)
         {
-            float addWidth = OFFSET_SPEED * delta;
-            m_textTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, size.x + addWidth);
+            float offset = OFFSET_SPEED * delta;
+            m_textTransform.localPosition += new Vector3(offset, 0, 0);
         }
     }
 }
@@ -54,12 +59,12 @@ public class EffectOff : Effect
 
     public override void Update(float delta)
     {
-        Vector2 size = m_textTransform.rect.size;
+        Vector3 position = m_textTransform.localPosition;
 
-        if (size.x > m_startSize.x)
+        if (position.x > m_startPosition.x)
         {
-            float addWidth = OFFSET_SPEED * delta;
-            m_textTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, size.x - addWidth);
+            float offset = OFFSET_SPEED * delta;
+            m_textTransform.localPosition -= new Vector3(offset, 0, 0);
         }
     }
 }
@@ -75,12 +80,18 @@ public class ButtonEffects : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     public MenuPreview m_previewController;
     public int m_iconIndex; // from 0
 
-    private void Awake()
+    void Awake()
     {
         m_button = GetComponent<Button>();
         m_strokeOn = new EffectOn(gameObject);
         m_strokeOff = new EffectOff(gameObject);
         m_strokeEffect = m_strokeOff;
+    }
+
+    private void OnEnable()
+    {
+        m_strokeEffect = m_strokeOff;
+        m_strokeEffect.Reset();
     }
 
     public void SetInteractable(bool isInteractable)
@@ -99,7 +110,7 @@ public class ButtonEffects : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         }
     }
 
-    private void FixedUpdate()
+    void FixedUpdate()
     {
         m_strokeEffect.Update(Time.deltaTime);
         if (IsInteractable() && m_strokeEffect == m_strokeOn)

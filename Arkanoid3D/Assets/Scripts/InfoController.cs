@@ -15,8 +15,7 @@ public class InfoController : MonoBehaviour
     const string LEVEL_POINTS_KEY = "LevelPoints";
     const string LEVEL_TIME_KEY = "LevelTime";
 
-    const string LEVELS_PATH = "Assets/Maps/";
-
+    const string LEVELS_PATH = "Assets/Info/";
     const string STOP_READ_KEY = "END.";
 
     public void ResetSaves()

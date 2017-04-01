@@ -11,15 +11,14 @@ public class GameplayUIController : MonoBehaviour
     public Text m_pointsField;
     public Text m_wallField;
     public Text m_ballsField;
-    public Text m_multiplitterField;
     public Text m_levelName;
     public Text m_timer;
-    public Text m_ultiplier;
+    public Text m_multiplier;
 
     public GameObject m_heathBar;
     public GameObject m_hearth;
 
-    List<GameObject> m_playerHeaths;
+    List<PlayerHearth> m_playerHeaths;
 
     bool m_isGameStart = false;
     float m_addingTime = 0;
@@ -28,45 +27,47 @@ public class GameplayUIController : MonoBehaviour
     const float TIME_TO_ONE_ADD = 0.02f;
     const float POINTS_TO_ONE_ADD_IN_PERSENTS = 1;
     const float HEARTH_POSITION_FACTOR = 1.1f;
-    const float MULTIBALL_PLATE_DURATION = 1.5f;
-    const float MULTIPLIER_PLATE_DURATION = 1.5f;
+    const float MULTIBALL_PLATE_DURATION = 3;
+    const float MULTIPLIER_PLATE_DURATION = 3;
+    const float LIFE_PLATE_DUR = 3;
 
     private void Awake()
     {
-        m_playerHeaths = new List<GameObject>();
+        m_playerHeaths = new List<PlayerHearth>();
         m_pointsField.text = "0";
         m_wallField.text = "0";
         m_ballsField.text = "0";
-        m_multiplitterField.text = "0";
         m_timer.text = "0 0 : 0 0";
         m_levelName.text = m_info.GetSpawnLevelName();
         m_isGameStart = false;
     }
-    public void Init(int lifesCount)
+    public void InitLifes(int lifesCount)
     {
-        InitLifes(lifesCount);
-    } 
-    void InitLifes(int lifesCount)
-    {
-        RectTransform barTransform = m_heathBar.GetComponent<RectTransform>();
+        Vector2 barSize = m_heathBar.GetComponent<RectTransform>().rect.size;
         RectTransform hearthTransform = m_hearth.GetComponent<RectTransform>();
-        float hearthWidth = barTransform.rect.size.x / (lifesCount + 1);
+        float hearthWidth = barSize.x / (lifesCount + 1);
         hearthTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, hearthWidth);
         float spawnPosX = -hearthWidth / 2;
 
         while (lifesCount > 0)
         {
-            GameObject health = Instantiate(m_hearth);
-            health.transform.SetParent(m_heathBar.transform, false);
-            health.transform.localPosition = new Vector3(spawnPosX, 0, 0);
+            GameObject newHearth = Instantiate(m_hearth);
+            newHearth.transform.SetParent(m_heathBar.transform, false);
+            newHearth.transform.localPosition = new Vector3(spawnPosX, 0, 0);
             spawnPosX -= hearthWidth * HEARTH_POSITION_FACTOR;
+            PlayerHearth hearth = newHearth.GetComponent<PlayerHearth>();
+            hearth.Start();
+            m_playerHeaths.Add(hearth);
             lifesCount--;
-            m_playerHeaths.Add(health);
         }
     }
     public void StartPlaying(bool isGameStart)
     {
         m_isGameStart = isGameStart;
+    }
+    public void ResetToNextLife()
+    {
+        m_plateController.Reset();
     }
 
     public void UpdateTime(float timeInSeconds)
@@ -95,9 +96,9 @@ public class GameplayUIController : MonoBehaviour
     public void UpdateLife(int lifeCount)
     {
         int hearthsCount = 0;
-        foreach(GameObject hearth in m_playerHeaths)
+        foreach(PlayerHearth hearth in m_playerHeaths)
         {
-            if (!hearth.GetComponent<PlayerHearth>().IsDead())
+            if (!hearth.IsDead())
             {
                 hearthsCount++;
             }
@@ -107,12 +108,13 @@ public class GameplayUIController : MonoBehaviour
         {
             for (int i = lifeCount; i < hearthsCount; i++)
             {
-                m_playerHeaths[i].GetComponent<PlayerHearth>().Kill();
+                m_playerHeaths[i].Kill();
             }
         }
         else if (lifeCount > hearthsCount)
         {
-            m_playerHeaths[hearthsCount].GetComponent<PlayerHearth>().Rise();
+            m_playerHeaths[hearthsCount].Rise();
+            m_plateController.AddLife(LIFE_PLATE_DUR);
         }
     }
     public void UpdatePoints(int points)
@@ -140,26 +142,26 @@ public class GameplayUIController : MonoBehaviour
     }
     public void UpdateMultiplier(int multiplitter)
     {
-        m_ultiplier.text = "x " + multiplitter.ToString();
+        m_multiplier.text = "x " + multiplitter.ToString();
     }
 
-    public void SetFireBallPlate(float duration)
+    public void CreateFireBallPlate(float duration)
     {
         m_plateController.AddFireBall(duration);
     }
-    public void SetWallPlate(float duration)
+    public void CreateWallPlate(float duration)
     {
         m_plateController.AddWall(duration);
     }
-    public void SetMultiplierPlate()
+    public void CreateMultiplierPlate()
     {
         m_plateController.AddMultiplier(MULTIPLIER_PLATE_DURATION);
     }
-    public void SetMultiBallsPlate()
+    public void CreateMultiBallsPlate()
     {
         m_plateController.AddMultyball(MULTIBALL_PLATE_DURATION);
     }
-    public void SetAttackPlate(float duration)
+    public void CreateAttackPlate(float duration)
     {
         m_plateController.AddAttack(duration);
     }

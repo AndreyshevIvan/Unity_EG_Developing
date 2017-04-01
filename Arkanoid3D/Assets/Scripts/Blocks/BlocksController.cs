@@ -32,7 +32,7 @@ public class BlocksController : MonoBehaviour
 
         foreach(Block block in m_blocksOnMap)
         {
-            if (block.GetHealth() <= criticalDemage && !block.IsImmortal())
+            if (block.GetHealth() < criticalDemage && !block.IsImmortal())
             {
                 block.gameObject.layer = m_onFireLayer;
             }

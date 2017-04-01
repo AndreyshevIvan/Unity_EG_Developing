@@ -20,20 +20,20 @@ public class BonusController : MonoBehaviour
     int m_currDropNumber = 0;
     float m_dropTimer = 0;
 
-    const int BLOCKS_PER_DROP = 5;
-    const float ONE_DROP_TIME = 4;
+    const int BLOCKS_PER_DROP = 3;
+    const float ONE_DROP_TIME = 2;
 
     private void Awake()
     {
         m_newBonuses = new List<Bonus>();
         m_bonuses = new ArrayList();
 
-        m_newBonuses.Add(m_multyBallBonus);
-        m_newBonuses.Add(m_bottomWallBonus);
+        //m_newBonuses.Add(m_multyBallBonus);
+        //m_newBonuses.Add(m_bottomWallBonus);
         m_newBonuses.Add(m_lifeBonus);
-        m_newBonuses.Add(m_multiplier);
-        m_newBonuses.Add(m_fireball);
-        m_newBonuses.Add(m_attackMode);
+        //m_newBonuses.Add(m_multiplier);
+        //m_newBonuses.Add(m_fireball);
+        //m_newBonuses.Add(m_attackMode);
     }
 
     private void FixedUpdate()

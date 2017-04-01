@@ -29,9 +29,9 @@ public class AbstractUser : MonoBehaviour
     int m_health = 1;
     int m_multiplitter = 1;
 
-    const float FIREBALL_DUR = 4;
+    const float FIREBALL_DUR = 6;
     const float ATTACK_DUR = 4;
-    const float WALL_DUR = 8;
+    const float WALL_DUR = 10;
     const int MAX_HEALTH = 3;
     const int MAX_MULTIPLIER = 99;
 
@@ -40,7 +40,7 @@ public class AbstractUser : MonoBehaviour
     {
         m_multiplitter = 1;
         m_health = MAX_HEALTH;
-        m_UIController.Init(m_health);
+        m_UIController.InitLifes(MAX_HEALTH);
         m_isGameStart = false;
 
         SetWallActive(false);
@@ -49,6 +49,7 @@ public class AbstractUser : MonoBehaviour
     {
         m_multiplitter = 1;
         SetWallActive(false);
+        m_UIController.ResetToNextLife();
     }
     public void StartPlaying(bool isGameStart)
     {
@@ -133,7 +134,7 @@ public class AbstractUser : MonoBehaviour
 
         if (m_isFireballMode)
         {
-            m_UIController.SetFireBallPlate(FIREBALL_DUR);
+            m_UIController.CreateFireBallPlate(FIREBALL_DUR);
             m_fireballDuration = 0;
         }
     }
@@ -144,7 +145,7 @@ public class AbstractUser : MonoBehaviour
 
         if (m_isAttackMode)
         {
-            m_UIController.SetAttackPlate(ATTACK_DUR);
+            m_UIController.CreateAttackPlate(ATTACK_DUR);
             m_attackDuration = 0;
         }
     }
@@ -155,7 +156,7 @@ public class AbstractUser : MonoBehaviour
 
         if (m_isWallActive)
         {
-            m_UIController.SetWallPlate(WALL_DUR);
+            m_UIController.CreateWallPlate(WALL_DUR);
             m_wallDuration = 0;
         }
     }
@@ -163,7 +164,7 @@ public class AbstractUser : MonoBehaviour
     {
         if (m_multiplitter < MAX_MULTIPLIER)
         {
-            m_UIController.SetMultiplierPlate();
+            m_UIController.CreateMultiplierPlate();
             m_multiplitter++;
         }
     }
@@ -171,7 +172,7 @@ public class AbstractUser : MonoBehaviour
     {
         if (m_ballsController.DoubleAll())
         {
-            m_UIController.SetMultiBallsPlate();
+            m_UIController.CreateMultiBallsPlate();
         }
     }
 

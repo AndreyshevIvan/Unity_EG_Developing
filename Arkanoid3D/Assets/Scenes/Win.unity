@@ -1483,7 +1483,6 @@ GameObject:
   - component: {fileID: 1330064549}
   - component: {fileID: 1330064548}
   - component: {fileID: 1330064547}
-  - component: {fileID: 1330064551}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -1567,23 +1566,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!95 &1330064551
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1330064546}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
 --- !u!1001 &1350141322
 Prefab:
   m_ObjectHideFlags: 0
@@ -1921,23 +1903,25 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!95 &1467407282
-Animator:
-  serializedVersion: 3
+--- !u!111 &1467407282
+Animation:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1467407280}
   m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: f9cb11ce37fb2524ca50faead5cdb79a, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: c65cf15363316ea4c9476aaea810417d, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: 055f53b156aadfc4b833e8dacfab4ee4, type: 2}
+  - {fileID: 7400000, guid: 4230e7a95e97d2346aa1072366b4784c, type: 2}
+  - {fileID: 7400000, guid: b9e456a7c17e74247a12f67dd1a27736, type: 2}
+  - {fileID: 7400000, guid: ff87c267b52800a4cb237a163bfc8555, type: 2}
+  - {fileID: 7400000, guid: c65cf15363316ea4c9476aaea810417d, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 0
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!1 &1531967415
 GameObject:
   m_ObjectHideFlags: 0
