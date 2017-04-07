@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+public delegate void PlayerEvent();
+
 public interface IMessagesBox
 {
     void ImitatePrint();
+    void AddPlayerTurnEvent(PlayerEvent turnEvent);
 
     void SetChatIcon(Image icon);
     void SetChatName(string name);

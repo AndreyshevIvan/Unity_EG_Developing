@@ -4,14 +4,35 @@ using UnityEngine;
 
 public class Player : User
 {
-    public Player(IMessagesBox messageBox)
-        : base(messageBox)
+    public Player(IMessagesBox messageBox, string name)
+        : base(messageBox, name)
+    {
+        messageBox.AddPlayerTurnEvent(OnPlayerTurn);
+    }
+
+    bool m_isTurnOn = false;
+
+    public void OnPlayerTurn()
+    {
+        Debug.Log("Player set turn");
+        m_isTurnOn = true;
+    }
+    public override void SetNewTurn(int state)
+    {
+        m_state = state;
+        m_replics = m_replicsManager.GetPlayerReplics(m_state);
+        m_isTurnOn = false;
+    }
+    protected override void WorkWithMessages(float delta)
+    {
+        Debug.Log("player send message");
+    }
+    protected override void TrySendNewMessage()
     {
 
     }
-
-    public override bool SendMessage()
+    protected override bool SendPredicate()
     {
-        return base.SendMessage();
+        return m_isTurnOn;
     }
 }

@@ -2,28 +2,49 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class User : MonoBehaviour
+public abstract class User
 {
-    public User(IMessagesBox messagesBox)
+    public User(IMessagesBox messagesBox, string name)
     {
         m_messageBox = messagesBox;
+        m_name = name;
+        m_replics = new List<string>();
     }
 
-    string m_name;
-    string[] m_replica;
-    float m_coldown;
+    protected string m_name;
+    protected float m_coldown;
+    protected int m_state;
 
-    IMessagesBox m_messageBox;
-    int m_state;
+    protected List<string> m_replics;
+    protected ReplicaController m_replicsManager;
+    protected IMessagesBox m_messageBox;
 
     const float ENEMY_COLDOWN = 0.02f;
 
-    public void SetTurn(int turnState)
+    public abstract void SetNewTurn(int state);
+    protected abstract void WorkWithMessages(float delta);
+    protected abstract void TrySendNewMessage();
+    protected abstract bool SendPredicate();
+
+    public bool SendMessage(float delta)
     {
-        m_state = turnState;
+        UpdateTimer(delta);
+        WorkWithMessages(delta);
+        TrySendNewMessage();
+
+        return SendPredicate();
     }
-    public virtual bool SendMessage()
+
+    void UpdateTimer(float delta)
     {
-        return true;
+        if (m_coldown >= 0)
+        {
+            m_coldown -= delta;
+        }
+    }
+
+    public void InitReplicsManager(ReplicaController replics)
+    {
+        m_replicsManager = replics;
     }
 }

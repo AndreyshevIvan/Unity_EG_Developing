@@ -7,6 +7,7 @@ public class QuestApplication : MonoBehaviour
     public Chat m_chat;
     public UIManager m_UIManager;
 
+    string m_chatName = "testChat";
     bool m_isInit = false;
 
     void Start()
@@ -15,31 +16,20 @@ public class QuestApplication : MonoBehaviour
     }
     void LoadHistories()
     {
-
+        m_UIManager.Load(m_chatName);
     }
     void InitOnce()
     {
         if (!m_isInit)
         {
             m_isInit = true;
-            m_chat.Init(m_UIManager);
+            m_chat = new Chat(m_UIManager, m_chatName);
         }
     }
 
     void FixedUpdate()
     {
-        if (m_UIManager.isLoadEnded)
-        {
-            InitOnce();
-            UpdateApplication();
-        }
-        else
-        {
-            // Load event
-        }
-    }
-    void UpdateApplication()
-    {
+        InitOnce();
         m_chat.Update(Time.deltaTime);
     }
 }

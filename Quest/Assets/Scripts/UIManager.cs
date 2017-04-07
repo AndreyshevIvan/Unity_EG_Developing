@@ -3,8 +3,31 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+public class PlayerTurnEvents
+{
+    PlayerEvent m_event;
+
+    public void AddEvent(ref PlayerEvent playerEvent)
+    {
+        m_event += playerEvent;
+    }
+    public void RemoveEvent(ref PlayerEvent playerEvent)
+    {
+        m_event -= playerEvent;
+    }
+    public void DoEvents()
+    {
+        if (m_event != null)
+        {
+            m_event();
+        }
+    }
+}
+
 public class UIManager : MonoBehaviour, IMessagesBox
 {
+    public PlayerTurnEvents m_playerTurnEvents;
+
     public GameObject m_roomsPanel;
     bool m_isRoomsPanelOpen = false;
     bool m_isLoadEnded = false;
@@ -16,9 +39,13 @@ public class UIManager : MonoBehaviour, IMessagesBox
 
     readonly Vector3 PANEL_SPEED = new Vector3(3400, 0, 0);
 
+    private void Awake()
+    {
+        m_playerTurnEvents = new PlayerTurnEvents();
+    }
+
     public void InitChat()
     {
-
     }
 
     private void FixedUpdate()
@@ -77,6 +104,16 @@ public class UIManager : MonoBehaviour, IMessagesBox
 
     }
 
+    public void AddPlayerTurnEvent(PlayerEvent turnEvent)
+    {
+        m_playerTurnEvents.AddEvent(ref turnEvent);
+    }
+
+    public void PlayerTurn()
+    {
+        m_playerTurnEvents.DoEvents();
+    }
+
     public void SetChatIcon(Image icon)
     {
 
@@ -107,7 +144,11 @@ public class UIManager : MonoBehaviour, IMessagesBox
         m_isRoomsPanelOpen = false;
     }
 
-    public IEnumerator LoadAllHistories(string[] chatNames)
+    public void Load(string chatName)
+    {
+        StartCoroutine(LoadAllHistories(chatName));
+    }
+    IEnumerator LoadAllHistories(string chatName)
     {
         m_isLoadEnded = true;
         while (true)

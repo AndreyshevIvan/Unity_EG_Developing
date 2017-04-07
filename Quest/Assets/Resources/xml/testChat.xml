@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<root>
+	<state_0>
+		<computer>
+			<replica>Привет, меня зовут компьютер!</replica>
+			<replica>Я хочу поиграть с тобой в игру</replica>
+			<replica>Можно?</replica>
+		</computer>
+		<player>
+			<replica next="4" text="Конечно, ты можешь со мной поиграть...">Да</replica>
+			<replica next="0" text="Отстань от меня, дурацкая машина!">Нет</replica>
+		</player>
+	</state_0>
+	<state_1></state_1>
+	<state_2></state_2>
+	<state_3></state_3>
+	<state_4></state_4>
+</root>

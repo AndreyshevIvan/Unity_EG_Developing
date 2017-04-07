@@ -5,50 +5,60 @@ using UnityEngine.UI;
 
 public class Chat
 {
-    public string m_name;
-    public Image m_titleImage;
+    public Chat(IMessagesBox messageBox, string name)
+    {
+        m_chatState = 0;
+        m_name = name;
+        m_messageBox = messageBox;
+        m_replics = new ReplicaController(m_name);
+
+        InitUsers();
+        //m_icon.Init(m_name, m_titleImage);
+    }
 
     public ChatIcon m_icon;
 
+    ReplicaController m_replics;
+    IMessagesBox m_messageBox;
     History m_history;
-    User m_computer;
-    Player m_player;
 
+    AIPlayer m_computer;
+    Player m_player;
     User m_currentUser;
     List<User> m_users;
+
     int m_userNumber = 0;
-
     int m_chatState;
+    string m_name;
 
-    private void Awake()
+    public void Activate()
     {
-        m_chatState = 0;
+        m_messageBox.SetHistory(m_name);
     }
-    public void Init(IMessagesBox messageBox)
+    void InitUsers()
     {
-        InitUsers(messageBox);
-        m_icon.Init(m_name, m_titleImage);
-        messageBox.SetHistory(m_name);
-    }
-    void InitUsers(IMessagesBox messageBox)
-    {
-        m_player = new Player(messageBox);
-        m_computer = new User(messageBox);
+        string playerName = DataManager.playerName;
+
+        m_player = new Player(m_messageBox, playerName);
+        m_computer = new AIPlayer(m_messageBox, m_name);
+
+        m_player.InitReplicsManager(m_replics);
+        m_computer.InitReplicsManager(m_replics);
 
         m_users = new List<User>();
 
         m_users.Add(m_computer);
         m_users.Add(m_player);
 
-        m_userNumber = 0;
+        m_currentUser = m_computer;
     }
 
     public void Update(float delta)
     {
-        if (m_currentUser.SendMessage())
+        if (m_currentUser.SendMessage(delta))
         {
             SwitchUser();
-            m_currentUser.SetTurn(m_chatState);
+            m_currentUser.SetNewTurn(m_chatState);
         }
     }
 

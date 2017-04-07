@@ -7,17 +7,31 @@ using UnityEngine;
 
 public static class DataManager
 {
-    readonly static string m_resourcesPath = Application.dataPath + "/Resources/";
-    readonly static string m_historyPath = "Histories/";
-    readonly static string m_fileType = ".txt";
-    readonly static string m_historyNamePattern = "History_";
+    readonly static string resourcesPath = Application.dataPath + "/Resources/";
+    public readonly static string historyPath = resourcesPath + "Histories/";
+    public readonly static string xmlPath = resourcesPath + "xml/";
+    public readonly static string saveFileType = ".txt";
+    public readonly static string replicsFileType = ".xml";
+    readonly static string historyNamePattern = "History_";
+
+    public static string playerName
+    {
+        get
+        {
+            return PlayerPrefs.GetString("playerName", "player");
+        }
+        set
+        {
+            PlayerPrefs.SetString("playerName", value);
+        }
+    }
 
     public static void SaveHistory(History history)
     {
-        string fileName = m_historyNamePattern + history.GetName() + m_fileType;
+        string fileName = historyNamePattern + history.GetName() + saveFileType;
 
         BinaryFormatter bFormatter = new BinaryFormatter();
-        FileStream stream = new FileStream(m_resourcesPath + m_historyPath + fileName, FileMode.Create);
+        FileStream stream = new FileStream(historyPath + fileName, FileMode.Create);
 
         bFormatter.Serialize(stream, history);
         stream.Close();
@@ -25,13 +39,13 @@ public static class DataManager
 
     public static History LoadHistory(string historyName)
     {
-        string fileName = m_historyNamePattern + historyName + m_fileType;
+        string fileName = historyNamePattern + historyName + saveFileType;
         History history = new History(historyName);
 
-        if (File.Exists(m_resourcesPath + m_historyPath + fileName))
+        if (File.Exists(historyPath + fileName))
         {
             BinaryFormatter bFormatter = new BinaryFormatter();
-            FileStream stream = new FileStream(m_resourcesPath + m_historyPath + fileName, FileMode.Open);
+            FileStream stream = new FileStream(historyPath + fileName, FileMode.Open);
 
             history = bFormatter.Deserialize(stream) as History;
             stream.Close();
