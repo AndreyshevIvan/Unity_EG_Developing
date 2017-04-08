@@ -99,7 +99,7 @@ public class UIManager : MonoBehaviour, IMessagesBox
 
     public void ImitatePrint()
     {
-
+        m_messageBox.ImitatePrint();
     }
 
     public void AddPlayerTurnEvent(PlayerEvent turnEvent)
@@ -121,7 +121,7 @@ public class UIManager : MonoBehaviour, IMessagesBox
     }
     public void SetPlayerReplics(List<PlayerReplica> replics)
     {
-        m_messageBox.AddPlayerReplics(replics);
+        m_messageBox.InitPlayerReplics(replics);
     }
     public void SetComputerReplica(string computerReplica)
     {

@@ -7,9 +7,15 @@ public class Player : User
     public Player(IMessagesBox messageBox, string name)
         : base(messageBox, name)
     {
+        messageBox.AddPlayerTurnEvent(SetPlayerTurn);
     }
 
     List<PlayerReplica> m_playerReplics;
+
+    void SetPlayerTurn(int state)
+    {
+        m_isTurnAllowed = true;
+    }
     public override void SetNewTurn(int state)
     {
         m_state = state;

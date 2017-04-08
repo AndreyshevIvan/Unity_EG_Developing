@@ -13,7 +13,7 @@ public class PlayerAnswer : MonoBehaviour
     RectTransform m_transform;
     PlayerReplica m_replica;
 
-    const float MAX_RELATIVE_WIDTH = 0.9f;
+    const float MAX_RELATIVE_WIDTH = 0.8f;
     const float RELATIVE_FONT_SIZE = 0.03f;
 
     void Awake()
@@ -23,8 +23,9 @@ public class PlayerAnswer : MonoBehaviour
         m_transform = GetComponent<RectTransform>();
     }
 
-    public void Init(PlayerReplica replica)
+    public void Init(PlayerReplica replica, OnAnswerEvent answerEvent)
     {
+        answerEvents += answerEvent;
         m_replica = replica;
         SetText(replica.toButton);
         UpdateLayout();
@@ -40,17 +41,32 @@ public class PlayerAnswer : MonoBehaviour
         LayoutRebuilder.ForceRebuildLayoutImmediate(m_transform);
 
         Vector2 newSize = m_transform.rect.size;
+        RectTransform parentTransform = GetComponentInParent<RectTransform>();
 
-        if (newSize.x > Screen.width)
+        if (newSize.x > Screen.width * MAX_RELATIVE_WIDTH)
         {
             m_layoutElement.preferredWidth = Screen.width * MAX_RELATIVE_WIDTH;
         }
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(m_transform);
     }
+
+    public void SetParent(RectTransform parent)
+    {
+        transform.SetParent(parent);
+    }
+    public void SetPosition(Vector3 position)
+    {
+        m_transform.localPosition = position;
+    }
     void SetText(string text)
     {
         m_text.text = text;
         m_text.fontSize = (int)(Screen.height * RELATIVE_FONT_SIZE);
+    }
+
+    public void Destroy()
+    {
+        Destroy(gameObject);
     }
 }

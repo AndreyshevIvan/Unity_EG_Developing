@@ -9,8 +9,6 @@ public class Message : MonoBehaviour
     LayoutElement m_layoutElement;
     RectTransform m_transform;
 
-    Vector3 m_downLeftPosition;
-
     const float MAX_RELATIVE_WIDTH = 0.75f;
     const float RELATIVE_FONT_SIZE = 0.035f;
     const float RELATIVE_OFFSET_LEFT = 0.05f;
@@ -24,14 +22,14 @@ public class Message : MonoBehaviour
 
     public Vector3 GetDownLeftPosition()
     {
-        return m_downLeftPosition;
+        return transform.position;
     }
     public float GetHeight()
     {
         return m_transform.rect.size.y;
     }
 
-    public void UpdateLayout()
+    void UpdateLayout()
     {
         LayoutRebuilder.ForceRebuildLayoutImmediate(m_transform);
 
@@ -44,7 +42,7 @@ public class Message : MonoBehaviour
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(m_transform);
     } 
-    public void SetTransformProperty(Transform parent, Vector3 lastPosition, MessageSide size)
+    public void UpdateTransform(Transform parent, MessageSide side)
     {
         transform.SetParent(parent);
 
@@ -52,15 +50,14 @@ public class Message : MonoBehaviour
         Vector3 position = transform.localPosition;
         float sideOffset = parentSize.x * RELATIVE_OFFSET_LEFT;
         float positionX = sideOffset;
-        positionX = (size == MessageSide.RIGHT) ? parentSize.x - sideOffset : positionX;
+        positionX = (side == MessageSide.RIGHT) ? parentSize.x - sideOffset : positionX;
 
         transform.localPosition = new Vector3(positionX, 0, position.z);
-
-        m_downLeftPosition = transform.position;
     }
     public void SetText(string text)
     {
         m_text.text = text;
         m_text.fontSize = (int)(Screen.height * RELATIVE_FONT_SIZE);
+        UpdateLayout();
     }
 }
