@@ -14,6 +14,7 @@ public abstract class User
     protected string m_name;
     protected float m_coldown;
     protected int m_state;
+    protected bool m_isTurnAllowed = false;
 
     protected List<string> m_replics;
     protected ReplicaController m_replicsManager;

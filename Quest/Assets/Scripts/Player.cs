@@ -7,32 +7,24 @@ public class Player : User
     public Player(IMessagesBox messageBox, string name)
         : base(messageBox, name)
     {
-        messageBox.AddPlayerTurnEvent(OnPlayerTurn);
     }
 
-    bool m_isTurnOn = false;
-
-    public void OnPlayerTurn()
-    {
-        Debug.Log("Player set turn");
-        m_isTurnOn = true;
-    }
+    List<PlayerReplica> m_playerReplics;
     public override void SetNewTurn(int state)
     {
         m_state = state;
-        m_replics = m_replicsManager.GetPlayerReplics(m_state);
-        m_isTurnOn = false;
+        m_playerReplics = m_replicsManager.GetPlayerReplics(m_state);
+        m_messageBox.SetPlayerReplics(m_playerReplics);
+        m_isTurnAllowed = false;
     }
     protected override void WorkWithMessages(float delta)
     {
-        Debug.Log("player send message");
     }
     protected override void TrySendNewMessage()
     {
-
     }
     protected override bool SendPredicate()
     {
-        return m_isTurnOn;
+        return m_isTurnAllowed;
     }
 }

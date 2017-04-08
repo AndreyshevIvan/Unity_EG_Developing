@@ -27,7 +27,7 @@ public class QuestApplication : MonoBehaviour
         }
     }
 
-    void FixedUpdate()
+    void LateUpdate()
     {
         InitOnce();
         m_chat.Update(Time.deltaTime);

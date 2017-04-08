@@ -1,9 +1,20 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Xml;
-using System.Xml.Linq;
-using System.IO;
 using UnityEngine;
+
+public struct PlayerReplica
+{
+    public PlayerReplica(string toButton, string toSend, int nextState)
+    {
+        this.toButton = toButton;
+        this.toSend = toSend;
+        this.nextState = nextState;
+    }
+
+    public readonly string toButton;
+    public readonly string toSend;
+    public readonly int nextState;
+}
 
 public class ReplicaController : MonoBehaviour
 {
@@ -18,31 +29,47 @@ public class ReplicaController : MonoBehaviour
     XmlDocument m_xml;
 
     const string STATE_PATTERN = "state_";
+    const string NEXT_ATRIBUTE = "next";
+    const string TO_BUTTON_ATRIBUTE = "toButton";
     const string AI_REPLICA = "computer";
     const string PLAYER_REPLICA = "player";
 
     public List<string> GetComputerReplics(int state)
     {
-        return GetUserReplics(state, AI_REPLICA);
-    }
-    public List<string> GetPlayerReplics(int state)
-    {
-        return GetUserReplics(state, PLAYER_REPLICA);
-    }
-    List<string> GetUserReplics(int state, string user)
-    {
         List<string> replics = new List<string>();
-        string stateName = STATE_PATTERN + state.ToString();
+        XmlNode enemyReplicsNode = GetUserReplicsNode(state, AI_REPLICA);
 
-        XmlNode stateNode = m_xml.DocumentElement.SelectSingleNode(stateName);
-        XmlNode enemyNode = stateNode.SelectSingleNode(user);
-
-        foreach (XmlNode node in enemyNode)
+        foreach (XmlNode replica in enemyReplicsNode)
         {
-            replics.Add(node.InnerText);
+            replics.Add(replica.InnerText);
         }
 
         return replics;
+    }
+    public List<PlayerReplica> GetPlayerReplics(int state)
+    {
+        List<PlayerReplica> replics = new List<PlayerReplica>();
+        XmlNode platerReplicsNode = GetUserReplicsNode(state, PLAYER_REPLICA);
+
+        foreach (XmlNode node in platerReplicsNode)
+        {
+            string toButton = node.Attributes.GetNamedItem(TO_BUTTON_ATRIBUTE).InnerText;
+            string toSend = node.InnerText;
+            int nextState = int.Parse(node.Attributes.GetNamedItem(NEXT_ATRIBUTE).InnerText);
+
+            PlayerReplica replica = new PlayerReplica(toButton, toSend, nextState);
+            replics.Add(replica);
+        }
+
+        return replics;
+    }
+    XmlNode GetUserReplicsNode(int state, string user)
+    {
+        string stateName = STATE_PATTERN + state.ToString();
+        XmlNode stateNode = m_xml.DocumentElement.SelectSingleNode(stateName);
+        XmlNode userNode = stateNode.SelectSingleNode(user);
+
+        return userNode;
     }
 
 }

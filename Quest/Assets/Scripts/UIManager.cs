@@ -15,20 +15,21 @@ public class PlayerTurnEvents
     {
         m_event -= playerEvent;
     }
-    public void DoEvents()
+    public void DoEvents(int newState)
     {
         if (m_event != null)
         {
-            m_event();
+            m_event(newState);
         }
     }
 }
 
 public class UIManager : MonoBehaviour, IMessagesBox
 {
-    public PlayerTurnEvents m_playerTurnEvents;
+    PlayerTurnEvents m_playerTurnEvents;
 
-    public GameObject m_roomsPanel;
+    public MessagesBox m_messageBox;
+    public GameObject m_profilePanel;
     bool m_isRoomsPanelOpen = false;
     bool m_isLoadEnded = false;
 
@@ -42,10 +43,7 @@ public class UIManager : MonoBehaviour, IMessagesBox
     private void Awake()
     {
         m_playerTurnEvents = new PlayerTurnEvents();
-    }
-
-    public void InitChat()
-    {
+        m_messageBox.playerTurnEvent = m_playerTurnEvents;
     }
 
     private void FixedUpdate()
@@ -60,28 +58,28 @@ public class UIManager : MonoBehaviour, IMessagesBox
     }
     void UpdateRoomsPanel()
     {
-        Vector3 panelPosition = m_roomsPanel.transform.position;
+        Vector3 panelPosition = m_profilePanel.transform.position;
         Vector3 movement = PANEL_SPEED * Time.deltaTime;
 
         if (m_isRoomsPanelOpen)
         {
             if (panelPosition.x + movement.x < 0)
             {
-                m_roomsPanel.transform.Translate(movement);
+                m_profilePanel.transform.Translate(movement);
             }
             else
             {
-                m_roomsPanel.transform.position = new Vector3(0, panelPosition.y, panelPosition.z);
+                m_profilePanel.transform.position = new Vector3(0, panelPosition.y, panelPosition.z);
             }
         }
 
         if (!m_isRoomsPanelOpen)
         {
-            float panelWidthX = m_roomsPanel.GetComponent<RectTransform>().rect.width;
+            float panelWidthX = m_profilePanel.GetComponent<RectTransform>().rect.width;
 
             if (panelPosition.x + panelWidthX > 0)
             {
-                m_roomsPanel.transform.Translate(-movement);
+                m_profilePanel.transform.Translate(-movement);
             }
         }
     }
@@ -90,7 +88,7 @@ public class UIManager : MonoBehaviour, IMessagesBox
         if (Input.GetMouseButton(0))
         {
             Vector2 clickPos = Input.mousePosition;
-            RectTransform transform = m_roomsPanel.GetComponent<RectTransform>();
+            RectTransform transform = m_profilePanel.GetComponent<RectTransform>();
 
             if (!transform.rect.Contains(clickPos))
             {
@@ -109,11 +107,6 @@ public class UIManager : MonoBehaviour, IMessagesBox
         m_playerTurnEvents.AddEvent(ref turnEvent);
     }
 
-    public void PlayerTurn()
-    {
-        m_playerTurnEvents.DoEvents();
-    }
-
     public void SetChatIcon(Image icon)
     {
 
@@ -126,13 +119,13 @@ public class UIManager : MonoBehaviour, IMessagesBox
     {
 
     }
-    public void SetPlayerReplica(string[] playerReplica)
+    public void SetPlayerReplics(List<PlayerReplica> replics)
     {
-
+        m_messageBox.AddPlayerReplics(replics);
     }
-    public void SetComputerReplica(string[] replica)
+    public void SetComputerReplica(string computerReplica)
     {
-
+        m_messageBox.AddComputerMessage(computerReplica);
     }
 
     public void OpenProfile()
