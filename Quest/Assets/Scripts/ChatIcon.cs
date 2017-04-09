@@ -5,22 +5,20 @@ using UnityEngine.UI;
 
 public class ChatIcon : MonoBehaviour
 {
+    public delegate void OnIconClick();
+    public OnIconClick onClickEvent;
+
     public Text m_title;
+    public Text m_lastMessage;
     public Image m_userIcon;
+
     RectTransform m_transform;
 
-    const float RELATIVE_HEIGHT = 0.12f;
+    const float RELATIVE_HEIGHT = 0.2f;
 
     void Awake()
     {
-        CalculateSize();
-    }
-    void CalculateSize()
-    {
-        m_transform = GetComponent<RectTransform>();
-        RectTransform parentTransform = GetComponentInParent<RectTransform>();
-        Vector2 parentSize = parentTransform.rect.size;
-        m_transform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, parentSize.y * RELATIVE_HEIGHT);
+
     }
 
     public void Init(string name, Image icon)
@@ -29,8 +27,26 @@ public class ChatIcon : MonoBehaviour
         m_userIcon = icon;
     }
 
-    public void SetNewMessage()
+    public void SetLastMessage(string message)
     {
+        string lastMsg = "";
 
+        if (message != "")
+        {
+            for (int i = 0; i < 20; i++)
+            {
+                if (i < message.Length - 1)
+                {
+                    lastMsg += message[i];
+                }
+            }
+        }
+
+        m_lastMessage.text = lastMsg;
+    }
+
+    public void OnClickEvent()
+    {
+        onClickEvent();
     }
 }

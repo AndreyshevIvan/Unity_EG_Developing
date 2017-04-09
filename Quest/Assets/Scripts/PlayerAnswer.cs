@@ -11,10 +11,10 @@ public class PlayerAnswer : MonoBehaviour
     Text m_text;
     LayoutElement m_layoutElement;
     RectTransform m_transform;
-    PlayerReplica m_replica;
+    UserReplica m_replica;
 
     const float MAX_RELATIVE_WIDTH = 0.8f;
-    const float RELATIVE_FONT_SIZE = 0.03f;
+    const float RELATIVE_FONT_SIZE = 0.027f;
 
     void Awake()
     {
@@ -23,7 +23,7 @@ public class PlayerAnswer : MonoBehaviour
         m_transform = GetComponent<RectTransform>();
     }
 
-    public void Init(PlayerReplica replica, OnAnswerEvent answerEvent)
+    public void Init(UserReplica replica, OnAnswerEvent answerEvent)
     {
         answerEvents += answerEvent;
         m_replica = replica;

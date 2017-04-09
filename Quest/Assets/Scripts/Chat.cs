@@ -7,17 +7,19 @@ public class Chat
 {
     public Chat(IMessagesBox messageBox, string name)
     {
-        m_chatState = 0;
+        m_history = DataManager.LoadHistory(name);
+        m_chatState = m_history.GetState();
         m_name = name;
         m_messageBox = messageBox;
         m_replics = new ReplicaController(m_name);
+        messageBox.LoadFromHistory(m_history);
         messageBox.AddPlayerTurnEvent(SetState);
 
         InitUsers();
         //m_icon.Init(m_name, m_titleImage);
     }
 
-    public ChatIcon m_icon;
+    ChatIcon m_icon;
 
     ReplicaController m_replics;
     IMessagesBox m_messageBox;
@@ -42,6 +44,9 @@ public class Chat
         m_player.InitReplicsManager(m_replics);
         m_computer.InitReplicsManager(m_replics);
 
+        m_player.SetHistory(m_history);
+        m_computer.SetHistory(m_history);
+
         m_users = new List<User>();
 
         m_users.Add(m_computer);
@@ -60,6 +65,11 @@ public class Chat
         }
     }
 
+    public void SetIcon(ChatIcon icon)
+    {
+        m_icon = icon;
+        m_icon.onClickEvent += SetActive;
+    }
     void SwitchUser()
     {
         m_userNumber++;
@@ -71,8 +81,17 @@ public class Chat
 
         m_currentUser = m_users[m_userNumber];
     }
-    void SetState(int state)
+    void SetState(int state, string message)
     {
         m_chatState = state;
+    }
+    void SetActive()
+    {
+
+    }
+
+    public History GetHistory()
+    {
+        return m_history;
     }
 }

@@ -2,31 +2,150 @@
 <root>
 	<state_0>
 		<computer>
-			<replica>Hello!</replica>
-			<replica>What is your name?</replica>
+			<replica coldown="6">Привет дорогой.</replica>
+			<replica coldown="1">Я приземлилась и уже еду в отель. Как твои дела?</replica>
 		</computer>
 		<player>
-			<replica next="1" toButton="Say name">My name is Ivan</replica>
-			<replica next="2" toButton="I don`t understand understand understand understand">What are you doing. I don`t understand you...</replica>
+			<replica next="1" toButton="Всё хорошо!">У меня всё отлично, дорогая, расскажи как добралась?</replica>
+			<replica next="2" toButton="Кто это?">Вы кто, я вас знаю?</replica>
 		</player>
 	</state_0>
 	<state_1>
 		<computer>
-			<replica>Are you ok?</replica>
+			<replica coldown="2">Добралась нормально. Здесь очень красиво!</replica>
+			<replica coldown="">Только меня кое-что испугало в аэропорту.</replica>
+			<replica coldown="">Один плохо одетый мужчина очень долго смотрел на нашу группу в аэропорту. Это странно... А ещё Майк не паехал и нас теперь только двое - я и Аня.</replica>
+			<replica coldown="">Но сейчас все здорово, нас везёт местный таксист в отель!</replica>
 		</computer>
 		<player>
-			<replica next="0" toButton="No!">I am not ok!</replica>
-			<replica next="2" toButton="Yes">I am ok...</replica>
+			<replica next="5" toButton="Таксист!?">Я слышал таксисты часто помогают похитителям людей!</replica>
+			<replica next="6" toButton="Я рад)">Всё здорово, надеюсь вы по-скорее доберётесь</replica>
 		</player>
 	</state_1>
 	<state_2>
 		<computer>
-			<replica>Goodbye...</replica>
-			<replica>You are bad idea!</replica>
+			<replica coldown="2">Ха-ха-ха</replica>
+			<replica coldown="">Как смешно) Хорошо, я подыграю тебе... Это твоя жена=)</replica>
+			<replica coldown="">Я в командировке в Бразилии)</replica>
 		</computer>
 		<player>
-			<replica next="0" toButton="Goodbye">Bye-bye</replica>
-			<replica next="2" toButton="I don`t ">What are you doing. I don`t understand you...</replica>
+			<replica next="3" toButton="Вспомнил">Точно-точно, а я и забыл=)</replica>
+			<replica next="3" toButton="Теперь понятно)">Точно-точно, а я и забыл=)</replica>
 		</player>
 	</state_2>
+	<state_3>
+		<computer>
+			<replica coldown="1">Кстати, Майк не смог поехать и теперь нас только двое - я и Аня.</replica>
+			<replica coldown="">Помнишь Аню, мы с ней отмечали новый год?</replica>
+		</computer>
+		<player>
+			<replica next="4" toButton="Как её можно забыть">Конечно помню! Помню, как она привела на новый год своего очень пьяного друга!</replica>
+		</player>
+	</state_3>
+	<state_4>
+		<computer>
+			<replica coldown="2">Да, дурацкий случай.</replica>
+			<replica coldown="">О, мы уже приехали в отель...</replica>
+			<replica coldown="3">Стой, это не отель!</replica>
+			<replica coldown="5">Дорогой...нас за</replica>
+		</computer>
+		<player>
+			<replica next="9" toButton="Что такое?">Что происходит?</replica>
+			<replica next="9" toButton="Что у тебя там происходит чёрт-побери?!">Чёрт-побери! Что случилось???</replica>
+			<replica next="10" toButton="Да ты приклаываешься Я тебе не верю=)">Снова ты прикалываешься)</replica>
+		</player>
+	</state_4>
+	<state_5>
+		<computer>
+			<replica coldown="1">Тебе нужно перестать верить телевизору! Все будет хорошо=)</replica>
+			<replica coldown="">Лучше вспомни кто такая Аня)</replica>
+		</computer>
+		<player>
+			<replica next="4" toButton="Помню">Помню-помню. Она испортила нам новый год со своим знакомым)</replica>
+			<replica next="6" toButton="Не помню Аню">Не помню Аню. Ну и ладно. На каком вы этапе?</replica>
+		</player>
+	</state_5>
+	<state_6>
+		<computer>
+			<replica coldown="2">Кажется мы уже въезжаем на территорию отеля.</replica>
+			<replica coldown="4">Постой, что-то здесь не так</replica>
+			<replica coldown="4">Это не отель!!!</replica>
+			<replica coldown="">Что-то странное. Старый дом и много людей с оружием. Я спрячу телефон, если что, номер автомобиля AL234</replica>
+			<replica coldown="">Мне страшно</replica>
+		</computer>
+		<player>
+			<replica next="7" toButton="Успокоить">Успокойся, все будет хорошо, спрячь телефон и напиши как только сможешь, а я пока сообщу в полицию</replica>
+			<replica next="8" toButton="Беги">Дорогая, тебе нужно выбрать момент и побежать как можно быстрее от них!</replica>
+		</player>
+	</state_6>
+	<state_7>
+		<computer>
+			<replica coldown="5">Нас завели в полупустую комнату. Аня плачет, я мне тоже хочется заплакать, но я пока держусь</replica>
+		</computer>
+		<player>
+			<replica next="12" toButton="Осмотреть комнату">Быстрее, посмотри что есть в комнате!</replica>
+		</player>
+	</state_7>
+	<state_8>
+		<computer>
+			<replica coldown="5">Аххх, зачем я тебя послушала!? Я попыталась побежать и меня ударили прикладом. Нас завели в полупустую комнату...Что мне делать!?</replica>
+			<replica coldown="1">Мне страшно</replica>
+		</computer>
+		<player>
+			<replica next="12" toButton="Осмотри помещение">Я надеялся, что у тебя получится убежать. Что есть в этой комнате?</replica>
+		</player>
+	</state_8>
+	<state_9>
+		<computer>
+			<replica coldown="4">Кажется нас похители! Нас завезли в какой-то старый дом и кинули в подвал. Я видела людей с оружием!</replica>
+			<replica coldown="2">Нам страшно.</replica>
+			<replica coldown="">Помоги, что нам делать!?</replica>
+		</computer>
+		<player>
+			<replica next="13" toButton="Успокоить">Дорогая, тебе нужно успокоиться! Я свяжусь с службой спасения</replica>
+			<replica next="12" toButton="Осмотреть комнату">Дорогая, тебе нужно как можно быстрее осмотреть комнату и найти что-нибудь полезное</replica>
+		</player>
+	</state_9>
+	<state_10>
+		<computer>
+			<replica coldown="6">Я не шучу...Тут происходит что-то странное!!</replica>
+			<replica coldown="">Нам очень страшно</replica>
+		</computer>
+		<player>
+			<replica next="9" toButton="Рассказывай">Ладно, я верю, рассказывай что случилось</replica>
+		</player>
+	</state_10>
+	<state_11>
+		<computer>
+			<replica coldown=""></replica>
+		</computer>
+		<player>
+			<replica next="" toButton=""></replica>
+		</player>
+	</state_11>
+	<state_12>
+		<computer>
+			<replica coldown="4">Комната полупустая с одним окном и зеркалом на стене. На полу лежат верёвки</replica>
+		</computer>
+		<player>
+			<replica next="0" toButton="Взять верёвки"></replica>
+			<replica next="0" toButton="Разбей зеркало"></replica>
+		</player>
+	</state_12>
+	<state_13>
+		<computer>
+			<replica coldown="2">Хорошо! Мне стало легче</replica>
+		</computer>
+		<player>
+			<replica next="12" toButton="Осмотри комнату">Тебе нужно осмотреть комнату на наличие чего-нибудь полезного</replica>
+		</player>
+	</state_13>
+	<state_14>
+		<computer>
+			<replica coldown=""></replica>
+		</computer>
+		<player>
+			<replica next="" toButton=""></replica>
+		</player>
+	</state_14>
 </root>

@@ -15,11 +15,11 @@ public class PlayerTurnEvents
     {
         m_event -= playerEvent;
     }
-    public void DoEvents(int newState)
+    public void DoEvents(int newState, string message)
     {
         if (m_event != null)
         {
-            m_event(newState);
+            m_event(newState, message);
         }
     }
 }
@@ -30,6 +30,7 @@ public class UIManager : MonoBehaviour, IMessagesBox
 
     public MessagesBox m_messageBox;
     public GameObject m_profilePanel;
+    public Text m_playerName;
     bool m_isRoomsPanelOpen = false;
     bool m_isLoadEnded = false;
 
@@ -44,6 +45,7 @@ public class UIManager : MonoBehaviour, IMessagesBox
     {
         m_playerTurnEvents = new PlayerTurnEvents();
         m_messageBox.playerTurnEvent = m_playerTurnEvents;
+        m_playerName.text = DataManager.GetPlayerName() + "\n8 8 800 555 03 35";
     }
 
     private void FixedUpdate()
@@ -51,6 +53,7 @@ public class UIManager : MonoBehaviour, IMessagesBox
         UpdateChatIcons();
         UpdateRoomsPanel();
         HandleTouch();
+
     }
     void UpdateChatIcons()
     {
@@ -106,6 +109,10 @@ public class UIManager : MonoBehaviour, IMessagesBox
     {
         m_playerTurnEvents.AddEvent(ref turnEvent);
     }
+    public void LoadFromHistory(History history)
+    {
+        m_messageBox.Reload(history);
+    }
 
     public void SetChatIcon(Image icon)
     {
@@ -119,11 +126,11 @@ public class UIManager : MonoBehaviour, IMessagesBox
     {
 
     }
-    public void SetPlayerReplics(List<PlayerReplica> replics)
+    public void SetPlayerReplics(List<UserReplica> replics)
     {
         m_messageBox.InitPlayerReplics(replics);
     }
-    public void SetComputerReplica(string computerReplica)
+    public void SetComputerReplica(UserReplica computerReplica)
     {
         m_messageBox.AddComputerMessage(computerReplica);
     }
@@ -135,18 +142,5 @@ public class UIManager : MonoBehaviour, IMessagesBox
     public void CloseProfile()
     {
         m_isRoomsPanelOpen = false;
-    }
-
-    public void Load(string chatName)
-    {
-        StartCoroutine(LoadAllHistories(chatName));
-    }
-    IEnumerator LoadAllHistories(string chatName)
-    {
-        m_isLoadEnded = true;
-        while (true)
-        {
-            yield return null;
-        }
     }
 }

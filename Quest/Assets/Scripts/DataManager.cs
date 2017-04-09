@@ -13,6 +13,7 @@ public static class DataManager
     public readonly static string saveFileType = ".txt";
     public readonly static string replicsFileType = ".xml";
     readonly static string historyNamePattern = "History_";
+    readonly static string playerKey = "GameStarted";
 
     public static string playerName
     {
@@ -57,5 +58,30 @@ public static class DataManager
         }
 
         return history;
+    }
+
+    public static bool IsGameBeenStarted()
+    {
+        return PlayerPrefs.GetString(playerKey, "") != "";
+    }
+
+    public static void StartGame(string playerName)
+    {
+        PlayerPrefs.SetString(playerKey, playerName);
+    }
+
+    public static string GetPlayerName()
+    {
+        return PlayerPrefs.GetString(playerKey, playerKey);
+    }
+
+    public static void ResetAll(string historyName)
+    {
+        PlayerPrefs.DeleteAll();
+        //string fileName = historyNamePattern + historyName + saveFileType;
+
+        //History history = LoadHistory(historyName);
+        //history.Reset();
+        //SaveHistory(history);
     }
 }

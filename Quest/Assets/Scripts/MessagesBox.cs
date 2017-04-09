@@ -16,6 +16,7 @@ public class MessagesBox : MonoBehaviour
     public Message m_computerMessage;
     public Message m_playerMessage;
     Message m_imitateMessage;
+    List<Message> m_allMessages;
     bool m_isImitate = false;
 
     public PlayerAnswer m_answer;
@@ -35,17 +36,18 @@ public class MessagesBox : MonoBehaviour
 
     RectTransform m_transform;
 
-    readonly float RELATIVE_MESSAGE_OFFSET = 0.02f * Screen.height;
-    readonly float RELATIVE_ANSWERS_OFFSET = 0.01f * Screen.width;
+    readonly float RELATIVE_MESSAGE_OFFSET = 20;
+    readonly float RELATIVE_ANSWERS_OFFSET = 18;
 
     public PlayerTurnEvents playerTurnEvent
     {
         set { m_playerTurnEvents = value; }
     }
 
-    private void Awake()
+    void Awake()
     {
         m_lastAnswers = new List<PlayerAnswer>();
+        m_allMessages = new List<Message>();
         m_transform = GetComponent<RectTransform>();
 
         m_answersBoxStartSize = m_answersBox.rect.size;
@@ -55,7 +57,36 @@ public class MessagesBox : MonoBehaviour
 
         IncreaseMessageLine(RELATIVE_MESSAGE_OFFSET);
     }
-    
+    public void Reload(History history)
+    {
+        m_listTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 0);
+
+        foreach (Message message in m_allMessages)
+        {
+            if (message != null)
+            {
+                Destroy(message.gameObject);
+            }
+        }
+
+        List<Pair<MessageSide, string>> historyMesages = history.GetReplics();
+        foreach (Pair<MessageSide, string> replica in historyMesages)
+        {
+            Message message = null;
+
+            if (replica.first == MessageSide.LEFT)
+            {
+                message = Instantiate(m_computerMessage);
+            }
+            else
+            {
+                message = Instantiate(m_playerMessage);
+            }
+
+            AddMessage(message, replica.second);
+        }
+    }
+
     public void ImitatePrint()
     {
         if (!m_isImitate)
@@ -63,16 +94,16 @@ public class MessagesBox : MonoBehaviour
             m_imitateMessage = Instantiate(m_computerMessage);
             m_imitateMessage.SetText("...");
             IncreaseMessageLine(m_imitateMessage.GetHeight());
-            m_imitateMessage.UpdateTransform(m_listTransform, MessageSide.LEFT);
+            m_imitateMessage.UpdateTransform(m_listTransform);
             IncreaseMessageLine(RELATIVE_MESSAGE_OFFSET);
             m_isImitate = true;
         }
     }
-    public void InitPlayerReplics(List<PlayerReplica> replics)
+    public void InitPlayerReplics(List<UserReplica> replics)
     {
         m_lastAnswers.Clear();
 
-        foreach (PlayerReplica replica in replics)
+        foreach (UserReplica replica in replics)
         {
             PlayerAnswer answer = Instantiate(m_answer);
             answer.Init(replica, AddPlayerMessage);
@@ -82,27 +113,28 @@ public class MessagesBox : MonoBehaviour
         UpdateAnswersBox();
     }
 
-    public void AddComputerMessage(string text)
+    public void AddComputerMessage(UserReplica replica)
     {
         Message message = Instantiate(m_computerMessage);
-        AddMessage(message, text, MessageSide.LEFT);
+        AddMessage(message, replica.toSend);
     }
     void AddPlayerMessage(string text, int newState)
     {
-        m_playerTurnEvents.DoEvents(newState);
+        m_playerTurnEvents.DoEvents(newState, text);
         Message message = Instantiate(m_playerMessage);
-        AddMessage(message, text, MessageSide.RIGHT);
+        AddMessage(message, text);
         ClearLastAnswers();
         ResetAnswersBox();
     }
-    void AddMessage(Message message, string text, MessageSide side)
+    void AddMessage(Message message, string text)
     {
         StopImitate();
 
         message.SetText(text);
         IncreaseMessageLine(message.GetHeight());
-        message.UpdateTransform(m_listTransform, side);
+        message.UpdateTransform(m_listTransform);
         IncreaseMessageLine(RELATIVE_MESSAGE_OFFSET);
+        m_allMessages.Add(message);
     }
     void StopImitate()
     {

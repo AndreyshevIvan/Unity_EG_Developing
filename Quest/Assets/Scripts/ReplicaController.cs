@@ -2,18 +2,20 @@
 using System.Xml;
 using UnityEngine;
 
-public struct PlayerReplica
+public struct UserReplica
 {
-    public PlayerReplica(string toButton, string toSend, int nextState)
+    public UserReplica(string toButton, string toSend, int nextState, float coldown = 0)
     {
         this.toButton = toButton;
         this.toSend = toSend;
         this.nextState = nextState;
+        this.waitColdown = coldown;
     }
 
     public readonly string toButton;
     public readonly string toSend;
     public readonly int nextState;
+    public readonly float waitColdown;
 }
 
 public class ReplicaController : MonoBehaviour
@@ -28,27 +30,38 @@ public class ReplicaController : MonoBehaviour
 
     XmlDocument m_xml;
 
+    const string COLDOWN_PATTERN = "coldown";
     const string STATE_PATTERN = "state_";
     const string NEXT_ATRIBUTE = "next";
     const string TO_BUTTON_ATRIBUTE = "toButton";
     const string AI_REPLICA = "computer";
     const string PLAYER_REPLICA = "player";
 
-    public List<string> GetComputerReplics(int state)
+    public List<UserReplica> GetComputerReplics(int state)
     {
-        List<string> replics = new List<string>();
+        List<UserReplica> replics = new List<UserReplica>();
         XmlNode enemyReplicsNode = GetUserReplicsNode(state, AI_REPLICA);
 
-        foreach (XmlNode replica in enemyReplicsNode)
+        foreach (XmlNode node in enemyReplicsNode)
         {
-            replics.Add(replica.InnerText);
+            string toSend = node.InnerText;
+
+            float coldown = 0;
+            string coldownStr = node.Attributes.GetNamedItem(COLDOWN_PATTERN).InnerText;
+            if (coldownStr != "")
+            {
+                coldown = float.Parse(coldownStr);
+            }
+
+            UserReplica computerReplica = new UserReplica("", toSend, 0, coldown);
+            replics.Add(computerReplica);
         }
 
         return replics;
     }
-    public List<PlayerReplica> GetPlayerReplics(int state)
+    public List<UserReplica> GetPlayerReplics(int state)
     {
-        List<PlayerReplica> replics = new List<PlayerReplica>();
+        List<UserReplica> replics = new List<UserReplica>();
         XmlNode platerReplicsNode = GetUserReplicsNode(state, PLAYER_REPLICA);
 
         foreach (XmlNode node in platerReplicsNode)
@@ -57,7 +70,7 @@ public class ReplicaController : MonoBehaviour
             string toSend = node.InnerText;
             int nextState = int.Parse(node.Attributes.GetNamedItem(NEXT_ATRIBUTE).InnerText);
 
-            PlayerReplica replica = new PlayerReplica(toButton, toSend, nextState);
+            UserReplica replica = new UserReplica(toButton, toSend, nextState);
             replics.Add(replica);
         }
 

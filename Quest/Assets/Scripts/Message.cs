@@ -5,12 +5,14 @@ using UnityEngine.UI;
 
 public class Message : MonoBehaviour
 {
+    public MessageSide m_side;
+
     Text m_text;
     LayoutElement m_layoutElement;
     RectTransform m_transform;
 
     const float MAX_RELATIVE_WIDTH = 0.75f;
-    const float RELATIVE_FONT_SIZE = 0.035f;
+    const float RELATIVE_FONT_SIZE = 0.025f;
     const float RELATIVE_OFFSET_LEFT = 0.05f;
 
     void Awake()
@@ -35,14 +37,14 @@ public class Message : MonoBehaviour
 
         Vector2 newSize = m_transform.rect.size;
 
-        if (newSize.x > Screen.width)
+        if (newSize.x > Screen.width * MAX_RELATIVE_WIDTH)
         {
             m_layoutElement.preferredWidth = Screen.width * MAX_RELATIVE_WIDTH;
         }
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(m_transform);
     } 
-    public void UpdateTransform(Transform parent, MessageSide side)
+    public void UpdateTransform(Transform parent)
     {
         transform.SetParent(parent);
 
@@ -50,7 +52,7 @@ public class Message : MonoBehaviour
         Vector3 position = transform.localPosition;
         float sideOffset = parentSize.x * RELATIVE_OFFSET_LEFT;
         float positionX = sideOffset;
-        positionX = (side == MessageSide.RIGHT) ? parentSize.x - sideOffset : positionX;
+        positionX = (m_side == MessageSide.RIGHT) ? parentSize.x - sideOffset : positionX;
 
         transform.localPosition = new Vector3(positionX, 0, position.z);
     }

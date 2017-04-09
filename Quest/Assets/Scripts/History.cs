@@ -26,18 +26,30 @@ public class History
 {
     public History(string chatName)
     {
-        m_replics = new List<Pair<string, string>>();
+        m_replics = new List<Pair<MessageSide, string>>();
         m_replics.Clear();
         m_name = chatName;
     }
 
-    List<Pair<string, string>> m_replics;
+    List<Pair<MessageSide, string>> m_replics;
     int m_state;
     string m_name;
 
-    public void AddReplica(Pair<string, string> replica, int state)
+    public void AddPlayerReplica(string message, int state)
     {
+        Pair<MessageSide, string> replica = new Pair<MessageSide, string>(MessageSide.RIGHT, message);
         m_replics.Add(replica);
+        m_state = state;
+    }
+    public void AddComputerReplica(List<UserReplica> computerReplics, int state)
+    {
+        foreach (UserReplica aiReplica in computerReplics)
+        {
+            string message = aiReplica.toSend;
+            Pair<MessageSide, string> replica = new Pair<MessageSide, string>(MessageSide.LEFT, message);
+            m_replics.Add(replica);
+        }
+
         m_state = state;
     }
     public string GetName()
@@ -47,5 +59,15 @@ public class History
     public int GetState()
     {
         return m_state;
+    }
+    public List<Pair<MessageSide, string>> GetReplics()
+    {
+        return m_replics;
+    }
+
+    public void Reset()
+    {
+        m_state = 0;
+        m_replics.Clear();
     }
 }
