@@ -8,12 +8,14 @@ using UnityEngine;
 public static class DataManager
 {
     readonly static string resourcesPath = Application.dataPath + "/Resources/";
+    readonly static string saveDataPath = Application.persistentDataPath;
     public readonly static string historyPath = resourcesPath + "Histories/";
-    public readonly static string xmlPath = resourcesPath + "xml/";
+    public readonly static string xmlPath = "xml/";
     public readonly static string saveFileType = ".txt";
     public readonly static string replicsFileType = ".xml";
     readonly static string historyNamePattern = "History_";
     readonly static string playerKey = "GameStarted";
+    readonly static string bookmarksKey = "bookmarks";
 
     public static string playerName
     {
@@ -32,7 +34,7 @@ public static class DataManager
         string fileName = historyNamePattern + history.GetName() + saveFileType;
 
         BinaryFormatter bFormatter = new BinaryFormatter();
-        FileStream stream = new FileStream(historyPath + fileName, FileMode.Create);
+        FileStream stream = new FileStream(saveDataPath + fileName, FileMode.Create);
 
         bFormatter.Serialize(stream, history);
         stream.Close();
@@ -43,10 +45,10 @@ public static class DataManager
         string fileName = historyNamePattern + historyName + saveFileType;
         History history = new History(historyName);
 
-        if (File.Exists(historyPath + fileName))
+        if (File.Exists(saveDataPath + fileName))
         {
             BinaryFormatter bFormatter = new BinaryFormatter();
-            FileStream stream = new FileStream(historyPath + fileName, FileMode.Open);
+            FileStream stream = new FileStream(saveDataPath + fileName, FileMode.Open);
 
             history = bFormatter.Deserialize(stream) as History;
             stream.Close();
@@ -68,6 +70,7 @@ public static class DataManager
     public static void StartGame(string playerName)
     {
         PlayerPrefs.SetString(playerKey, playerName);
+        PlayerPrefs.Save();
     }
 
     public static string GetPlayerName()
@@ -78,10 +81,6 @@ public static class DataManager
     public static void ResetAll(string historyName)
     {
         PlayerPrefs.DeleteAll();
-        //string fileName = historyNamePattern + historyName + saveFileType;
-
-        //History history = LoadHistory(historyName);
-        //history.Reset();
-        //SaveHistory(history);
+        PlayerPrefs.Save();
     }
 }

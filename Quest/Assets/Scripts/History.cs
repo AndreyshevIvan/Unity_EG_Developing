@@ -52,6 +52,7 @@ public class History
 
         m_state = state;
     }
+
     public string GetName()
     {
         return m_name;

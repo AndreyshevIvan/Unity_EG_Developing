@@ -7,18 +7,23 @@ public class QuestApplication : MonoBehaviour
 {
     public Chat m_chat;
     public UIManager m_UIManager;
-    public GameObject m_rooms;
-
     public ChatIcon m_iconFirst;
 
     string m_chatName = "testChat";
-    bool m_isInit = false;
+    bool m_isFastMode = false;
 
     private void Start()
     {
-        m_isInit = true;
         m_chat = new Chat(m_UIManager, m_chatName);
         m_chat.SetIcon(m_iconFirst);
+        m_UIManager.OpenRooms(true);
+    }
+
+    public void SetFastMode()
+    {
+        m_isFastMode = !m_isFastMode;
+        m_chat.SetColdownIgnore(m_isFastMode);
+        m_UIManager.SetColdownIgnore(m_isFastMode);
     }
 
     void LateUpdate()
@@ -26,14 +31,13 @@ public class QuestApplication : MonoBehaviour
         m_chat.Update(Time.deltaTime);
     }
 
-    public void OpenRooms(bool isOpen)
+    void OnDestroy()
     {
-        m_rooms.SetActive(isOpen);
-    }
-
-    private void OnDestroy()
-    {
-        DataManager.SaveHistory(m_chat.GetHistory());
+        if (m_chat != null)
+        {
+            History history = m_chat.GetHistory();
+            DataManager.SaveHistory(history);
+        }
     }
 
     public void RestartGame()

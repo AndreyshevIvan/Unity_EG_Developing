@@ -65,6 +65,10 @@ public class Chat
         }
     }
 
+    public void SetColdownIgnore(bool isIgnore)
+    {
+        m_computer.SetIgnoreColdown(isIgnore);
+    }
     public void SetIcon(ChatIcon icon)
     {
         m_icon = icon;

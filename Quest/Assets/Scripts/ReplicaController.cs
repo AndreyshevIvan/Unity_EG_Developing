@@ -18,14 +18,13 @@ public struct UserReplica
     public readonly float waitColdown;
 }
 
-public class ReplicaController : MonoBehaviour
+public class ReplicaController
 {
     public ReplicaController(string chatName)
     {
-        string replics = DataManager.xmlPath + chatName + DataManager.replicsFileType;
-
         m_xml = new XmlDocument();
-        m_xml.Load(replics);
+        TextAsset xmlText = Resources.Load(DataManager.xmlPath + chatName) as TextAsset;
+        m_xml.LoadXml(xmlText.text);
     }
 
     XmlDocument m_xml;

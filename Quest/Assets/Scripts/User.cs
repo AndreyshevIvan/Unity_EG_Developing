@@ -19,6 +19,7 @@ public abstract class User
     protected bool m_isImitate = false;
     float m_lastMessageTime = 0;
     string m_lastMessage = "";
+    bool m_isIgnoreColdown = false;
 
     protected List<UserReplica> m_replics;
     protected ReplicaController m_replicsManager;
@@ -41,6 +42,10 @@ public abstract class User
     protected abstract void TrySendNewMessage();
     protected abstract bool SendPredicate();
 
+    public void SetIgnoreColdown(bool isIgnore)
+    {
+        m_isIgnoreColdown = isIgnore;
+    }
     public void SetHistory(History history)
     {
         m_history = history;
@@ -72,20 +77,29 @@ public abstract class User
         m_lastMessage = replica;
     }
 
+
     void UpdateTimer(float delta)
     {
-        if (m_waitColdown >= 0)
+        if (!m_isIgnoreColdown)
         {
-            m_waitColdown -= delta;
-        }
-        else if (m_writeColdown >= 0)
-        {
-            m_writeColdown -= delta;
+            if (m_waitColdown >= 0)
+            {
+                m_waitColdown -= delta;
+            }
+            else if (m_writeColdown >= 0)
+            {
+                m_writeColdown -= delta;
+            }
         }
     }
 
     bool IsColdownsLeft()
     {
+        if (m_isIgnoreColdown)
+        {
+            return true;
+        }
+
         return isWaitColdownLeft && isWriteColdownLeft;
     }
     public void InitReplicsManager(ReplicaController replics)

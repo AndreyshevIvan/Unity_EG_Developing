@@ -16,11 +16,6 @@ public class ChatIcon : MonoBehaviour
 
     const float RELATIVE_HEIGHT = 0.2f;
 
-    void Awake()
-    {
-
-    }
-
     public void Init(string name, Image icon)
     {
         m_title.text = name;
@@ -47,6 +42,9 @@ public class ChatIcon : MonoBehaviour
 
     public void OnClickEvent()
     {
-        onClickEvent();
+        if (onClickEvent != null)
+        {
+            onClickEvent();
+        }
     }
 }
