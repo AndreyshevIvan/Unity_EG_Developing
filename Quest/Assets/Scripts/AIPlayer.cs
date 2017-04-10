@@ -10,6 +10,9 @@ public class AIPlayer : User
         m_isImitate = true;
     }
 
+    public delegate void OnTurnEvent();
+    public OnTurnEvent turnEvent;
+
     const float ONE_CHAR_COLDOWN = 0.1f;
 
     public override void SetNewTurn(int state)
@@ -28,6 +31,11 @@ public class AIPlayer : User
         m_messageBox.SetComputerReplica(m_replics[0]);
         SetLastMessage(m_replics[0].toSend);
         m_replics.Remove(m_replics[0]);
+        
+        if (turnEvent != null)
+        {
+            turnEvent();
+        }
 
         CalculateWriteColdowns(m_replics);
     }

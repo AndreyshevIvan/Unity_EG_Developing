@@ -5,19 +5,27 @@ using UnityEngine.UI;
 
 public class Chat
 {
-    public Chat(IMessagesBox messageBox, string name)
+    public Chat(IMessagesBox messageBox, ChatIcon icon, string name)
     {
         m_history = DataManager.LoadHistory(name);
         m_chatState = m_history.GetState();
+
         m_name = name;
-        m_messageBox = messageBox;
         m_replics = new ReplicaController(m_name);
-        messageBox.LoadFromHistory(m_history);
-        messageBox.AddPlayerTurnEvent(SetState);
+
+        m_messageBox = messageBox;
+        m_messageBox.LoadFromHistory(m_history);
+        m_messageBox.AddPlayerTurnEvent(SetState);
+
+        m_icon = icon;
+        m_icon.onClickEvent += Activate;
+        m_icon.Init(m_name);
 
         InitUsers();
-        //m_icon.Init(m_name, m_titleImage);
     }
+
+    public delegate void OnNewKeyEvent(string key);
+    public OnNewKeyEvent onKeyEvent;
 
     ChatIcon m_icon;
 
@@ -33,6 +41,8 @@ public class Chat
     int m_userNumber = 0;
     int m_chatState;
     string m_name;
+    bool m_isChatActive = false;
+    bool m_isNewMsgExist = false;
 
     void InitUsers()
     {
@@ -52,6 +62,7 @@ public class Chat
         m_users.Add(m_computer);
         m_users.Add(m_player);
 
+        m_computer.turnEvent += SetNewMsg;
         m_currentUser = m_computer;
         m_currentUser.SetNewTurn(m_chatState);
     }
@@ -63,16 +74,14 @@ public class Chat
             SwitchUser();
             m_currentUser.SetNewTurn(m_chatState);
         }
+
+        m_icon.SetNewMsgAnnounce(m_isNewMsgExist);
+        m_messageBox.NewMessageAnnounce(m_isNewMsgExist);
     }
 
     public void SetColdownIgnore(bool isIgnore)
     {
         m_computer.SetIgnoreColdown(isIgnore);
-    }
-    public void SetIcon(ChatIcon icon)
-    {
-        m_icon = icon;
-        m_icon.onClickEvent += SetActive;
     }
     void SwitchUser()
     {
@@ -85,13 +94,25 @@ public class Chat
 
         m_currentUser = m_users[m_userNumber];
     }
+    void SetNewMsg()
+    {
+        if (!m_isChatActive)
+        {
+            m_isNewMsgExist = true;
+        }
+    }
     void SetState(int state, string message)
     {
         m_chatState = state;
     }
-    void SetActive()
+    public void Activate()
     {
-
+        m_isChatActive = true;
+        m_isNewMsgExist = false;
+    }
+    public void Diactivate()
+    {
+        m_isChatActive = false;
     }
 
     public History GetHistory()

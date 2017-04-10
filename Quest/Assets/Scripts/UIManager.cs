@@ -26,18 +26,30 @@ public class PlayerTurnEvents
 
 public class UIManager : MonoBehaviour, IMessagesBox
 {
+    public delegate void OnCloseChatsEvent();
+    public OnCloseChatsEvent onCloseChats;
+
     PlayerTurnEvents m_playerTurnEvents;
 
     public MessagesBox m_messageBox;
+
     public GameObject m_profilePanel;
     public GameObject m_rooms;
     public GameObject m_bookmarks;
     public GameObject m_credits;
+
+    public GameObject[] m_newMsgAnnouncers;
+
+    public GameObject m_chatFirst;
+    Vector3 m_chatFirstStartPos;
+    bool m_isChatFirstClose = false;
+
     public Text m_bookmarksField;
     public Text m_playerName;
     public Text m_coldownIgnore;
     bool m_isRoomsPanelOpen = false;
     bool m_isLoadEnded = false;
+    bool m_isNewMessageExist = false;
 
     public bool isLoadEnded
     {
@@ -52,6 +64,8 @@ public class UIManager : MonoBehaviour, IMessagesBox
         m_messageBox.playerTurnEvent = m_playerTurnEvents;
         m_playerName.text = DataManager.GetPlayerName() + "\n8 8 800 555 03 35";
         CloseAll();
+
+        m_chatFirstStartPos = m_chatFirst.transform.position;
     }
 
     void Start()
@@ -63,6 +77,7 @@ public class UIManager : MonoBehaviour, IMessagesBox
     {
         UpdateChatIcons();
         UpdateProfilePanel();
+        UpdateNewMsgAnnouners();
         HandleTouch();
 
     }
@@ -97,6 +112,15 @@ public class UIManager : MonoBehaviour, IMessagesBox
             }
         }
     }
+    void UpdateNewMsgAnnouners()
+    {
+        foreach (GameObject announcer in m_newMsgAnnouncers)
+        {
+            announcer.SetActive(m_isNewMessageExist);
+        }
+
+        m_isNewMessageExist = false;
+    }
     void HandleTouch()
     {
         if (Input.GetMouseButton(0))
@@ -113,6 +137,21 @@ public class UIManager : MonoBehaviour, IMessagesBox
         if (Input.GetKey(KeyCode.Escape))
         {
             OpenProfile();
+        }
+    }
+
+    public void CloseChatFirst()
+    {
+        m_isChatFirstClose = !m_isChatFirstClose;
+        Vector3 movement = new Vector3(10000, 0, 0);
+
+        if (m_isChatFirstClose)
+        {
+            m_chatFirst.transform.position += movement;
+        }
+        else
+        {
+            m_chatFirst.transform.position = m_chatFirstStartPos;
         }
     }
 
@@ -147,6 +186,13 @@ public class UIManager : MonoBehaviour, IMessagesBox
     public void LoadFromHistory(History history)
     {
         m_messageBox.Reload(history);
+    }
+    public void NewMessageAnnounce(bool isNewExist)
+    {
+        if (isNewExist)
+        {
+            m_isNewMessageExist = isNewExist;
+        }
     }
 
     public void SetBookmarks(string bookmarks)
@@ -189,6 +235,34 @@ public class UIManager : MonoBehaviour, IMessagesBox
         m_messageBox.AddComputerMessage(computerReplica);
     }
 
+    void CloseAll()
+    {
+        m_rooms.SetActive(false);
+        m_bookmarks.SetActive(false);
+        m_credits.SetActive(false);
+
+        if (onCloseChats != null)
+        {
+            onCloseChats();
+        }
+    }
+
+    public void SetMariChat()
+    {
+        CloseAll();
+
+    }
+    public void SetAgentChat()
+    {
+        CloseAll();
+
+    }
+    public void SetFriendChat()
+    {
+        CloseAll();
+
+    }
+
     public void OpenProfile()
     {
         m_isRoomsPanelOpen = true;
@@ -198,24 +272,17 @@ public class UIManager : MonoBehaviour, IMessagesBox
         m_isRoomsPanelOpen = false;
     }
 
-    void CloseAll()
-    {
-        m_rooms.SetActive(false);
-        m_bookmarks.SetActive(false);
-        m_credits.SetActive(false);
-    }
-
-    public void OpenRooms(bool isOpen)
+    public void OpenRoomsPage(bool isOpen)
     {
         CloseAll();
         m_rooms.SetActive(isOpen);
     }
-    public void OpenBookmarks(bool isOpen)
+    public void OpenBookmarksPage(bool isOpen)
     {
         CloseAll();
         m_bookmarks.SetActive(isOpen);
     }
-    public void OpenCredits(bool isOpen)
+    public void OpenCreditsPage(bool isOpen)
     {
         CloseAll();
         m_credits.SetActive(isOpen);

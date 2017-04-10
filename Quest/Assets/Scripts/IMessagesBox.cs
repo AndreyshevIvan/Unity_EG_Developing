@@ -9,6 +9,7 @@ public interface IMessagesBox
 {
     void ImitatePrint();
     void AddPlayerTurnEvent(PlayerEvent turnEvent);
+    void NewMessageAnnounce(bool isNewExist);
     void LoadFromHistory(History history);
 
     void SetChatIcon(Image icon);

@@ -11,17 +11,21 @@ public class ChatIcon : MonoBehaviour
     public Text m_title;
     public Text m_lastMessage;
     public Image m_userIcon;
+    public GameObject m_newMsgAnnouncer;
 
     RectTransform m_transform;
 
     const float RELATIVE_HEIGHT = 0.2f;
 
-    public void Init(string name, Image icon)
+    public void Init(string name)
     {
         m_title.text = name;
-        m_userIcon = icon;
     }
 
+    public void SetNewMsgAnnounce(bool isActive)
+    {
+        m_newMsgAnnouncer.SetActive(isActive);
+    }
     public void SetLastMessage(string message)
     {
         string lastMsg = "";
