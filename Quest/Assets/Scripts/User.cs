@@ -11,6 +11,9 @@ public abstract class User
         m_replics = new List<UserReplica>();
     }
 
+    public delegate void onSendMsgEvent(string hostName, string message);
+    public onSendMsgEvent onSendMessage;
+
     protected string m_name;
     protected float m_writeColdown = 0;
     protected float m_waitColdown = 0;
@@ -77,6 +80,14 @@ public abstract class User
         m_lastMessage = replica;
     }
 
+    public string GetName()
+    {
+        return m_name;
+    }
+    public string GetLastMessage()
+    {
+        return m_lastMessage;
+    }
 
     void UpdateTimer(float delta)
     {

@@ -78,7 +78,7 @@ public static class DataManager
         return PlayerPrefs.GetString(playerKey, playerKey);
     }
 
-    public static void ResetAll(string historyName)
+    public static void ResetAll()
     {
         PlayerPrefs.DeleteAll();
         PlayerPrefs.Save();

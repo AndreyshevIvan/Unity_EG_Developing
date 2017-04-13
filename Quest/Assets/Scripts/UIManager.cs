@@ -24,14 +24,10 @@ public class PlayerTurnEvents
     }
 }
 
-public class UIManager : MonoBehaviour, IMessagesBox
+public class UIManager : MonoBehaviour, IChatUI
 {
     public delegate void OnCloseChatsEvent();
     public OnCloseChatsEvent onCloseChats;
-
-    PlayerTurnEvents m_playerTurnEvents;
-
-    public MessagesBox m_messageBox;
 
     public GameObject m_profilePanel;
     public GameObject m_rooms;
@@ -40,13 +36,14 @@ public class UIManager : MonoBehaviour, IMessagesBox
 
     public GameObject[] m_newMsgAnnouncers;
 
-    public GameObject m_chatFirst;
-    Vector3 m_chatFirstStartPos;
-    bool m_isChatFirstClose = false;
+    public MessagesBox m_mariChat;
+    public MessagesBox m_agentChat;
 
     public Text m_bookmarksField;
     public Text m_playerName;
     public Text m_coldownIgnore;
+    public Text m_chatName;
+    public Image m_chatIcon;
     bool m_isRoomsPanelOpen = false;
     bool m_isLoadEnded = false;
     bool m_isNewMessageExist = false;
@@ -58,19 +55,11 @@ public class UIManager : MonoBehaviour, IMessagesBox
 
     readonly Vector3 PANEL_SPEED = new Vector3(3400, 0, 0);
 
-    void Awake()
-    {
-        m_playerTurnEvents = new PlayerTurnEvents();
-        m_messageBox.playerTurnEvent = m_playerTurnEvents;
-        m_playerName.text = DataManager.GetPlayerName() + "\n8 8 800 555 03 35";
-        CloseAll();
-
-        m_chatFirstStartPos = m_chatFirst.transform.position;
-    }
-
     void Start()
     {
         InitProfilePanel();
+        m_playerName.text = DataManager.GetPlayerName() + "\n8 8 800 555 03 35";
+        ClosePages();
     }
 
     private void FixedUpdate()
@@ -140,24 +129,13 @@ public class UIManager : MonoBehaviour, IMessagesBox
         }
     }
 
-    public void CloseChatFirst()
+    public IMessagesBox GetMariChatBox()
     {
-        m_isChatFirstClose = !m_isChatFirstClose;
-        Vector3 movement = new Vector3(10000, 0, 0);
-
-        if (m_isChatFirstClose)
-        {
-            m_chatFirst.transform.position += movement;
-        }
-        else
-        {
-            m_chatFirst.transform.position = m_chatFirstStartPos;
-        }
+        return m_mariChat;
     }
-
-    public string GetBookmarks()
+    public IMessagesBox GetAgentChatBox()
     {
-        return m_bookmarksField.text;
+        return m_agentChat;
     }
 
     public void InitProfilePanel()
@@ -174,18 +152,6 @@ public class UIManager : MonoBehaviour, IMessagesBox
 
             isClose = panelPosition.x + panelWidthX < 0;
         }
-    }
-    public void ImitatePrint()
-    {
-        m_messageBox.ImitatePrint();
-    }
-    public void AddPlayerTurnEvent(PlayerEvent turnEvent)
-    {
-        m_playerTurnEvents.AddEvent(ref turnEvent);
-    }
-    public void LoadFromHistory(History history)
-    {
-        m_messageBox.Reload(history);
     }
     public void NewMessageAnnounce(bool isNewExist)
     {
@@ -214,32 +180,22 @@ public class UIManager : MonoBehaviour, IMessagesBox
 
         m_coldownIgnore.text = text;
     }
-    public void SetChatIcon(Image icon)
+    public void SetChatIcon(Sprite icon)
     {
-
+        m_chatIcon.sprite = icon;
     }
     public void SetChatName(string name)
     {
-
-    }
-    public void SetHistory(string chatName)
-    {
-
-    }
-    public void SetPlayerReplics(List<UserReplica> replics)
-    {
-        m_messageBox.InitPlayerReplics(replics);
-    }
-    public void SetComputerReplica(UserReplica computerReplica)
-    {
-        m_messageBox.AddComputerMessage(computerReplica);
+        m_chatName.text = name;
     }
 
-    void CloseAll()
+    void ClosePages()
     {
         m_rooms.SetActive(false);
         m_bookmarks.SetActive(false);
         m_credits.SetActive(false);
+        m_mariChat.SetVisible(false);
+        m_agentChat.SetVisible(false);
 
         if (onCloseChats != null)
         {
@@ -247,19 +203,19 @@ public class UIManager : MonoBehaviour, IMessagesBox
         }
     }
 
-    public void SetMariChat()
+    public void OpenMariChat()
     {
-        CloseAll();
-
+        ClosePages();
+        m_mariChat.SetVisible(true);
     }
-    public void SetAgentChat()
+    public void OpenAgentChat()
     {
-        CloseAll();
-
+        ClosePages();
+        m_agentChat.SetVisible(true);
     }
-    public void SetFriendChat()
+    public void OpenFriendChat()
     {
-        CloseAll();
+        ClosePages();
 
     }
 
@@ -274,17 +230,17 @@ public class UIManager : MonoBehaviour, IMessagesBox
 
     public void OpenRoomsPage(bool isOpen)
     {
-        CloseAll();
+        ClosePages();
         m_rooms.SetActive(isOpen);
     }
     public void OpenBookmarksPage(bool isOpen)
     {
-        CloseAll();
+        ClosePages();
         m_bookmarks.SetActive(isOpen);
     }
     public void OpenCreditsPage(bool isOpen)
     {
-        CloseAll();
+        ClosePages();
         m_credits.SetActive(isOpen);
     }
 }

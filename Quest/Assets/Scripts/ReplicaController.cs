@@ -22,12 +22,12 @@ public class ReplicaController
 {
     public ReplicaController(string chatName)
     {
-        m_xml = new XmlDocument();
+        m_document = new XmlDocument();
         TextAsset xmlText = Resources.Load(DataManager.xmlPath + chatName) as TextAsset;
-        m_xml.LoadXml(xmlText.text);
+        m_document.LoadXml(xmlText.text);
     }
 
-    XmlDocument m_xml;
+    XmlDocument m_document;
 
     const string COLDOWN_PATTERN = "coldown";
     const string STATE_PATTERN = "state_";
@@ -35,6 +35,8 @@ public class ReplicaController
     const string TO_BUTTON_ATRIBUTE = "toButton";
     const string AI_REPLICA = "computer";
     const string PLAYER_REPLICA = "player";
+    const string KEYS_KEY = "keys";
+    const char KEYS_SEPARATOR = ',';
 
     public List<UserReplica> GetComputerReplics(int state)
     {
@@ -75,10 +77,34 @@ public class ReplicaController
 
         return replics;
     }
+    public List<string> GetStateKey(int state)
+    {
+        List<string> keys = new List<string>();
+        string stateName = STATE_PATTERN + state.ToString();
+        XmlNode stateNode = m_document.DocumentElement.SelectSingleNode(stateName);
+        XmlNode keysNode = stateNode.Attributes.GetNamedItem(KEYS_KEY);
+
+        if (keysNode != null)
+        {
+            string keysStr = keysNode.InnerText;
+
+            if (keysStr != "")
+            {
+                string[] allKeys = keysStr.Split(KEYS_SEPARATOR);
+
+                foreach (string key in allKeys)
+                {
+                    keys.Add(key);
+                }
+            }
+        }
+
+        return keys;
+    }
     XmlNode GetUserReplicsNode(int state, string user)
     {
         string stateName = STATE_PATTERN + state.ToString();
-        XmlNode stateNode = m_xml.DocumentElement.SelectSingleNode(stateName);
+        XmlNode stateNode = m_document.DocumentElement.SelectSingleNode(stateName);
         XmlNode userNode = stateNode.SelectSingleNode(user);
 
         return userNode;

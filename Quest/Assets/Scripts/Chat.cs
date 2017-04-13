@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class Chat
 {
-    public Chat(IMessagesBox messageBox, ChatIcon icon, string name)
+    public Chat(IMessagesBox messageBox, ChatIcon icon, ChatAudio audio, string name)
     {
         m_history = DataManager.LoadHistory(name);
         m_chatState = m_history.GetState();
@@ -19,7 +19,10 @@ public class Chat
 
         m_icon = icon;
         m_icon.onClickEvent += Activate;
-        m_icon.Init(m_name);
+        m_icon.InitChat(m_name);
+        m_icon.SetVisible(true);
+
+        m_audio = audio;
 
         InitUsers();
     }
@@ -32,6 +35,7 @@ public class Chat
     ReplicaController m_replics;
     IMessagesBox m_messageBox;
     History m_history;
+    ChatAudio m_audio;
 
     AIPlayer m_computer;
     Player m_player;
@@ -43,6 +47,7 @@ public class Chat
     string m_name;
     bool m_isChatActive = false;
     bool m_isNewMsgExist = false;
+    bool m_isFirstInitComplete = false;
 
     void InitUsers()
     {
@@ -53,6 +58,9 @@ public class Chat
 
         m_player.InitReplicsManager(m_replics);
         m_computer.InitReplicsManager(m_replics);
+
+        m_player.onSendMessage += m_icon.SetLastMessage;
+        m_computer.onSendMessage += m_icon.SetLastMessage;
 
         m_player.SetHistory(m_history);
         m_computer.SetHistory(m_history);
@@ -66,9 +74,20 @@ public class Chat
         m_currentUser = m_computer;
         m_currentUser.SetNewTurn(m_chatState);
     }
+    void FirstInit()
+    {
+        if (!m_isFirstInitComplete)
+        {
+            m_isFirstInitComplete = true;
+
+            UpdateKeys();
+        }
+    }
 
     public void Update(float delta)
     {
+        FirstInit();
+
         if (m_currentUser.SendMessage(delta))
         {
             SwitchUser();
@@ -76,7 +95,15 @@ public class Chat
         }
 
         m_icon.SetNewMsgAnnounce(m_isNewMsgExist);
-        m_messageBox.NewMessageAnnounce(m_isNewMsgExist);
+    }
+    public void UpdateKeys()
+    {
+        List<string> keys = m_replics.GetStateKey(m_chatState);
+
+        foreach (string key in keys)
+        {
+            onKeyEvent(key);
+        }
     }
 
     public void SetColdownIgnore(bool isIgnore)
@@ -99,20 +126,30 @@ public class Chat
         if (!m_isChatActive)
         {
             m_isNewMsgExist = true;
+            m_audio.PlayNewMsgSound();
+        }
+        else
+        {
+            m_audio.PlayMsgAnnounceSound();
         }
     }
     void SetState(int state, string message)
     {
         m_chatState = state;
+        UpdateKeys();
     }
+
     public void Activate()
     {
         m_isChatActive = true;
         m_isNewMsgExist = false;
+        m_messageBox.SetVisible(true);
+        m_icon.SetActive(m_name);
     }
     public void Diactivate()
     {
         m_isChatActive = false;
+        m_messageBox.SetVisible(false);
     }
 
     public History GetHistory()

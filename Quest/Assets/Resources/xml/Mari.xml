@@ -117,10 +117,12 @@
 	</state_10>
 	<state_11>
 		<computer>
-			<replica coldown=""></replica>
+			<replica coldown="3">О боже!</replica>
+			<replica coldown="">Кажется на них чья-то кровь!</replica>
+			<replica coldown="">Они старые и уже не прочные</replica>
 		</computer>
 		<player>
-			<replica next="" toButton=""></replica>
+			<replica next="12" toButton="Осмотри ещё">Поищи ещё что-нибудь</replica>
 		</player>
 	</state_11>
 	<state_12>
@@ -128,8 +130,8 @@
 			<replica coldown="4">Комната полупустая с одним окном и зеркалом на стене. На полу лежат верёвки</replica>
 		</computer>
 		<player>
-			<replica next="0" toButton="Взять верёвки"></replica>
-			<replica next="0" toButton="Разбей зеркало"></replica>
+			<replica next="11" toButton="Взять верёвки">Расскажи про верёвки</replica>
+			<replica next="14" toButton="Разбей зеркало">Попробуй разбить зеркало и спрятать острый осколок.</replica>
 		</player>
 	</state_12>
 	<state_13>
@@ -142,34 +144,50 @@
 	</state_13>
 	<state_14>
 		<computer>
-			<replica coldown=""></replica>
+			<replica coldown="3">Уфф, кажется я немного порезалась</replica>
+			<replica coldown="">Думаю никто этого не заметит</replica>
+			<replica coldown="">Аня немного успокоилась...</replica>
+			<replica coldown="1">Кажется кто-то идёт</replica>
+			<replica coldown="7">К нам заходил бородатый мужчина. Он сказал что мы званные гости</replica>
+			<replica coldown="">Он принёс нам еду, но ничего больше не сказал... Дверь снова заперли</replica>
 		</computer>
 		<player>
-			<replica next="" toButton=""></replica>
+			<replica next="15" toButton="Поешь">Поешь, тебе нужно набраться сил</replica>
+			<replica next="16" toButton="Нельзя есть их еду">Ни в коем случае не трогай их еду. Вдруг в неё что-то подмешали</replica>
+			<replica next="17" toButton="Продолжай осмотр комнаты">Осмотри комнату тщательнее</replica>
 		</player>
 	</state_14>
 	<state_15>
 		<computer>
-			<replica coldown=""></replica>
+			<replica coldown="">Хорошо, еда выглядит нормально</replica>
+			<replica coldown="3">ммм, как вкусно</replica>
+			<replica coldown="2">ммм-м-ммм</replica>
+			<replica coldown="3">кааааеееееффф</replica>
+			<replica coldown="1">Ладно, что делать дальше?</replica>
 		</computer>
 		<player>
-			<replica next="" toButton=""></replica>
+			<replica next="19" toButton="Продолжай осмотр комнаты">Хорошо. Продолжай осмотр комнаты, дорогая. Я надеюсь, у тебя получится найти что-то ещё...</replica>
 		</player>
 	</state_15>
 	<state_16>
 		<computer>
-			<replica coldown=""></replica>
+			<replica coldown="2">Ты прав, я к ней не притронусь!</replica>
+			<replica coldown="">О боже...Аня...Она начала есть и..и кажется ей плохо!</replica>
+			<replica coldown="">Она как будто засыпает!</replica>
 		</computer>
 		<player>
-			<replica next="" toButton=""></replica>
+			<replica next="0" toButton="Не трать время"></replica>
+			<replica next="0" toButton="Не давай ей уснуть"></replica>
 		</player>
 	</state_16>
 	<state_17>
 		<computer>
-			<replica coldown=""></replica>
+			<replica coldown="2">Посмотрю ещё раз на полу.</replica>
+			<replica coldown="6">Кажется что-то нашла..</replica>
+			<replica coldown="1">Я нашла гвоздь. Старый гвоздь</replica>
 		</computer>
 		<player>
-			<replica next="" toButton=""></replica>
+			<replica next="0" toButton="Нормально!">Норм!</replica>
 		</player>
 	</state_17>
 	<state_18>
@@ -182,10 +200,10 @@
 	</state_18>
 	<state_19>
 		<computer>
-			<replica coldown=""></replica>
+			<replica coldown="4">Мне и Ане стало плохо, кажется в еде что-то было. Меня клонит в сон, но я пока могу держаться на ногах.</replica>
 		</computer>
 		<player>
-			<replica next="" toButton=""></replica>
+			<replica next="21" toButton="Нужно найти отмычку">Это очень плохо! Вам нужно найти что-то чтобы открыть дверь и спастись</replica>
 		</player>
 	</state_19>
 	<state_20>
@@ -196,20 +214,28 @@
 			<replica next="" toButton=""></replica>
 		</player>
 	</state_20>
-	<state_21>
+	<state_21 keys="AgentStart">
 		<computer>
-			<replica coldown=""></replica>
+			<replica coldown="2">Мы поищем на полу ещё раз, надеюсь не упаду в обморок</replica>
+			<replica coldown="2">О да, я нашла, кажется это старый гвоздь. Возможно им получится открыть дверь!</replica>
 		</computer>
 		<player>
-			<replica next="" toButton=""></replica>
+			<replica next="22" toButton="Попытаться открыть дверь">Попробуй открыть им дверь</replica>
+			<replica next="0" toButton="Спрятать гвоздь на будущее">Гвоздь нужно спрятать, возможно чуть позже он вам пригодится, чтобы выбраться</replica>
+			<replica next="24" toButton="Что с Аней?">Что происходит с Аней, как она? Как ты?</replica>
 		</player>
 	</state_21>
 	<state_22>
 		<computer>
-			<replica coldown=""></replica>
+			<replica coldown="2">Сомневаюсь что у меня получится это сделать. Гвоздь очень старый</replica>
+			<replica coldown="2">Сейчас попробую</replica>
+			<replica coldown="6">Ты был прав! У меня получилось открыть дверь, но в коридоре стоит мужчина с автоматом.</replica>
+			<replica coldown="">Он смотрит в окно</replica>
+			<replica coldown="">Можно попробовать пройти мимо него и остаться незамеченными</replica>
 		</computer>
 		<player>
-			<replica next="" toButton=""></replica>
+			<replica next="25" toButton="Используй осколок зеркала">Помнишь осколок, который ты взяла разбив зеркало? Ты понимаешь что я хочу предложить сделать?</replica>
+			<replica next="0" toButton="Прокрадитесь мимо">Попробуйте пройти мимо, я думаю что вы не сможете его одолеть. Это ваш шанс...</replica>
 		</player>
 	</state_22>
 	<state_23>
@@ -230,10 +256,13 @@
 	</state_24>
 	<state_25>
 		<computer>
-			<replica coldown=""></replica>
+			<replica coldown="4">О боже, никогда не думала, что окажусь в такой ситуации!</replica>
+			<replica coldown="2">Я не знаю...Смогу ли я сделать это</replica>
+			<replica coldown="2">Я попробую</replica>
 		</computer>
 		<player>
-			<replica next="" toButton=""></replica>
+			<replica next="0" toButton="Ты справишься">Дорогая, ты справишься. Это единственный шанс...</replica>
+			<replica next="0" toButton="Нет, стой">Подожди, я боюсь за вас, я думаю это не лучшая идея. Попробуйте прокрасться мимо...</replica>
 		</player>
 	</state_25>
 	<state_26>

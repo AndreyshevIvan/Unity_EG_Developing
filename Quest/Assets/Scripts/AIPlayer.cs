@@ -28,15 +28,22 @@ public class AIPlayer : User
     }
     protected override void TrySendNewMessage()
     {
-        m_messageBox.SetComputerReplica(m_replics[0]);
-        SetLastMessage(m_replics[0].toSend);
-        m_replics.Remove(m_replics[0]);
-        
+        string message = m_replics[0].toSend;
+
+        m_messageBox.AddComputerMessage(m_replics[0]);
+        SetLastMessage(message);
+
+        if (onSendMessage != null)
+        {
+            onSendMessage(m_name, message);
+        }
+
         if (turnEvent != null)
         {
             turnEvent();
         }
 
+        m_replics.Remove(m_replics[0]);
         CalculateWriteColdowns(m_replics);
     }
     protected override bool SendPredicate()

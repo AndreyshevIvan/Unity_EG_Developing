@@ -9,15 +9,16 @@ public enum MessageSide
     RIGHT,
 }
 
-public class MessagesBox : MonoBehaviour
+public class MessagesBox : MonoBehaviour, IMessagesBox
 {
     PlayerTurnEvents m_playerTurnEvents;
 
+    List<Message> m_boxMessages;
     public Message m_computerMessage;
     public Message m_playerMessage;
     Message m_imitateMessage;
-    List<Message> m_allMessages;
     bool m_isImitate = false;
+    bool m_isAwake = false;
 
     public PlayerAnswer m_answer;
     List<PlayerAnswer> m_lastAnswers;
@@ -26,8 +27,8 @@ public class MessagesBox : MonoBehaviour
     public RectTransform m_answersBox;
     public RectTransform m_answersInner;
     public RectTransform m_listLayout;
-    public RectTransform m_titleTransform;
 
+    Vector3 m_normalBoxPosition;
     Vector3 m_listStartSize;
     Vector3 m_startListLayoutPos;
     Vector3 m_answersBoxStartSize;
@@ -38,6 +39,7 @@ public class MessagesBox : MonoBehaviour
 
     readonly float RELATIVE_MESSAGE_OFFSET = 20;
     readonly float RELATIVE_ANSWERS_OFFSET = 18;
+    readonly Vector3 INVISIBLE_POSITION = new Vector3(1000000, 0, 0);
 
     public PlayerTurnEvents playerTurnEvent
     {
@@ -46,8 +48,11 @@ public class MessagesBox : MonoBehaviour
 
     void Awake()
     {
+        m_isAwake = true;
+        m_normalBoxPosition = transform.position;
+        m_playerTurnEvents = new PlayerTurnEvents();
         m_lastAnswers = new List<PlayerAnswer>();
-        m_allMessages = new List<Message>();
+        m_boxMessages = new List<Message>();
         m_transform = GetComponent<RectTransform>();
 
         m_answersBoxStartSize = m_answersBox.rect.size;
@@ -57,11 +62,17 @@ public class MessagesBox : MonoBehaviour
 
         IncreaseMessageLine(RELATIVE_MESSAGE_OFFSET);
     }
-    public void Reload(History history)
+
+    public void LoadFromHistory(History history)
     {
+        if (!m_isAwake)
+        {
+            Awake();
+        }
+
         m_listTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 0);
 
-        foreach (Message message in m_allMessages)
+        foreach (Message message in m_boxMessages)
         {
             if (message != null)
             {
@@ -86,20 +97,21 @@ public class MessagesBox : MonoBehaviour
             AddMessage(message, replica.second);
         }
     }
-
     public void ImitatePrint()
     {
-        if (!m_isImitate)
+        if (m_isImitate)
         {
-            m_imitateMessage = Instantiate(m_computerMessage);
-            m_imitateMessage.SetText("...");
-            IncreaseMessageLine(m_imitateMessage.GetHeight());
-            m_imitateMessage.UpdateTransform(m_listTransform);
-            IncreaseMessageLine(RELATIVE_MESSAGE_OFFSET);
-            m_isImitate = true;
+            return;
         }
+
+        m_imitateMessage = Instantiate(m_computerMessage);
+        m_imitateMessage.SetText("...");
+        IncreaseMessageLine(m_imitateMessage.GetHeight());
+        m_imitateMessage.UpdateTransform(m_listTransform);
+        IncreaseMessageLine(RELATIVE_MESSAGE_OFFSET);
+        m_isImitate = true;
     }
-    public void InitPlayerReplics(List<UserReplica> replics)
+    public void InitPlayerAnswers(List<UserReplica> replics)
     {
         m_lastAnswers.Clear();
 
@@ -112,12 +124,27 @@ public class MessagesBox : MonoBehaviour
 
         UpdateAnswersBox();
     }
-
+    public void AddPlayerTurnEvent(PlayerEvent turnEvent)
+    {
+        m_playerTurnEvents.AddEvent(ref turnEvent);
+    }
     public void AddComputerMessage(UserReplica replica)
     {
         Message message = Instantiate(m_computerMessage);
         AddMessage(message, replica.toSend);
     }
+    public void SetVisible(bool isVisible)
+    {
+        if (isVisible)
+        {
+            transform.position = new Vector3(m_normalBoxPosition.x, transform.position.y, 0);
+        }
+        else
+        {
+            transform.position = new Vector3(INVISIBLE_POSITION.x, transform.position.y, 0);
+        }
+    }
+
     void AddPlayerMessage(string text, int newState)
     {
         m_playerTurnEvents.DoEvents(newState, text);
@@ -134,7 +161,7 @@ public class MessagesBox : MonoBehaviour
         IncreaseMessageLine(message.GetHeight());
         message.UpdateTransform(m_listTransform);
         IncreaseMessageLine(RELATIVE_MESSAGE_OFFSET);
-        m_allMessages.Add(message);
+        m_boxMessages.Add(message);
     }
     void StopImitate()
     {
@@ -183,12 +210,12 @@ public class MessagesBox : MonoBehaviour
         m_listLayout.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, newLayoutHeight);
         m_listTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, m_messagesBoxHeight);
 
-        m_listLayout.transform.position = new Vector3(0, height, 0);
+        m_listLayout.position = new Vector3(m_listLayout.position.x, height, m_listLayout.position.z);
     }
     void ResetAnswersBox()
     {
         m_answersBox.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Bottom, 0, m_answersBoxStartSize.y);
-        m_listLayout.localPosition = m_startListLayoutPos;
+        m_listLayout.localPosition = new Vector3(m_listLayout.localPosition.x, m_startListLayoutPos.y);
     }
     void ClearLastAnswers()
     {

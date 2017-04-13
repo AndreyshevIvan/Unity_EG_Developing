@@ -15,6 +15,12 @@ public class Player : User
     {
         SetLastMessage(message);
         m_history.AddPlayerReplica(message, m_state);
+
+        if (onSendMessage != null)
+        {
+            onSendMessage(m_name, message);
+        }
+
         m_isTurnAllowed = true;
     }
     public override void SetNewTurn(int state)
@@ -23,7 +29,7 @@ public class Player : User
         m_replics = m_replicsManager.GetPlayerReplics(m_state);
         if (m_replics.Count != 0)
         {
-            m_messageBox.SetPlayerReplics(m_replics);
+            m_messageBox.InitPlayerAnswers(m_replics);
             m_isTurnAllowed = false;
         }
     }

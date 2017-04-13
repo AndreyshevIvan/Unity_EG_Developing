@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<root>
+	<state_0>
+		<computer>
+			<replica coldown="">Здравствуйте! Это специальный агент Андрсон</replica>
+			<replica coldown="">Мы знаем, что вашу жену похители</replica>
+			<replica coldown="">У нас есть причины полагать, что вы к этому причасны</replica>
+		</computer>
+		<player>
+			<replica next="0" toButton="Не понимаю о чём вы">О чём вы говорите...Это не правда</replica>
+			<replica next="0" toButton="Уклониться от ответа">Как вы можете такое говорить!</replica>
+			<replica next="0" toButton="Признаться">Да, это сделали мои люди</replica>
+		</player>
+	</state_0>
+</root>

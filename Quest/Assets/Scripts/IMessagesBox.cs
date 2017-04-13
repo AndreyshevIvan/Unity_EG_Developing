@@ -9,13 +9,8 @@ public interface IMessagesBox
 {
     void ImitatePrint();
     void AddPlayerTurnEvent(PlayerEvent turnEvent);
-    void NewMessageAnnounce(bool isNewExist);
     void LoadFromHistory(History history);
-
-    void SetChatIcon(Image icon);
-    void SetChatName(string name);
-    void SetHistory(string chatName);
-
-    void SetPlayerReplics(List<UserReplica> replics);
-    void SetComputerReplica(UserReplica replica);
+    void InitPlayerAnswers(List<UserReplica> replics);
+    void AddComputerMessage(UserReplica replica);
+    void SetVisible(bool isVisible);
 }
